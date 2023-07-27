@@ -3,13 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\CommentRepository;
+use App\Trait\Timestamps;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 class Comment
 {
+    use Timestamps;
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -25,6 +29,9 @@ class Comment
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     private ?Article $article = null;
+
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    private ?User $owner = null;
 
     public function getId(): ?int
     {
@@ -63,6 +70,18 @@ class Comment
     public function setArticle(?Article $article): static
     {
         $this->article = $article;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
 
         return $this;
     }

@@ -10,12 +10,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/comments', name: 'app_comment_')]
 class CommentController extends AbstractAPIController
 {
+    #[IsGranted('ROLE_USER')]
     #[Route('/', name: 'create', methods: ['POST'])]
     public function create(CommentRepository $commentRepository, ValidatorInterface $validator, Request $request): JsonResponse
     {
@@ -38,6 +40,7 @@ class CommentController extends AbstractAPIController
         return $this->response($comment);
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/{id}', name: 'update', methods: ['PATCH'])]
     public function update(CommentRepository $commentRepository, Comment $comment, ValidatorInterface $validator, Request $request): JsonResponse
     {
@@ -54,6 +57,7 @@ class CommentController extends AbstractAPIController
         return $this->response($comment);
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
     public function delete(CommentRepository $articleRepository, Comment $comment): JsonResponse
     {
