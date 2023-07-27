@@ -59,6 +59,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Comment::class)]
     private Collection $comments;
 
+    #[ORM\OneToOne(mappedBy: 'ownedBy', cascade: ['persist', 'remove'])]
+    private ?ApiToken $apiToken = null;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -263,6 +266,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $comment->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getApiToken(): ?ApiToken
+    {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(?ApiToken $apiToken): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($apiToken === null && $this->apiToken !== null) {
+            $this->apiToken->setOwnedBy(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($apiToken !== null && $apiToken->getOwnedBy() !== $this) {
+            $apiToken->setOwnedBy($this);
+        }
+
+        $this->apiToken = $apiToken;
 
         return $this;
     }

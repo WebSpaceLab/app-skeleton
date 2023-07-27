@@ -3,34 +3,43 @@
 namespace App\Security;
 
 use App\Entity\User;
+use App\Repository\ApiTokenRepository;
+use DateInterval;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\AccessToken\AccessTokenHandlerInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 
 class ApiTokenHandler implements AccessTokenHandlerInterface {
-    public function __construct()
+    private $apiTokenRepository;
+    public function __construct(ApiTokenRepository $apiTokenRepository)
     {
+        $this->apiTokenRepository = $apiTokenRepository;
     }
 
     public function createForUser(User $user) 
     {
         $SessionToken = session_create_id('atp');
+        $tokenLifetime = new DateInterval('PT1H');
 
-        $accessToken = $SessionToken.bin2hex(random_bytes(64));  
-        dd($accessToken);
-        //  $accessToken3*60*60 $user->getUserIdentifier();
+        $accessToken = $SessionToken.bin2hex(random_bytes(64));
+        $this->apiTokenRepository->setApiTokenWithExpiration($accessToken, $user, $tokenLifetime, true);
 
         return $accessToken;
     }
 
     public function getUserBadgeFrom(string $accessToken): UserBadge
     {
-        dd( $accessToken);
-        // // $userId = $this->redis->get('sessions/' . $accessToken);
-        // if (!$userId) {
-        //     throw new BadCredentialsException('Invalid token');
-        // }
+        $token = $this->apiTokenRepository->findOneBy(['token' => $accessToken]);
 
-        // return new UserBadge($userId);
+        if (!$token) {
+            throw new BadCredentialsException();
+        }
+
+        if (!$token->isValid()) {
+            throw new CustomUserMessageAuthenticationException('Token expired');
+        }
+
+        return new UserBadge($token->getOwnedBy()->getUserIdentifier());
     }
 }

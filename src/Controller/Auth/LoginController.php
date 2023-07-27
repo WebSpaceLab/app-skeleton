@@ -27,4 +27,10 @@ class LoginController extends AbstractController
             'apiToken' => $apiToken
         ], Response::HTTP_OK);
     }
+
+    #[Route('/auth/logout', name: 'app_auth_logout')]
+    public function logout(): void
+    {
+        throw new \Exception('Logout failed?'); 
+    }
 }
