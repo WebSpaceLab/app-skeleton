@@ -24,7 +24,8 @@ class LoginController extends AbstractController
         $apiToken = $apiTokenHandler->createForUser($user);
 
         return $this->json([
-            'apiToken' => $apiToken
+            'apiToken' => $apiToken,
+            'iri' => $user->getIriFromResource(),
         ], Response::HTTP_OK);
     }
 

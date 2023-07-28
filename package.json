@@ -1,16 +1,37 @@
 {
-  "name": "nuxt-app",
-  "private": true,
-  "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
-  },
-  "devDependencies": {
-    "@nuxt/devtools": "latest",
-    "@types/node": "^18.17.0",
-    "nuxt": "^3.6.5"
-  }
+    "name": "nuxt-app",
+    "private": true,
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare"
+    },
+    "devDependencies": {
+        "@nuxt/devtools": "latest",
+        "@nuxtjs/color-mode": "^3.3.0",
+        "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
+        "@types/node": "^18.17.0",
+        "@types/uuid": "^9.0.1",
+        "@unocss/nuxt": "^0.53.6",
+        "nuxt": "^3.6.5",
+        "nuxt-icon": "^0.4.2",
+        "postcss": "^8.4.21",
+        "postcss-scss": "^4.0.6",
+        "sass": "^1.60.0",
+        "sass-loader": "^13.2.2",
+        "typescript": "latest",
+        "unocss-preset-scrollbar": "^0.2.1"
+    },
+    "dependencies": {
+        "@julr/unocss-preset-forms": "^0.0.5",
+        "@pinia/nuxt": "^0.4.11",
+        "@vite-pwa/nuxt": "^0.1.0",
+        "axios": "^1.4.0",
+        "nuxt-lodash": "^2.5.0",
+        "pinia": "^2.1.4",
+        "uuid": "^9.0.0",
+        "vue-advanced-cropper": "^2.8.8"
+    }
 }

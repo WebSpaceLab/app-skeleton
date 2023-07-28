@@ -291,4 +291,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getIriFromResource()
+    {
+        return '/api/users/' . $this->getId();
+    }
 }
