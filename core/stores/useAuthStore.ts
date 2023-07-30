@@ -10,7 +10,19 @@ import { IApiToken } from 'types/IApiToken'
 export const useAuthStore = defineStore('auth', {
     state: () => {
         return {
-            user: null as IUser | null,
+            user: {
+                email: '',
+                username: '',
+                avatarUrl: '',
+                bio: '',
+                role: [],
+            
+                articles: [],
+                comments: [],
+                
+                createdAtAgo: '',
+                updatedAtAgo: ''
+            },
             isLoggedIn: false,
             isLoading: false,
             errors: null as object | null,
@@ -18,7 +30,8 @@ export const useAuthStore = defineStore('auth', {
             status: null as string | null, 
             token: null as string | null,
             iri: null as string | null,
-            role: null as object | null
+            role: null as object | null,
+            tokenExpiresAt: '', 
         }
     },
     
@@ -60,8 +73,8 @@ export const useAuthStore = defineStore('auth', {
             const {error, status, data } = await useFetchApi('/auth/login', {
                 method: 'POST',
                 body: {
-                    "email": "adam@web-space.com",
-                    "password": "secret"
+                    "email": "admin@example.com",
+                    "password": "admin123"
                 },
             }) as IApiToken | any
             
@@ -103,7 +116,18 @@ export const useAuthStore = defineStore('auth', {
                     this.logout()
                 } else {
                     if(data.value && status.value == 'success') {
-                        this.user = data.value
+                        this.user.role = data.value.role
+                        this.user.email = data.value.email
+                        this.user.username = data.value.username
+                        this.user.avatarUrl = data.value.avatarUrl
+                        this.user.bio = data.value.bio
+                        this.user.articles = data.value.articles
+                        this.user.comments = data.value.comments
+                        this.user.createdAtAgo = data.value.createdAtAgo
+                        this.user.updatedAtAgo = data.value.updatedAtAgo
+                        this.tokenExpiresAt = data.value.apiTokenExpiresAt
+                        console.log(data.value)
+                  
                         this.checkIsLoggedIn()
                         useAccountStore().init(this.user as IUser | any)
                     } 
@@ -128,7 +152,7 @@ export const useAuthStore = defineStore('auth', {
                 this.isLoading = true
                 this.status = null
                 this.response = null
-                this.user = null
+                this.restUser()
                 this.isLoggedIn = false
                 this.token = null
                 this.iri = null
@@ -213,6 +237,22 @@ export const useAuthStore = defineStore('auth', {
             setTimeout(() => {
                 this.response = null
             }, 20000)
+        },
+
+        restUser() {
+            this.user = {
+                email: '',
+                username: '',
+                avatarUrl: '',
+                bio: '',
+                role: [],
+            
+                articles: [],
+                comments: [],
+                
+                createdAtAgo: '',
+                updatedAtAgo: ''
+            }
         }
     }, 
 

@@ -1,15 +1,17 @@
-import { IArticle } from "./IArticle"
+import { IArticleUser, IArticleCommentsUser } from "./IArticle"
 
 export interface IUser {
-    '@id': number
+    // '@id': number
     email: string
     username: string
-    avatar_url: string
+    avatarUrl?: string
+    bio?: string
     role: []
     description?: string | null
 
-    articles?: IArticle[] | undefined
-    
-    created_at: string
-    updated_at: string 
+    articles: IArticleUser[] | undefined
+    comments: IArticleCommentsUser[] | undefined
+
+    createdAtAgo: string
+    updatedAtAgo?: string 
 }

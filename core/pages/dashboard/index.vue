@@ -23,14 +23,16 @@ definePageMeta({
                 <div>
                     <h1>Dashboard</h1>
                     <pre>
-            user : {{ $auth.user }}
+                        
+                        user: {{ $auth.user }}
             
-            isLoggedIn : {{ $auth.isLoggedIn }}
-            isLoading: {{ $auth.isLoading }}
+                        isLoggedIn : {{ $auth.isLoggedIn }}
+                        isLoading: {{ $auth.isLoading }}
+                        tokenExpiresAt:
        
         
             
-                </pre>
+                    </pre>
                 </div>
 
             </div>

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ApiTokenRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ApiTokenRepository::class)]
 class ApiToken
@@ -16,10 +17,11 @@ class ApiToken
     #[ORM\Column(length: 255)]
     private ?string $token = null;
 
+    #[Groups(['profile:read'])]
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $expiresAt = null;
 
-    #[ORM\OneToOne(inversedBy: 'apiToken', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'apiToken', cascade: ['persist'])]
     private ?User $ownedBy = null;
 
     public function getId(): ?int
@@ -38,7 +40,8 @@ class ApiToken
 
         return $this;
     }
-
+    
+    #[Groups(['profile:read'])]
     public function getExpiresAt(): ?\DateTimeImmutable
     {
         return $this->expiresAt;

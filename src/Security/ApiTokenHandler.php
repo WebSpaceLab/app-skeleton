@@ -11,7 +11,9 @@ use Symfony\Component\Security\Http\AccessToken\AccessTokenHandlerInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 
 class ApiTokenHandler implements AccessTokenHandlerInterface {
+    private const ACCESS_TOKEN_PREFIX = 'atp_';
     private $apiTokenRepository;
+
     public function __construct(ApiTokenRepository $apiTokenRepository)
     {
         $this->apiTokenRepository = $apiTokenRepository;
@@ -19,10 +21,10 @@ class ApiTokenHandler implements AccessTokenHandlerInterface {
 
     public function createForUser(User $user) 
     {
-        $SessionToken = session_create_id('atp');
+        $SessionToken = session_create_id();
         $tokenLifetime = new DateInterval('PT1H');
+        $accessToken = self::ACCESS_TOKEN_PREFIX . $SessionToken . bin2hex(random_bytes(64));
 
-        $accessToken = $SessionToken.bin2hex(random_bytes(64));
         $this->apiTokenRepository->setApiTokenWithExpiration($accessToken, $user, $tokenLifetime, true);
 
         return $accessToken;

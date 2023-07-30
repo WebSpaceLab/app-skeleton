@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
@@ -19,30 +20,38 @@ class Article
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+
     private ?int $id = null;
 
     #[Assert\NotBlank()]
     #[ORM\Column(length: 255)]
+    #[Groups(['article:read', 'article:write', 'profile:read'])]
     private ?string $title = null;
 
     #[Assert\NotBlank()]
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['article:read', 'article:write'])]
     private ?string $content = null;
 
     #[Assert\NotBlank()]
     #[ORM\Column(length: 255)]
+    #[Groups(['article:read'])]
     private ?string $slug = null;
 
     #[ORM\Column]
+    #[Groups(['article:read', 'article:write'])]
     private ?bool $isPublished = false;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['article:read', 'article:write'])]
     private ?\DateTimeImmutable $publishedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comment::class, cascade: ['persist', 'remove'])]
+    #[Groups(['article:read'])]
     private Collection $comments;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[Groups(['article:read'])]
     private ?User $owner = null;
 
     public function __construct()
@@ -119,6 +128,7 @@ class Article
     /**
      * @return Collection<int, Comment>
      */
+    #[Groups(['article:read'])]
     public function getComments(): Collection
     {
         return $this->comments;
@@ -156,5 +166,11 @@ class Article
         $this->owner = $owner;
 
         return $this;
+    }
+
+    #[Groups(['article:read', 'profile:read'])]
+    public function getIri()
+    {
+        return '/api/articles/' . $this->getId();
     }
 }

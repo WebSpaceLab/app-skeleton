@@ -12,20 +12,16 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractAPIController extends AbstractController
 {
-    // public function __construct(
-    //     private SerializerInterface $serializer
-    // ) {}
     protected SerializerInterface $serializer;
 
-    public function response( mixed $data, int $status = 200, array $headers = [], array $context = []): JsonResponse
+    public function response( mixed $data, array $groups = [], int $status = 200, array $headers = []): JsonResponse
     {
-        if(count($context) == 0) {
-            $context = [
-                ObjectNormalizer::CIRCULAR_REFERENCE_HANDLER=> function ($object) {
-                    return $object->getId(); 
-                }
-            ];
-        }
+        $context = [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                return $object->getId();
+            },
+            AbstractNormalizer::GROUPS => $groups,
+        ];
 
         return $this->json(
             $data,
@@ -48,38 +44,6 @@ abstract class AbstractAPIController extends AbstractController
             $format,
             $context
         );
-    }
-
-    public function validated(mixed $requestData, string $type = '', mixed $object = [], string $method = 'POST'): mixed
-    {
-        switch ($method) {
-            case 'POST':
-                $data = $this->deserialize($requestData, $type, 'json', []);
-                break;
-
-            case 'PATCH':
-                $data = $this->deserialize($requestData, $type, 'json', [
-                     AbstractNormalizer::OBJECT_TO_POPULATE => $object
-                ]);
-                break;
-
-            case 'PUT':
-                $data = $this->deserialize($requestData, $object::class, 'json', [
-                    AbstractNormalizer::OBJECT_TO_POPULATE => $object
-                ]);
-                break;
-            
-            default:
-                # code...
-                break;
-        }
-
-        return $data;
-    }
-
-    public function preData()
-    {
-
     }
 
     #[Required]

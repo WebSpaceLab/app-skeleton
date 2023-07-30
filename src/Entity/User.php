@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use App\Trait\Timestamps;
+use Carbon\Carbon;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\HasLifecycleCallbacks()]
@@ -24,9 +26,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['profile:read', 'user:all', 'article:read'])]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['profile:read', 'user:all'])]
     private array $roles = [];
 
     /**
@@ -36,34 +40,43 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[Groups(['profile:read', 'user:all', 'article:read'])]
     private ?string $username = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['profile:read', 'user:all', 'article:read'])]
     private ?string $bio = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['profile:read', 'user:all', 'article:read'])]
     private ?string $avatarUrl = null;
 
     #[ORM\Column]
+    #[Groups(['user:all'])]
     private ?bool $isActiveAccount = false;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['profile:read'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['profile:read'])]
     private ?string $lastName = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Article::class)]
+    #[Groups(['profile:read'])]
     private Collection $articles;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Comment::class)]
+    #[Groups(['profile:read'])]
     private Collection $comments;
 
-    #[ORM\OneToOne(mappedBy: 'ownedBy', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'ownedBy', cascade: ['persist'])]
     private ?ApiToken $apiToken = null;
 
     public function __construct()
     {
+        $this->createdAt = new \DateTimeImmutable();
         $this->articles = new ArrayCollection();
         $this->comments = new ArrayCollection();
     }
@@ -269,7 +282,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
+    #[Groups(['profile:read'])]
     public function getApiToken(): ?ApiToken
     {
         return $this->apiToken;
@@ -294,6 +307,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getIriFromResource()
     {
-        return '/api/users/' . $this->getId();
+        return '/api/profile/' . $this->getId();
+    }
+
+    #[Groups(['profile:read'])]
+    public function getApiTokenExpiresAt()
+    {
+        return Carbon::instance($this->apiToken->getExpiresAt())->toDateTimeString();
+    }
+
+
+    #[Groups(['profile:read'])]
+    public function getCreatedAtAgo(): ?string
+    {
+        return  Carbon::instance($this->createdAt)->diffForHumans();
+    }
+
+    #[Groups(['profile:read'])]
+    public function getUpdatedAtAgo(): ?string
+    {
+        $updatedAtAgo = $this->updatedAt;
+
+        if ($updatedAtAgo) {
+            $updatedAtAgo = Carbon::instance($updatedAtAgo)->diffForHumans();
+        }
+
+        return  $updatedAtAgo;
     }
 }

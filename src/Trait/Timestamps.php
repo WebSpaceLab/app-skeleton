@@ -3,7 +3,6 @@
 namespace App\Trait;
 
 use Doctrine\ORM\Mapping as ORM;
-use Carbon\Carbon;
 
 trait Timestamps
 {
@@ -21,12 +20,6 @@ trait Timestamps
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
-    }
-
-
-    public function getCreatedAtAgo(): ?string
-    {
-        return  Carbon::instance($this->createdAt)->diffForHumans();
     }
 
     public function getUpdatedAt(): ?\DateTimeImmutable

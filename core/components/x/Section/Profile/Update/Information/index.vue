@@ -51,21 +51,21 @@ const updateUserInfo = async () => {
     }
 }
 
-watch(() => userName.value, () => {
-    if (!userName.value || userName.value === name.value) {
-        isUpdated.value = false
-    } else {
-        isUpdated.value = true
-    }
-})
+// watch(() => userName.value, () => {
+//     if (!userName.value || userName.value === $account.user.username) {
+//         isUpdated.value = false
+//     } else {
+//         isUpdated.value = true
+//     }
+// })
 
-watch(() => userDescription.value, () => {
-    if (!userName.value || userDescription.value.length < 1) {
-        isUpdated.value = false
-    } else {
-        isUpdated.value = true
-    }
-})
+// watch(() => userDescription.value, () => {
+//     if (!userName.value || userDescription.value.length < 1) {
+//         isUpdated.value = false
+//     } else {
+//         isUpdated.value = true
+//     }
+// })
 
 onMounted(() => {
     userName.value = $account.user.username

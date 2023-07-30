@@ -6,6 +6,7 @@ use App\Repository\CommentRepository;
 use App\Trait\Timestamps;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
@@ -21,16 +22,20 @@ class Comment
 
     #[Assert\NotBlank()]
     #[ORM\Column(length: 255)]
+    #[Groups(['comment:write', 'comment:read', 'article:read', 'profile:read'])]
     private ?string $name = null;
     
     #[Assert\NotBlank()]
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['comment:write', 'comment:read', 'article:read', 'profile:read'])]
     private ?string $content = null;
-
+    
     #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[Groups(['profile:read'])]
     private ?Article $article = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[Groups(['comment:write', 'article:read'])]
     private ?User $owner = null;
 
     public function getId(): ?int
