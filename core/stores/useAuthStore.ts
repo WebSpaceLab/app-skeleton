@@ -11,8 +11,11 @@ export const useAuthStore = defineStore('auth', {
     state: () => {
         return {
             user: {
+                '@id': '',
                 email: '',
                 username: '',
+                firstName: '',
+                lastName: '',
                 avatarUrl: '',
                 bio: '',
                 role: [],
@@ -67,19 +70,14 @@ export const useAuthStore = defineStore('auth', {
             this.isLoading = true
             this.status = null
             this.response = null
-
-            // await this.getCSRFCookie()
             
             const {error, status, data } = await useFetchApi('/auth/login', {
                 method: 'POST',
-                body: {
-                    "email": "admin@example.com",
-                    "password": "admin123"
-                },
+                body: credentials,
             }) as IApiToken | any
             
             if(error.value) {
-                this.errors = error.value.data.errors
+                this.errors = error.value.data.error
             } else {
                 if(status.value === 'success' && data.value ) {
                     // const token = useCookie('Api-Token')
@@ -116,9 +114,13 @@ export const useAuthStore = defineStore('auth', {
                     this.logout()
                 } else {
                     if(data.value && status.value == 'success') {
+                        this.user['@id'] = data.value.iriFromResource
                         this.user.role = data.value.role
                         this.user.email = data.value.email
                         this.user.username = data.value.username
+                        this.user.firstName = data.value.firstName
+                        this.user.lastName = data.value.lastName
+
                         this.user.avatarUrl = data.value.avatarUrl
                         this.user.bio = data.value.bio
                         this.user.articles = data.value.articles
@@ -126,7 +128,6 @@ export const useAuthStore = defineStore('auth', {
                         this.user.createdAtAgo = data.value.createdAtAgo
                         this.user.updatedAtAgo = data.value.updatedAtAgo
                         this.tokenExpiresAt = data.value.apiTokenExpiresAt
-                        console.log(data.value)
                   
                         this.checkIsLoggedIn()
                         useAccountStore().init(this.user as IUser | any)
@@ -241,8 +242,11 @@ export const useAuthStore = defineStore('auth', {
 
         restUser() {
             this.user = {
+                '@id': '',
                 email: '',
                 username: '',
+                firstName: '',
+                lastName: '',
                 avatarUrl: '',
                 bio: '',
                 role: [],

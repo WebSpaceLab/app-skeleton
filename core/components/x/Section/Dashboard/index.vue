@@ -19,7 +19,7 @@
 
 <template>
     <section
-        class="relative w-full h-full  "
+        class="relative w-full h-full box-border"
         :class="[
             container ? 'container mx-auto' : ''
         ]"
@@ -50,7 +50,7 @@
             </template>
         </x-section-dashboard-header>
 
-        <div class="w-full min-h-screen px-6">
+        <div class="w-full min-h-screen md:px-6 box-border">
             <slot name="main" />
         </div>
 

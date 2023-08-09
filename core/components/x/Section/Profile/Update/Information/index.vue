@@ -10,6 +10,8 @@ let cropper = ref(null)
 let uploadedImage = ref(null)
 let userImage = ref(null)
 let userName = ref(null)
+let firstName = ref(null)
+let lastName = ref(null)
 let userDescription = ref(null)
 let isUpdated = ref(false)
 
@@ -43,58 +45,77 @@ const cropAndUpdateImage = async () => {
 }
 
 const updateUserInfo = async () => {
-    try {
-        await $account.updateUser(userName.value, userDescription.value)
-        await $auth.getUser()
-    } catch (error) {
-        console.log(error)
+
+    const {status, data, error } = await $account.updateUser(userName.value, userDescription.value, firstName.value, lastName.value)
+
+    if(error.value) {
+        $flash.error(error.value.data.error)
+    } else {
+        if(status.value == 'success') {
+            $flash.success(data.value.massage)
+            await $auth.getUser()
+        }
     }
 }
 
-// watch(() => userName.value, () => {
-//     if (!userName.value || userName.value === $account.user.username) {
-//         isUpdated.value = false
-//     } else {
-//         isUpdated.value = true
-//     }
-// })
+watch(() => userName.value, () => {
+    if (!userName.value || userName.value === $account.user.username) {
+        isUpdated.value = false
+    } else {
+        isUpdated.value = true
+    }
+})
 
-// watch(() => userDescription.value, () => {
-//     if (!userName.value || userDescription.value.length < 1) {
-//         isUpdated.value = false
-//     } else {
-//         isUpdated.value = true
-//     }
-// })
+watch(() => firstName.value, () => {
+    if (!firstName.value || firstName.value === $account.user.firstName) {
+        isUpdated.value = false
+    } else {
+        isUpdated.value = true
+    }
+})
+
+watch(() => lastName.value, () => {
+    if (!lastName.value || lastName.value === $account.user.lastName) {
+        isUpdated.value = false
+    } else {
+        isUpdated.value = true
+    }
+})
+
+watch(() => userDescription.value, () => {
+    if (!userName.value || !userDescription.value && !userDescription.value === $account.user.bio) {
+        isUpdated.value = false
+    } else {
+        isUpdated.value = true
+    }
+})
 
 onMounted(() => {
     userName.value = $account.user.username
-    userDescription.value = $account.user.description
-    userImage.value = $account.user.avatar_url
+    firstName.value = $account.user.firstName
+    lastName.value = $account.user.lastName
+    userDescription.value = $account.user.bio
+    userImage.value = $account.user.avatarUrl
 })
 </script>
 
 <template>
     <div 
         @mouseover="isMouseover = true" @mouseleave="isMouseover = false"
-        class="relative flex flex-col justify-between bg-prime-light dark:bg-prime-dark w-full mx-3 p-4 rounded-lg mb-10 border-dashed border-muted-light dark:border-muted-dark"
+        class="relative w-full flex flex-col  bg-prime-light dark:bg-prime-dark rounded-lg border-dashed border-muted-light dark:border-muted-dark box-border"
         :class="[
-            !uploadedImage ? 'h-[655px]' : 'h-[580px]',
+            !uploadedImage ? 'h-full' : 'h-full',
             isMouseover ? 'shadow-xl shadow-black' : '',
         ]"
     >
-
-        <div class="w-full  h-[calc(500px-200px)]" :class="!uploadedImage ? 'mt-16' : 'mt-[58px]'">
-            <div v-if="!uploadedImage">
-                <div 
-                    id="ProfilePhotoSection" 
-                    class="flex flex-col border-b sm:h-[118px] h-[145px] px-1.5 py-2 w-full"
-                >
-                    <div class="font-semibold text-[15px] sm:mb-0 mb-1 text-gray-700 sm:w-[160px] sm:text-left text-center">
-                        Profile photo
+        <div class="w-full py-8 px-6 box-border" :class="!uploadedImage ? 'mt-16' : 'mt-[58px]'">
+            <div v-if="!uploadedImage" class="flex flex-col space-y-8">
+                <div  class="w-full flex flex-col lg:h-[118px] h-[145px] px-1.5 py-6 box-border">
+                    <div class="font-semibold lg:mb-0 mb-1 lg:text-left text-center">
+                        Zjęcie profilowe
                     </div>
 
-                    <div class="flex items-center justify-center sm:-mt-6">
+                    <div class="flex items-center justify-center lg:-mt-6">
                         <label for="image" class="relative cursor-pointer">
                             <img 
                                 class="rounded-full" 
@@ -119,20 +140,45 @@ onMounted(() => {
                     </div>
                 </div>
 
-                <div 
-                    id="UsernameSectionSection" 
-                    class="flex flex-col border-b sm:h-[118px]  px-1.5 py-2 mt-1.5  w-full"
-                >
-                    <div class="font-semibold text-[15px] sm:mb-0 mb-1 text-gray-700 sm:w-[160px] sm:text-left text-center">
-                        Username
+                <div class="w-full lg:h-full flex flex-col px-1.5 py-2 box-border">
+                    <div class="font-semibold lg:mb-0 mb-1 lg:w-[300px] lg:text-left text-center">
+                        Nazwa użytkownika
+
                     </div>
 
-                    <div class="flex items-center justify-center sm:-mt-6">
-                        <div class="sm:w-[60%] w-full max-w-md">
+                    <div class="flex items-center justify-center lg:-mt-6">
+                        <div class="lg:w-[60%] w-full max-w-lg">
                             <x-input
                                 v-model="userName"
                                 color="blue"
-                                label="@Full name"
+                                label="Nazwa użytkownika"
+                                icon
+                                error=""
+                            >
+                                <template #icon>
+                                    <Icon name="material-symbols:person-3-rounded" class="text-xl" />
+                                </template>
+                            </x-input>
+                                                
+                            <p class="text-[11px] text-gray-500 mt-2">
+                                Nazwy użytkowników mogą zawierać tylko litery, cyfry, podkreślenia i kropki.
+                                Zmiana nazwy użytkownika spowoduje również zmianę linku do profilu.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full lg:h-full flex flex-col px-1.5 py-2 box-border">
+                    <div class="font-semibold lg:mb-0 mb-1 lg:w-[300px] lg:text-left text-center">
+                        Imię
+                    </div>
+
+                    <div class="flex items-center justify-center lg:-mt-6">
+                        <div class="lg:w-[60%] w-full max-w-lg">
+                            <x-input
+                                v-model="firstName"
+                                color="blue"
+                                label="Imię"
                                 icon
                                 error=""
                             >
@@ -141,29 +187,50 @@ onMounted(() => {
                                 </template>
                             </x-input>
 
-                            <div class="text-[11px] text-gray-500 mt-4">
-                                Usernames can only contain letters, numbers, underscores, and periods. 
-                                Changing your username will also change your profile link.
-                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="w-full lg:h-full flex flex-col  px-1.5 py-2 box-border">
+                    <div class="font-semibold lg:mb-0 mb-1 lg:w-[300px] lg:text-left text-center">
+                        Nazwisko
+                    </div>
+
+                    <div class="flex items-center justify-center lg:-mt-6">
+                        <div class="lg:w-[60%] w-full max-w-lg">
+                            <x-input
+                                v-model="lastName"
+                                color="blue"
+                                label="Nazwisko"
+                                icon
+                                error=""
+                            >
+                                <template #icon>
+                                    <Icon name="material-symbols:person-3-rounded" class="text-xl" />
+                                </template>
+                            </x-input>
+
                         </div>
                     </div>
                 </div>
 
                 <div 
                     id="BioSection" 
-                    class="flex flex-col sm:h-[120px]  px-1.5 py-2 mt-2 w-full"
+                    class="w-full lg:h-full flex flex-col px-1.5 py-2 box-border"
                 >
-                    <div class="font-semibold text-[15px] sm:mb-0 mb-1 text-gray-700 sm:w-[160px] sm:text-left text-center">
-                        Bio
+                    <div class="font-semibold lg:mb-0 mb-1 lg:w-[300px] lg:text-left text-center">
+                        Opis
                     </div>
 
-                    <div class="flex items-center justify-center sm:-mt-6">
-                        <div class="sm:w-[60%] w-full max-w-md">
+                    <div class="flex items-center justify-center lg:-mt-6">
+                        <div class="lg:w-[60%] w-full max-w-lg">
                             <x-textarea 
                                 cols="30"
                                 rows="4"
                                 v-model="userDescription"
                                 maxlength="80"
+                                label="Opis "
                             ></x-textarea>
 
                             <div v-if="userDescription" class="text-[11px] text-gray-500">{{ userDescription.length }}/80</div>
@@ -175,7 +242,7 @@ onMounted(() => {
             <div v-else class="w-full h-[430px] box-border">
                 
                 <Cropper
-                class="h-[430px]"
+                class="h-[430px] w-full "
                 ref="cropper"
                 :stencil-component="CircleStencil"
                 :src="uploadedImage"
@@ -192,7 +259,7 @@ onMounted(() => {
 
         </div>
         
-        <div class="relative p-5 box-border left-0 bottom-0 border-t-dashed border-t-muted-light dark:border-t-muted-dark w-full">
+        <div class="relative p-5 box-border left-0 bottom-0 w-full">
             <div 
                 id="UpdateInfoButtons" 
                 v-if="!uploadedImage" 
@@ -210,8 +277,8 @@ onMounted(() => {
             </div>
 
             <div 
-                id="CropperButtons" 
                 v-else 
+                id="CropperButtons" 
                 class="flex items-center justify-end space-x-3"
             >
                     

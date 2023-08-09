@@ -3,11 +3,10 @@ let canSeeThePassword = ref(false)
 let canSeeTheConfirmPassword = ref(false)
 
 const form = ref({
-    name: '',
+    username: '',
     email: '',
     password: '',
     password_confirmation: '',
-    loading: false, 
 })
 </script>
 
@@ -22,12 +21,12 @@ const form = ref({
     
             <div class="pt-5 space-y-6">
                 <x-input
-                    v-model="form.name"
+                    v-model="form.username"
                     color="blue"
                     label="Nazwa"
                     icon
                     name="register_name"
-                    :error="$auth.errors && $auth.errors?.name ? $auth.errors?.name[0] : ''"
+                    :error="$auth.errors && $auth.errors?.username ? $auth.errors?.username : ''"
                 >
                     <template #icon>
                         <Icon name="material-symbols:person-3-rounded" class="text-xl" />
@@ -40,7 +39,7 @@ const form = ref({
                     label="Email"
                     icon
                     name="register_email"
-                    :error="$auth.errors && $auth.errors?.email ? $auth.errors?.email[0] : ''"
+                    :error="$auth.errors && $auth.errors?.email ? $auth.errors?.email : ''"
                 >
                     <template #icon>
                         <Icon name="material-symbols:mark-email-unread-sharp" class="text-xl" />
@@ -55,7 +54,7 @@ const form = ref({
                     icon
                     name="register_password"
                     right-icon
-                    :error="$auth.errors && $auth.errors?.password ? $auth.errors?.password[0] : ''"
+                    :error="$auth.errors && $auth.errors?.password ? $auth.errors?.password : ''"
                 >
                     <template #icon>
                         <Icon name="teenyicons:password-solid" class="text-xl" />
@@ -75,7 +74,7 @@ const form = ref({
                     icon
                     name="register_password_confirm"
                     right-icon
-                    :error="$auth.errors && $auth.errors?.confirmPassword ? $auth.errors?.confirmPassword[0] : ''"
+                    :error="$auth.errors && $auth.errors?.password_confirmation ? $auth.errors?.password_confirmation : ''"
                 >
                     <template #icon>
                         <Icon name="teenyicons:password-solid" class="text-xl" />
@@ -89,7 +88,6 @@ const form = ref({
     
                 <div class="w-full space-y-6">
                     <x-btn
-                        :disabled="(!form.name || !form.email || !form.password || !form.password_confirmation)"
                         :loading="$auth.isLoading"
                         type="submit"
                         text="Rejestracja"

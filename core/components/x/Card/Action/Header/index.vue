@@ -1,5 +1,5 @@
 <template>
-    <div class="md:col-span-1 flex justify-between">
+    <div class="md:col-span-1 flex justify-between box-border">
         <div class="px-4 sm:px-0">
             <h3 class="text-lg font-semibold font-medium text-muted dark:text-muted-dark">
                 <slot name="title" />

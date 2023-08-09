@@ -17,7 +17,6 @@ class ApiToken
     #[ORM\Column(length: 255)]
     private ?string $token = null;
 
-    #[Groups(['profile:read'])]
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $expiresAt = null;
 
@@ -41,7 +40,7 @@ class ApiToken
         return $this;
     }
     
-    #[Groups(['profile:read'])]
+  
     public function getExpiresAt(): ?\DateTimeImmutable
     {
         return $this->expiresAt;

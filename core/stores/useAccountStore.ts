@@ -29,14 +29,25 @@ export const useAccountStore = defineStore('account', {
             }
         },   
       
-        async updateUser(username: string, description: string) {
+        async updateUser(username: string, bio: string, firstName: string, lastName: string) {
             if(this.user) {
                 return await useFetchApi(this.user['@id'], {
                     method: 'PATCH',
                     body: {
                         username,
-                        description
+                        bio,
+                        firstName,
+                        lastName
                     }
+                })
+            }
+        },
+
+        async updatePassword(form: any) {
+            if(this.user) {
+                return await useFetchApi(`${this.user['@id']}/update-password`, {
+                    method: 'PATCH',
+                    body: form
                 })
             }
         },

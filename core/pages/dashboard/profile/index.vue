@@ -13,7 +13,7 @@ definePageMeta({
         </template>
 
         <template #main>
-            <div class="w-full flex flex-col space-y-8">
+            <div class="w-full flex flex-col space-y-8 box-border">
                 <div class="w-full">
                     <x-section-profile-update-information />
                 </div>

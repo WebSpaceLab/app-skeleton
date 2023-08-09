@@ -38,3 +38,6 @@ logs
 .DS_Store
 .fleet
 .idea
+###> symfony/asset-mapper ###
+/public/assets/
+###< symfony/asset-mapper ###

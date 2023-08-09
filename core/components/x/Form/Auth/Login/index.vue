@@ -32,6 +32,19 @@ const close = () => {
             </span>
         </transition>
 
+        <transition
+            enter-active-class="transition ease-in duration-500"
+            enter-from-class="transform opacity-0"
+            enter-to-class="transform opacity-100"
+            leave-active-class="transition ease-in duration-500"
+            leave-from-class="transform opacity-0"
+            leave-to-class="transform opacity-100"
+        >
+            <span v-if="typeof $auth.errors === 'string'" class="w-full p-4 box-border text-center text-bold bg-danger-300 text-danger-900 rounded-lg">
+                {{ $auth.errors }}
+            </span>
+        </transition>
+
         <div class="pt-5 space-y-6">
             <x-input
                 v-model="form.email"

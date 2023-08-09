@@ -2,17 +2,19 @@
 
 namespace App\Controller\Auth;
 
+use App\Controller\AbstractAPIController;
 use App\Entity\User;
 use App\Security\ApiTokenHandler;
 use OpenApi\Attributes as OA;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[OA\Tag(name: 'Auth')]
-class LoginController extends AbstractController
+class LoginController extends AbstractAPIController
 {
     #[OA\RequestBody(
         content: new OA\JsonContent(
@@ -34,7 +36,7 @@ class LoginController extends AbstractController
     )]
 
     #[Route('/auth/login', name: 'app_auth_login', methods: ['POST'])]
-    public function login(#[CurrentUser()] User $user = null, ApiTokenHandler $apiTokenHandler): JsonResponse
+    public function login(#[CurrentUser()] User $user = null, ApiTokenHandler $apiTokenHandler, Request $request, ValidatorInterface $validator): JsonResponse
     {
         if(!$user) {
             return $this->json([
@@ -42,12 +44,13 @@ class LoginController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
+
         $apiToken = $apiTokenHandler->createForUser($user);
 
-        return $this->json([
+        return $this->response([
             'apiToken' => $apiToken,
             'iri' => $user->getIriFromResource(),
-        ], Response::HTTP_OK);
+        ]);
     }
 
     #[Route('/auth/logout', name: 'app_auth_logout', methods: ['POST'])]

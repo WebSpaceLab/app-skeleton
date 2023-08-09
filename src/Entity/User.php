@@ -26,6 +26,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\NotBlank()]
+    #[Assert\Email()]
     #[Groups(['profile:read', 'user:all', 'article:read'])]
     private ?string $email = null;
 
@@ -40,15 +42,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['profile:read', 'user:all', 'article:read'])]
+    #[Groups(['profile:read', 'user:all', 'article:read', 'profile:write'])]
     private ?string $username = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['profile:read', 'user:all', 'article:read'])]
+    #[Groups(['profile:read', 'user:all', 'article:read', 'profile:write'])]
     private ?string $bio = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['profile:read', 'user:all', 'article:read'])]
+    #[Groups(['profile:read', 'user:all', 'article:read', 'profile:write'])]
     private ?string $avatarUrl = null;
 
     #[ORM\Column]
@@ -56,11 +58,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $isActiveAccount = false;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['profile:read'])]
+    #[Groups(['profile:read', 'profile:write'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['profile:read'])]
+    #[Groups(['profile:read', 'profile:write'])]
     private ?string $lastName = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Article::class)]
@@ -73,6 +75,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(mappedBy: 'ownedBy', cascade: ['persist'])]
     private ?ApiToken $apiToken = null;
+
+    #[ORM\OneToOne(mappedBy: 'ownedBy', cascade: ['persist', 'remove'])]
+    private ?VerificationToken $verificationToken = null;
 
     public function __construct()
     {
@@ -177,7 +182,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getAvatarUrl(): ?string
     {
-        return $this->avatarUrl;
+        $avatarUrl = $this->avatarUrl;
+
+        if($avatarUrl) {
+            return $this->avatarUrl;
+        }
+
+        return 'https://localhost:8000/user-placeholder.png';
     }
 
     public function setAvatarUrl(?string $avatarUrl): static
@@ -282,7 +293,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    #[Groups(['profile:read'])]
+   
     public function getApiToken(): ?ApiToken
     {
         return $this->apiToken;
@@ -304,7 +315,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
+    
+    #[Groups(['profile:read'])]
     public function getIriFromResource()
     {
         return '/api/profile/' . $this->getId();
@@ -333,5 +345,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return  $updatedAtAgo;
+    }
+
+    public function getVerificationToken(): ?VerificationToken
+    {
+        return $this->verificationToken;
+    }
+
+    public function setVerificationToken(?VerificationToken $verificationToken): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($verificationToken === null && $this->verificationToken !== null) {
+            $this->verificationToken->setOwnedBy(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($verificationToken !== null && $verificationToken->getOwnedBy() !== $this) {
+            $verificationToken->setOwnedBy($this);
+        }
+
+        $this->verificationToken = $verificationToken;
+
+        return $this;
     }
 }

@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
-    const { $auth, $navbar } = useNuxtApp()
+    const { $auth, $navbar, $flash } = useNuxtApp()
     const today = new Date();
     const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -29,6 +29,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         } else {
             
         } 
+
     } else {
 
     }

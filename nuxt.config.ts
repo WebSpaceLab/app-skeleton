@@ -35,7 +35,7 @@ export default defineNuxtConfig({
     },
     
     css: [
-        '@/assets/styles/main.css',
+        '@/../assets/styles/app.css',
     ],
 
     runtimeConfig: {

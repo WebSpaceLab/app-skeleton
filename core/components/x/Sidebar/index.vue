@@ -1,8 +1,5 @@
 <script setup>
 const props = defineProps({
-    isShow: {
-        type: Boolean,
-    },
     isRightSide: {
         type: Boolean,
     },
@@ -40,41 +37,50 @@ function typeLinks(type) {
         leave-to-class="transform opacity-0 -translate-x-64"
     >
         <div
-            v-show="isShow"
-            class="z-20 duration-300 transition-all h-screen top-20 px-4"
+            v-show="$dashboard.sidebar.isShow"
+            class="fixed md:relative z-20 duration-300 transition-all h-screen md:top-0 top-20"
             :class="[
                 isRightSide ? 'right-0' : 'left-0',
-                isRailSidebar ? 'w-14' : 'w-64',
+                isRailSidebar ? 'w-14' : 'w-full md:w-64'
             ]"
         >
         
             <nav
                 :class="[
-                    isRailSidebar ? 'w-14' : 'w-60',
-                    $navbar.isScroll ? 'fixed  top-45' : 'relative top-10'
+                    isRailSidebar ? 'w-16' : 'w-64',
                 ]"
-                class="overscroll-contain box-border  flex flex-col"
+                class="w-full  h-full fixed h-screen flex justify-center shadow-black shadow-lg rounded-xl p-4 bg-background-light dark:bg-background-dark"
             >
 
-                <div class="w-full relative">
-                    <div class="w-full  shadow-lg shadow-black bg-gradient-to-r from-second-light/80 to-prime-light/80 dark:from-second-dark/80 dark:to-prime-dark/80 backdrop-blur rounded-lg">
-                        <ul class="list-none overflow-y-auto flex flex-col justify-center items-start p-0 px-4 box-border" :class="[isRailSidebar ? 'w-10' : 'w-full']">
-                            <template v-for="(link, index) in typeLinks('basic')" :key="index">
-                                <x-sidebar-item :link="link" :isRailSidebar="isRailSidebar" />
-                            </template>
-                        </ul>
-                    </div>
+                <div 
+                    class="w-full duration-300 overscroll-contain box-border"
+                    :class="[
+                        isRailSidebar ? 'w-14' : 'w-60',
+                        $navbar.isScroll ? 'fixed  md:top-45' : 'md:top-0'
+                    ]"
+                >
+
+                        <div class="w-full">
+                            <div class="w-full  shadow-lg shadow-black bg-gradient-to-r from-second-light/80 to-prime-light/80 dark:from-second-dark/80 dark:to-prime-dark/80 backdrop-blur rounded-lg">
+                                <ul class="list-none overflow-y-auto flex flex-col justify-center items-start p-0 px-4 box-border" :class="[isRailSidebar ? 'w-10' : 'w-full']">
+                                    <template v-for="(link, index) in typeLinks('basic')" :key="index">
+                                        <x-sidebar-item :link="link" :isRailSidebar="isRailSidebar" />
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="w-full relative">
+                            <div class="shadow-lg shadow-black bg-gradient-to-r from-second-light/80 to-prime-light/80 dark:from-second-dark/80 dark:to-prime-dark/80 backdrop-blur rounded-lg">
+                                <ul class="list-none overflow-y-auto flex flex-col justify-center items-start p-0 px-4 box-border" :class="[isRailSidebar ? 'w-10' : 'w-full']">
+                                    <template v-for="(link, index) in typeLinks('settings')" :key="index">
+                                        <x-sidebar-item :link="link" :isRailSidebar="isRailSidebar" />
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
                 </div>
 
-                <div class="w-full relative">
-                    <div class="shadow-lg shadow-black bg-gradient-to-r from-second-light/80 to-prime-light/80 dark:from-second-dark/80 dark:to-prime-dark/80 backdrop-blur rounded-lg">
-                        <ul class="list-none overflow-y-auto flex flex-col justify-center items-start p-0 px-4 box-border" :class="[isRailSidebar ? 'w-10' : 'w-full']">
-                            <template v-for="(link, index) in typeLinks('settings')" :key="index">
-                                <x-sidebar-item :link="link" :isRailSidebar="isRailSidebar" />
-                            </template>
-                        </ul>
-                    </div>
-                </div>
             </nav>
         </div>
 

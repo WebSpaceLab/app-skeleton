@@ -8,18 +8,6 @@ const sidebar = ref([
 {  title: 'Profile', icon: 'material-symbols:manage-accounts-rounded', name: 'dashboard.profile', path: '/dashboard/profile', type: 'settings', children: [] },
 ])
 
-function show() {
-        isShowSidebar.value = true;
-    }
-
-function hide() {
-    isShowSidebar.value = false;
-}
-
-function toggleShow() {
-    isShowSidebar.value === true ? hide() : show();
-}
-
 function right() {
     isRightSide.value = true;
 }
@@ -66,12 +54,12 @@ const setColorTheme = (newTheme) => {
                             class="flex justify-start px-4"
                             :class="[isRailSidebar ? '' : 'w-64']"
                         >
-                            <x-btn @click="toggleShow" class=" bg-slate-400/80 hover:bg-slate-600/80" color="secondary" rounded icon>
-                                <Icon v-if="isShowSidebar" class="text-2xl" name="mdi:close" />
+                            <x-btn @click="$dashboard.sidebar.isShow = !$dashboard.sidebar.isShow" class=" bg-slate-400/80 hover:bg-slate-600/80" color="secondary" rounded icon>
+                                <Icon v-if="$dashboard.sidebar.isShow" class="text-2xl" name="mdi:close" />
                                 <Icon v-else class="text-2xl" name="material-symbols:menu-rounded" />
                             </x-btn>
     
-                            <x-btn v-if="isShowSidebar" @click="changeSizeSidebar" color="secondary" class="hidden lg:inline-block ml-3 bg-slate-400/80 hover:bg-slate-600/80" rounded icon>
+                            <x-btn v-if="$dashboard.sidebar.isShow" @click="changeSizeSidebar" color="secondary" class="hidden lg:inline-block ml-3 bg-slate-400/80 hover:bg-slate-600/80" rounded icon>
                                 <Icon class="text-2xl transition-all duration-300 ease-in" name="material-symbols:swap-horizontal-circle-rounded" :class="{'rotate-180' : isRailSidebar}"/>
                             </x-btn>
                         </div>
@@ -132,16 +120,15 @@ const setColorTheme = (newTheme) => {
         </template>
         
         <template #main>
-            <x-sidebar :is-show="isShowSidebar" :is-rail-sidebar="isRailSidebar" :links="sidebar" />
+            <x-sidebar :is-rail-sidebar="isRailSidebar" :links="sidebar" />
             
 
-            <x-container :is-show-sidebar="isShowSidebar" :is-rail-sidebar="isRailSidebar">
+            <x-container :is-rail-sidebar="isRailSidebar">
                 <slot/>
             </x-container>
         </template>
 
         <template #footer>
-            <Footer />
         </template>
     </x-layout>
 

@@ -8,7 +8,7 @@ const props  = defineProps({
     <x-dropdown align="right" width="64">
         <template #trigger>
             <x-btn ring strip class="flex text-sm border-2 border-transparent  focus:outline-none focus:border-gray-300 transition">
-                <img v-if="user?.avatar_url" class="h-8 w-8 rounded-full object-cover" :src="user.avatar_url" :alt="user.name">
+                <img v-if="user?.avatarUrl" class="h-8 w-8 rounded-full object-cover" :src="user.avatarUrl" :alt="user.name">
             </x-btn>
         </template>
 

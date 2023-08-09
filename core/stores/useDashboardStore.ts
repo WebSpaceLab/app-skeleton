@@ -2,7 +2,10 @@ import { defineStore, acceptHMRUpdate } from 'pinia'
 
 export const useDashboardStore = defineStore('dashboard', { 
     state: () => ({
-        items: []
+        items: [],
+        sidebar: {
+            isShow: true
+        }
     }),
 
     actions: {

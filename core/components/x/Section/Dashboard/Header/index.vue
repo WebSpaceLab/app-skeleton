@@ -77,7 +77,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <header class=" z-20 w-full flex justify-between items-center px-6 box-border rounded-xl transition ease-in duration-300" :class="$navbar.isScroll ? 'fixed left-0 top-20' : 'relative'">
+    <header class="hidden z-20 w-full md:flex justify-between items-center px-6 box-border rounded-xl transition ease-in duration-300" :class="$navbar.isScroll ? 'fixed left-0 top-20' : 'relative'">
         <div class="h-full  -translate-x-2 translate-y-3">
             <x-breadcrumb :first-link="firstLink[0]" :second-link="secondLink[0]" :third-link="thirdLink[0]" :last-link="currentLink[0]" />
             <slot name="header"></slot>
