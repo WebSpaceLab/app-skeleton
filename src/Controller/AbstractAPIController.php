@@ -46,6 +46,15 @@ abstract class AbstractAPIController extends AbstractController
         );
     }
 
+    public function redirectToFrontendRoute(string $routeName, int $status = 302)
+    {
+        $frontendUrl = $_ENV['FRONTEND_URL'];
+        // $url = $this->generateUrl($routeName);
+        $fullUrl = $frontendUrl . $routeName;
+    
+        return $this->redirect($fullUrl, $status);
+    }
+
     #[Required]
     public function setServices(SerializerInterface $serializer)
     {

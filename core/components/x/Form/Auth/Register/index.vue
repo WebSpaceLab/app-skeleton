@@ -27,6 +27,7 @@ const form = ref({
                     icon
                     name="register_name"
                     :error="$auth.errors && $auth.errors?.username ? $auth.errors?.username : ''"
+                    autofocus
                 >
                     <template #icon>
                         <Icon name="material-symbols:person-3-rounded" class="text-xl" />
@@ -38,6 +39,7 @@ const form = ref({
                     color="blue"
                     label="Email"
                     icon
+                    :type="email"
                     name="register_email"
                     :error="$auth.errors && $auth.errors?.email ? $auth.errors?.email : ''"
                 >
@@ -61,8 +63,10 @@ const form = ref({
                     </template>
     
                     <template #right-icon>
-                        <Icon v-if="canSeeThePassword" @click="canSeeThePassword = false" name="mdi:eye-off-outline" class="text-xl text-blue-600 hover:text-green-600 cursor-pointer" />
-                        <Icon v-else @click="canSeeThePassword = true" name="mdi:eye-outline" class="text-xl hover:text-red-600 cursor-pointer" />
+                        <div class="flex space-x-3">
+                            <Icon v-if="canSeeThePassword" @click="canSeeThePassword = false" name="mdi:eye-off-outline" class="text-xl text-blue-600 hover:text-green-600 cursor-pointer" />
+                            <Icon v-else @click="canSeeThePassword = true" name="mdi:eye-outline" class="text-xl hover:text-red-600 cursor-pointer" />
+                        </div>
                     </template>
                 </x-input>
     
@@ -81,8 +85,10 @@ const form = ref({
                     </template>
     
                     <template #right-icon>
-                        <Icon v-if="canSeeTheConfirmPassword" @click="canSeeTheConfirmPassword = false" name="mdi:eye-off-outline" class="text-xl text-blue-600 hover:text-green-600 cursor-pointer" />
-                        <Icon v-else @click="canSeeTheConfirmPassword = true" name="mdi:eye-outline" class="text-xl hover:text-red-600 cursor-pointer" />
+                        <div class="flex space-x-3">
+                            <Icon v-if="canSeeTheConfirmPassword" @click="canSeeTheConfirmPassword = false" name="mdi:eye-off-outline" class="text-xl text-blue-600 hover:text-green-600 cursor-pointer" />
+                            <Icon v-else @click="canSeeTheConfirmPassword = true" name="mdi:eye-outline" class="text-xl hover:text-red-600 cursor-pointer" />
+                        </div>
                     </template>
                 </x-input>
     

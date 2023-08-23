@@ -16,8 +16,8 @@ onMounted(() => {
 
 <template>
     <nav id="main-nav" class="w-screen h-20 box-border shadow-lg shadow-black" :class="$navbar.isScroll ? 'fixed top-0 left-0 bg-prime-light/90 dark:bg-prime-dark/80 backdrop-blur-sm' : 'relative lg:h-30'">
-        <div class="h-full flex items-center justify-center lg:justify-between " :class="[container ? 'container mx-auto ' : '']">
-            <div class="hidden lg:flex">
+        <div class="h-full w-full flex items-center justify-center lg:justify-between " :class="[container ? 'container mx-auto ' : '']">
+            <div class="hidden lg:flex w-60 z-10">
                 <slot name="logo" />
             </div>
         

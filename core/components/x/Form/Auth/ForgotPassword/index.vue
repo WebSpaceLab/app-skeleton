@@ -30,9 +30,10 @@ const form = ref({
                     v-model="form.email"
                     color="blue"
                     label="Email"
+                    type="email"
                     icon
-                    name="email_login"
-                    :error="$auth.errors && $auth.errors?.email ? $auth.errors.email[0] : ''"
+                    name="email_forgot_password"
+                    :error="$auth.errors && $auth.errors?.email ? $auth.errors.email : ''"
                 >
                     <template #icon>
                         <Icon name="material-symbols:mark-email-unread-sharp" class="text-xl" />
@@ -56,7 +57,7 @@ const form = ref({
         </form>
 
         <div v-else class="px-10 py-20 text-xl text-bold text-info-900 bg-info-300 rounded-xl shadow-2xl shadow-black transition-all duration-500">
-            {{ $auth.response?.status }}
+            {{ $auth.response?.message }}
         </div>
     </div>
 </template>

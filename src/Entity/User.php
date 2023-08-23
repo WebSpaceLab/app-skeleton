@@ -79,11 +79,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'ownedBy', cascade: ['persist', 'remove'])]
     private ?VerificationToken $verificationToken = null;
 
+    #[ORM\OneToMany(mappedBy: 'ownedBy', targetEntity: ResetPasswordToken::class)]
+    private Collection $resetPasswordTokens;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->articles = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->resetPasswordTokens = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -365,6 +369,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->verificationToken = $verificationToken;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ResetPasswordToken>
+     */
+    public function getResetPasswordTokens(): Collection
+    {
+        return $this->resetPasswordTokens;
+    }
+
+    public function addResetPasswordToken(ResetPasswordToken $resetPasswordToken): static
+    {
+        if (!$this->resetPasswordTokens->contains($resetPasswordToken)) {
+            $this->resetPasswordTokens->add($resetPasswordToken);
+            $resetPasswordToken->setOwnedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResetPasswordToken(ResetPasswordToken $resetPasswordToken): static
+    {
+        if ($this->resetPasswordTokens->removeElement($resetPasswordToken)) {
+            // set the owning side to null (unless already changed)
+            if ($resetPasswordToken->getOwnedBy() === $this) {
+                $resetPasswordToken->setOwnedBy(null);
+            }
+        }
 
         return $this;
     }

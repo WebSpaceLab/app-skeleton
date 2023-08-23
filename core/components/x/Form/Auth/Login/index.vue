@@ -53,6 +53,7 @@ const close = () => {
                 icon
                 name="email_login"
                 :error="$auth.errors && $auth.errors?.email ? $auth.errors.email[0] : ''"
+                autofocus
             >
                 <template #icon>
                     <Icon name="material-symbols:mark-email-unread-sharp" class="text-xl" />

@@ -200,7 +200,7 @@ export const useAuthStore = defineStore('auth', {
             this.status = null
             this.response = null
 
-            const { status, error} = await useFetchApi('/reset-password', {
+            const { status, error, data } = await useFetchApi('/reset-password', {
                 method: 'POST',
                 body: resetData,
             })
@@ -209,6 +209,7 @@ export const useAuthStore = defineStore('auth', {
                 this.errors = error.value.data.errors;
             } else {
                 if(status.value === 'success') {
+                    console.log(data.value)
                     navigateTo('/')
                     useNavbarStore().showLogin()
                     const statusText = ref(`Zmiana hasła powiodła się. Teraz możesz się zalogować.`)

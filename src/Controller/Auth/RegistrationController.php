@@ -24,6 +24,8 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
+
 class RegistrationController extends AbstractAPIController
 {
     public function __construct(
@@ -36,10 +38,11 @@ class RegistrationController extends AbstractAPIController
     {
         $data = $request->toArray();
 
+
         $constraints = new Assert\Collection([
             'username' => [
                 new NotBlank(),
-                new Length(['min' => 2]),
+                new Length(['min' => 2, 'minMessage' => 'Nazwa musi składać się z przynajmniej 2 liter.']),
             ],
 
             'email' => [
@@ -48,7 +51,7 @@ class RegistrationController extends AbstractAPIController
             ],
             'password' => [
                 new NotBlank(),
-                new Length(['min' => 8]),
+                new Length(['min' => 8, 'minMessage' => 'Hasło musi składać się z przynajmniej 8 liter.']),
             ],
             'password_confirmation' => [
                 new NotBlank(),
@@ -67,6 +70,29 @@ class RegistrationController extends AbstractAPIController
             }
 
             return $this->json(['errors' => $errors], Response::HTTP_BAD_REQUEST);
+        }
+
+        
+        $user = $userRepository->findOneBy(['username' => $data['username']]);
+
+        if($user) {
+            return $this->json(['errors' => [
+                'username' => 'Urzytkownik o tej nzwie już istnieje'
+            ]], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $userRepository->findOneBy(['email' => $data['email']]);
+
+        if($user) {
+            if(!$user->getVerificationToken()) {
+                return $this->json(['errors' => [
+                    'email' => 'Użytkownik o podanym emilu już istnieje.Jak dotąd rejstarcja, nie została potwierdzona. Sprawdź maila.'
+                ]], Response::HTTP_BAD_REQUEST);
+            }
+
+            return $this->json(['errors' => [
+                'email' => 'Użytkownik o podanym emilu już istnieje.'
+            ]], Response::HTTP_BAD_REQUEST);
         }
 
         $user = new User();
@@ -125,7 +151,7 @@ class RegistrationController extends AbstractAPIController
         $token = $request->query->get('token');
 
         if ($token == '' | null) {
-            return $this->redirect('http://localhost:3000');
+            return $this->redirectToFrontendRoute('/');
         }
 
         $verificationToken = $this->verificationTokenRepository->findOneBy(['token' =>  $token]);
@@ -140,6 +166,6 @@ class RegistrationController extends AbstractAPIController
 
         $userRepository->save($user, true);
 
-        return $this->redirect('http://localhost:3000/?verified=true');
+        return $this->redirectToFrontendRoute('/?verified=true');
     }
 }

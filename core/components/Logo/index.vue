@@ -6,9 +6,9 @@
                 Miasto
             </span>
 
-            <div class="decoration-none text-md lg:text-3xl font-semibold mx-1 px-5 py-2 text-[#c8d1ba] dark:text-[#FFEDD5]-dark bg-green-800 border-solid border-4 border-[#c8d1ba] rounded-lg hover:bg-green-900">
+            <NuxtLink to="/" class="decoration-none text-md lg:text-3xl font-semibold mx-1 px-5 py-2 text-[#c8d1ba] dark:text-[#FFEDD5]-dark bg-green-800 border-solid border-4 border-[#c8d1ba] rounded-lg hover:bg-green-900">
                 Suwałki
-            </div>
+            </NuxtLink>
         </div>
     </div>
 </template>

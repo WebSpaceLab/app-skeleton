@@ -36,7 +36,10 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    autocomplete: String,
+    autocomplete: {
+        type: Boolean,
+        default: false
+    },
     validatedType: Object,
     modelValue: {
         type: String,
@@ -80,43 +83,45 @@ let labelColor = computed(() => {
 
 <template>
     <div class="relative w-full ">
-        <div
-            v-if="icon"
-            :class="[iconPosition === 'left' ? 'left-0' : 'right-0']"
-            class="absolute inset-y-0 flex items-center p-3 text-slate-500"
-        >
-            <slot name="icon"></slot>
+        <div class="relative w-full">
+            <div
+                v-if="icon"
+                :class="[iconPosition === 'left' ? 'left-0' : 'right-0']"
+                class="absolute inset-y-0 flex items-center p-3 text-slate-500"
+            >
+                <slot name="icon"></slot>
+            </div>
+    
+            <div
+                v-if="rightIcon"
+                class="absolute inset-y-0 right-0 flex items-center p-3 text-slate-500"
+            >
+                <slot name="right-icon"></slot>
+            </div>
+    
+            <input
+                :value="modelValue"
+                @input="event => emits('update:modelValue', event.target.value)"
+                :class="[inputColor, icon & iconPosition === 'left' ? 'pl-10' : 'pl-3', validatedType ? validatedType : '']"
+                :placeholder="placeholder ? label : ''"
+                :id="name"
+                :name="name"
+                class="block rounded-lg box-border px-2.5 pb-2.5 pt-5 w-full text-sm bg-black/10 border-0 border-b-2 appearance-none border-basic-light  text-basic-light  dark:border-basic-dark  dark:text-basic-dark focus:outline-none focus:ring-0 peer"
+                :type="type"
+                :required="required"
+                :autocomplete="autocomplete ? 'on' : 'off'"
+                :autofocus="autofocus ? 'autofocus' : false"
+            />
+    
+           <label
+                :for="name"
+                :class="[labelColor, icon & iconPosition === 'left' ? 'translate-x-8 peer-focus:translate-x-8' : '', validatedType ? validatedType : '']"
+                class="absolute text-sm text-gray-800 dark:text-gray-500 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5  peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 "
+            >
+                {{ label }}
+            </label>
         </div>
 
-        <div
-            v-if="rightIcon"
-            class="absolute inset-y-0 right-0 flex items-center p-3 text-slate-500"
-        >
-            <slot name="right-icon"></slot>
-        </div>
-
-        <input
-            :value="modelValue"
-            @input="event => emits('update:modelValue', event.target.value)"
-            :class="[inputColor, icon & iconPosition === 'left' ? 'pl-10' : 'pl-3', validatedType ? validatedType : '']"
-            :placeholder="placeholder ? label : ''"
-            :id="name"
-            :name="name"
-            class="block rounded-lg box-border px-2.5 pb-2.5 pt-5 w-full text-sm bg-black/10 border-0 border-b-2 appearance-none border-basic-light  text-basic-light  dark:border-basic-dark  dark:text-basic-dark focus:outline-none focus:ring-0 peer"
-            :type="type"
-            :required="required"
-            :autofocus="autofocus"
-            :autocomplete="autocomplete"
-        />
-
-       <label
-            :for="name"
-            :class="[labelColor, icon & iconPosition === 'left' ? 'translate-x-8 peer-focus:translate-x-8' : '', validatedType ? validatedType : '']"
-            class="absolute text-sm text-gray-800 dark:text-gray-500 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5  peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 "
-        >
-            {{ label }}
-        </label>
-
-        <span v-if="error" class="text-danger-600 text-[14px] font-semibold ml-4">{{ error }}</span>
+        <div v-if="error" class="w-full text-center text-error-900 text-[14px] font-semibolds bg-error-300 p-2 box-border mt-1 rounded">{{ error }}</div>
     </div>
 </template>
