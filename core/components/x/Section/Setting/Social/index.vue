@@ -1,8 +1,5 @@
 <script setup>
-import { storeToRefs } from 'pinia'
-
-const {  $social } = useNuxtApp()
-const { social } = storeToRefs($social)
+const { $social } = useNuxtApp()
 
 let isAlert = ref(false);
 let isActivePanel = ref(false);
@@ -20,7 +17,7 @@ function activePanel(itemId) {
 }
 
 function addSocialMedia() {
-    if(social?.value.length > 5) {
+    if($social.data.length > 5) {
         isAlert.value = true;
 
         setTimeout(() => {
@@ -38,25 +35,13 @@ function closePanel(itemId) {
     isActivePanel.value = false;
 }
 
-async function deleteSocial(id) {
-    if (confirm(`Czy jesteś pewny, że chcesz usunąć?`)) {
-        await $social.deletedSocialMedia(id)
-        .then(({data}) => {
-            if(data) {
-                $social.getSocialMedia()
-            }
-        }).catch((error) => {
-            console.log(error)
-        })
-    }
-}
-
 function edit(item) {
     if(item) {
         editItem.value = item;
         isShowEdit.value = true;
     }
 }
+
 
 </script>
 
@@ -76,7 +61,7 @@ function edit(item) {
         </div>
 
         <div class="w-full grid sm:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4 justify-center items-center gap-4 md:gap-6">
-            <template v-for="item in social" :key="item.id">
+            <template v-for="item in $social.data" :key="item.id">
                 <div
                     @mouseleave="closePanel(item.id)"
                     @mouseover="activePanel(item.id)"
@@ -88,7 +73,7 @@ function edit(item) {
                             <Icon name="material-symbols:edit-square-outline-rounded" class="text-xl text-blue-400 hover:text-blue-600 hover:scale-110"/>
                         </x-btn>
     
-                        <x-btn @click.prevent="deleteSocial(item.id)" :tooltip="{text: 'delete'}" strip icon>
+                        <x-btn @click.prevent="$social.deleted(item.id)" :tooltip="{text: 'delete'}" strip icon>
                             <Icon name="ic:baseline-delete" class="text-xl text-red-400 hover:text-red-600 hover:scale-110"/>
                         </x-btn>
                     </div>
@@ -103,14 +88,14 @@ function edit(item) {
                         </div>
     
                         <div class="absolute bottom-0 left-0 w-full flex justify-end px-6 py-1 box-border">
-                            <span v-if="item.is_active" class="text-sm text-green-500" >active link</span>
+                            <span v-if="item.isActive" class="text-sm text-green-500" >active link</span>
                             <span v-else class="text-sm text-red-500" >link not active</span>
                         </div>
                     </div>
                 </div>
             </template>
 
-            <div v-if="!social?.length"  class="w-96 h-40 flex flex-col justify-center items-center bg-secondary dark:bg-secondary-dark rounded-lg px-3 py-4 shadow-sm shadow-slate-600">
+            <div v-if="!$social.data.length"  class="w-96 h-40 flex flex-col justify-center items-center bg-secondary dark:bg-secondary-dark rounded-lg px-3 py-4 shadow-sm shadow-slate-600">
                 <div class=" flex justify-start items-center space-x-2">
                     <div class="">
                         <Icon name="pajamas:thumbtack-solid" class="text-base-color dark:text-base-dark"  />

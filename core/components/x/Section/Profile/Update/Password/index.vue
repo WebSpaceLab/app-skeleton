@@ -76,7 +76,7 @@ watch(() => form.value.password_confirmation, (value) => {
                     color="blue"
                     label="Aktualne hasło"
                     icon
-                    name="register_password"
+                    name="input_current_password"
                     right-icon
                     :error="errors && errors.current_password ? errors.current_password : ''"
                 >
@@ -96,7 +96,7 @@ watch(() => form.value.password_confirmation, (value) => {
                     color="blue"
                     label="Nowe hasło"
                     icon
-                    name="register_password"
+                    name="input_password"
                     right-icon
                     :error="errors && errors?.password ? errors?.password[0] : ''"
                 >
@@ -121,7 +121,7 @@ watch(() => form.value.password_confirmation, (value) => {
                         color="blue"
                         label="Powtórz hasło"
                         icon
-                        name="register_password_confirm"
+                        name="input_password_confirm"
                         right-icon
                         :error="errors && errors?.confirmPassword ? errors?.confirmPassword[0] : ''"
                     >

@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[OA\Tag(name: 'Articles')]
-#[Route('/api/articles', name: 'articles-')]
+#[Route('/api/articles', name: 'app_article')]
 class ArticleController extends AbstractAPIController
 {
     // #[OA\Response(
@@ -28,7 +28,7 @@ class ArticleController extends AbstractAPIController
     //     )
     // )]
 
-    #[Route('', name: '.index', methods: ['GET'])]
+    #[Route('', name: ':index', methods: ['GET'])]
     public function index(ArticleRepository $articleRepository): JsonResponse
     {
         return $this->response($articleRepository->findAll(), ['article:read']);
@@ -40,7 +40,7 @@ class ArticleController extends AbstractAPIController
     //     description: 'Successful response',
     //     content: new Model(type: Article::class)
     // )]
-    #[Route('/{slug}', name: 'show', methods: ['GET'])]
+    #[Route('/{slug}', name: ':show', methods: ['GET'])]
     public function show(Article $article): JsonResponse
     {
         return $this->response($article, ['article:show']);

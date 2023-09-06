@@ -6,7 +6,7 @@ let isMouseover = ref(false)
     <div 
         @mouseover="isMouseover = true" 
         @mouseleave="isMouseover = false" 
-        class="relative bg-prime-light dark:bg-prime-dark w-full  p-4 rounded-lg mb-10 md:grid md:grid-cols-3 md:gap-6 border-dashed border-muted-light dark:border-muted-dark box-border" 
+        class="relative bg-prime-light dark:bg-prime-dark w-full p-4 rounded-lg md:grid md:grid-cols-3 md:gap-6 box-border" 
         :class="[
             isMouseover ? 'shadow-xl shadow-black' : ''
         ]"

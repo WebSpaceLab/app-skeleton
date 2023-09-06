@@ -7,17 +7,19 @@ const form = ref({
     email: '',
     password: '',
     password_confirmation: '',
+    isAgree: false
 })
+
 </script>
 
 <template>
-    <div>
-
+    <ClientOnly>
         <form v-if="!$auth.response" class="relative flex flex-col w-full h-full" @submit.prevent="$auth.register(form)">
-            <span class="w-full h-full lg:h-35 flex flex-col justify-center items-center">
+            <div class="w-full h-full lg:h-35 flex flex-col justify-center items-center">
                 <Icon name="bi:person-fill-add" class="w-20 h-20 lg:w-30 lg:h-30" />
-                <div class="text-center text-2xl md:text-[28px] mb-4 font-bold">Rejestracja</div>
-            </span>
+                
+                <p class="text-center text-2xl md:text-[28px] mb-4 font-bold">Rejestracja</p>
+            </div>
     
             <div class="pt-5 space-y-6">
                 <x-input
@@ -39,7 +41,7 @@ const form = ref({
                     color="blue"
                     label="Email"
                     icon
-                    :type="email"
+                    type="email"
                     name="register_email"
                     :error="$auth.errors && $auth.errors?.email ? $auth.errors?.email : ''"
                 >
@@ -91,6 +93,16 @@ const form = ref({
                         </div>
                     </template>
                 </x-input>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                        <input id="link-checkbox" type="checkbox" v-model="form.isAgree" class="w-4 h-4 text-blue-600 bg-blue-300 border-blue-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        
+                        <label for="link-checkbox" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="#" class="text-blue-600 dark:text-blue-500 hover:underline">terms and conditions</a>.</label>
+                    </div>
+
+                    <div v-if="$auth.errors && $auth.errors?.isAgree" class="w-full text-center text-error-900 text-[14px] font-semibolds bg-error-300 p-2 box-border mt-1 rounded">{{ $auth.errors?.isAgree }}</div>
+                </div>
     
                 <div class="w-full space-y-6">
                     <x-btn
@@ -109,6 +121,6 @@ const form = ref({
         <div v-else class="px-10 py-20 text-xl text-bold text-info-900 bg-info-300 rounded-xl shadow-2xl shadow-black transition-all duration-500">
             {{ $auth.response?.status }}
         </div>
-    </div>
+    </ClientOnly>
        
 </template>

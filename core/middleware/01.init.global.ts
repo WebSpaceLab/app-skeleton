@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
-    const { $auth, $navbar, $flash } = useNuxtApp()
+    const { $auth, $navbar } = useNuxtApp()
     const today = new Date();
     const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -16,21 +16,18 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     $navbar.reset()
     
     if(!process.server) {
-        if($auth.token === null ) {
-            $auth.logout()
-        }
-
-        if(!$auth.isLoggedIn || $auth.tokenExpiresAt < dateTime) {
+        if($auth.isLoggedIn || $auth.tokenExpiresAt < dateTime) {
             try {
                 await $auth.init()
             } catch (error) {
                 console.log(error)
             }
         } else {
-            
-        } 
+            $auth.isLoggedIn = false
+        }
 
-    } else {
-
-    }
+        if($auth.token === null ) {
+            $auth.logout()
+        }
+    } 
 })

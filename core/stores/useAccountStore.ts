@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import axios from '../plugins/axios'
 import { useFlashStore } from './useFlashStore'
-import { IUser } from 'types/IUser'
+import { IUser } from '../types/IUser'
 
 const $axios = axios().provide.axios
 
@@ -10,6 +10,7 @@ export const useAccountStore = defineStore('account', {
         return {
             user: null as any | null,
 
+            roles: [],
             progressImage: 0 as number 
         }
     },
@@ -17,6 +18,16 @@ export const useAccountStore = defineStore('account', {
     actions : {
         init(user: IUser) {
             this.user = user
+            this.renameRoles()
+        },
+
+        renameRoles() {
+            if(this.user) {
+                this.roles = []
+                this.user.roles.forEach((role: string) => {
+                    this.roles.push(role.substring(5))
+                }) 
+            }
         },
 
         async updateUserImage(form: any) {

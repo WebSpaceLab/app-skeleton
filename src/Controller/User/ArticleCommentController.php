@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Authorization;
+namespace App\Controller\User;
 
 use App\Controller\AbstractAPIController;
 use App\Entity\Article;
@@ -8,7 +8,6 @@ use App\Entity\Comment;
 use App\Entity\User;
 use OpenApi\Attributes as OA;
 use App\Repository\CommentRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,11 +18,12 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[OA\Tag(name: 'Comments')]
-class CommentController extends AbstractAPIController
+#[OA\Tag(name: 'Articles Comments')]
+#[Route('/api/user', name: 'app_user_article_comment', methods: ["GET"])]
+class ArticleCommentController extends AbstractAPIController
 {
     #[IsGranted('ROLE_USER')]
-    #[Route('/api/articles/{id}/comment', name: 'comment:create', methods: ['POST'])]
+    #[Route('/articles/{id}/comment', name: ':create', methods: ['POST'])]
     public function create(Article $article, CommentRepository $commentRepository, ValidatorInterface $validator, Request $request, #[CurrentUser()] User $user = null): JsonResponse
     {
         $requestComment = $this->deserialize($request->getContent(), Comment::class, 'json');
@@ -46,7 +46,7 @@ class CommentController extends AbstractAPIController
     }
 
     #[IsGranted('ROLE_USER')]
-    #[Route('/api/comments/{id}', name: 'comment:show', methods: ['GET'])]
+    #[Route('/comments/{id}', name: ':show', methods: ['GET'])]
     public function show(Comment $comment): JsonResponse
     {
         // TODO ????????
@@ -54,7 +54,7 @@ class CommentController extends AbstractAPIController
     }
 
     #[IsGranted('ROLE_USER')]
-    #[Route('/api/comments/{id}', name: 'comment:update', methods: ['PATCH'])]
+    #[Route('/comments/{id}', name: ':update', methods: ['PATCH'])]
     public function update(CommentRepository $commentRepository, Comment $comment, ValidatorInterface $validator, Request $request): JsonResponse
     {
         $comment = $this->deserialize($request->getContent(), Comment::class, 'json', [
@@ -74,7 +74,7 @@ class CommentController extends AbstractAPIController
     }
 
     #[IsGranted('ROLE_USER')]
-    #[Route('/api/comments/{id}', name: 'comment:delete', methods: ['DELETE'])]
+    #[Route('/comments/{id}', name: ':delete', methods: ['DELETE'])]
     public function delete(CommentRepository $articleRepository, Comment $comment): JsonResponse
     {
         $articleRepository->remove($comment, true);

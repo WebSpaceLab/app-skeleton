@@ -7,6 +7,7 @@ import { useContactStore } from "~~/core/stores/useContactStore";
 import { useSocialStore } from "~~/core/stores/useSocialStore";
 import { useAccountStore } from "~~/core/stores/useAccountStore";
 import { useDashboardStore } from "~~/core/stores/useDashboardStore";
+import { useMetaTagsStore } from "~~/core/stores/useMetaTagsStore";
 
 export default defineNuxtPlugin((nuxtApp) => {
     return {
@@ -20,6 +21,7 @@ export default defineNuxtPlugin((nuxtApp) => {
             social: useSocialStore(),
             account: useAccountStore(),
             dashboard: useDashboardStore(),
+            metaTags: useMetaTagsStore(),
         }
     }
 })

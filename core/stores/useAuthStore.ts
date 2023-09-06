@@ -1,10 +1,10 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
-import { ICredentials, IRegistrationInfo } from 'types/IAuth'
-import { IUser } from 'types/IUser'
+import { ICredentials, IRegistrationInfo } from '../types/IAuth'
+import { IUser } from '../types/IUser'
 import { useFlashStore } from './useFlashStore'
 import { useNavbarStore } from './useNavbarStore'
 import { useAccountStore } from './useAccountStore'
-import { IApiToken } from 'types/IApiToken'
+import { IApiToken } from '../types/IApiToken'
 
 
 export const useAuthStore = defineStore('auth', {
@@ -18,7 +18,7 @@ export const useAuthStore = defineStore('auth', {
                 lastName: '',
                 avatarUrl: '',
                 bio: '',
-                role: [],
+                roles: [],
             
                 articles: [],
                 comments: [],
@@ -33,8 +33,9 @@ export const useAuthStore = defineStore('auth', {
             status: null as string | null, 
             token: null as string | null,
             iri: null as string | null,
-            role: null as object | null,
-            tokenExpiresAt: '', 
+            roles: [],
+            tokenExpiresAt: '',
+            isAuthorization: false
         }
     },
     
@@ -115,7 +116,8 @@ export const useAuthStore = defineStore('auth', {
                 } else {
                     if(data.value && status.value == 'success') {
                         this.user['@id'] = data.value.iriFromResource
-                        this.user.role = data.value.role
+                        this.user.roles = data.value.roles
+                        this.roles = data.value.roles
                         this.user.email = data.value.email
                         this.user.username = data.value.username
                         this.user.firstName = data.value.firstName
@@ -128,7 +130,8 @@ export const useAuthStore = defineStore('auth', {
                         this.user.createdAtAgo = data.value.createdAtAgo
                         this.user.updatedAtAgo = data.value.updatedAtAgo
                         this.tokenExpiresAt = data.value.apiTokenExpiresAt
-                  
+
+                        this.giveAccess(true)
                         this.checkIsLoggedIn()
                         useAccountStore().init(this.user as IUser | any)
                     } 
@@ -157,7 +160,7 @@ export const useAuthStore = defineStore('auth', {
                 this.isLoggedIn = false
                 this.token = null
                 this.iri = null
-                this.role = null
+                this.roles = []
 
                 const {error, status} = await useFetchApi('/auth/logout', {method: 'POST'})                   
 
@@ -250,13 +253,31 @@ export const useAuthStore = defineStore('auth', {
                 lastName: '',
                 avatarUrl: '',
                 bio: '',
-                role: [],
+                roles: [],
             
                 articles: [],
                 comments: [],
                 
                 createdAtAgo: '',
                 updatedAtAgo: ''
+            }
+        },
+
+        accessGranted(role: string) {
+            const isGranted = ref(false)
+
+            this.roles.forEach(r => {
+                if(r === role) {
+                    isGranted.value = true
+                }
+            })
+            
+            return isGranted.value; 
+        },
+
+        giveAccess(access: boolean) {
+            if(!access) {
+                return navigateTo('/dashboard/error/401', {replace: true})
             }
         }
     }, 

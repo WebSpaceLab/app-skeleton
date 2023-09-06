@@ -82,6 +82,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'ownedBy', targetEntity: ResetPasswordToken::class)]
     private Collection $resetPasswordTokens;
 
+    #[ORM\Column]
+    private ?bool $isAgree = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -323,7 +326,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['profile:read'])]
     public function getIriFromResource()
     {
-        return '/api/profile/' . $this->getId();
+        return '/api/user/' . $this->getId();
     }
 
     #[Groups(['profile:read'])]
@@ -399,6 +402,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $resetPasswordToken->setOwnedBy(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isIsAgree(): ?bool
+    {
+        return $this->isAgree;
+    }
+
+    public function setIsAgree(bool $isAgree): static
+    {
+        $this->isAgree = $isAgree;
 
         return $this;
     }

@@ -1,5 +1,5 @@
 <script setup>
-const {  $social } = useNuxtApp()
+const { $social } = useNuxtApp()
 
 const emits = defineEmits(['close'])
 
@@ -24,36 +24,24 @@ const props = defineProps({
         default: 'Create'
     },
     item: Object
-});
-
-let isSwitch = ref(false);
+})
 
 const form = reactive({
-    id: null,
     name: '',
-    to: '',
+    path: '',
     icon: '',
     is_active: false,
-    loading: false,
-    errors: []
-});
+})
 
 async function onSubmit() {
-    form.errors = null
-    form.loading = true
+    $social.errors = null
+    $social.isLoading = true
 
-
-    await $social.updatedSocialMedia(form.id, form) .then(async ({data}) => {
-        if(data) {
-            await $social.getSocialMedia()
-        }
-    }).catch((error) => {
-        console.error(error)
-        form.errors = error
-    }).finally(() => {
-        form.loading = false
+    try {
+        await $social.update(props.item.id, form)
+    }  finally {
         close()
-    })
+    }
 }
 
 function close () {
@@ -62,26 +50,19 @@ function close () {
 }
 
 function reset() {
-    form.id = null
     form.name = ''
-    form.to = ''
+    form.path = ''
     form.icon = ''
     form.is_active = false
-    form.loading = false
-    form.errors = []
+    $social.isLoading = false
+    $social.errors = null
 }
 
 watch(() => props.show, () => {
-    form.id = props.item.id
     form.name = props.item.name
-    form.to = props.item.to
+    form.path = props.item.path
     form.icon = props.item.icon
-    isSwitch.value = props.item.is_active ? true : false 
-    form.is_active = props.item.is_active
-})
-
-watch(() => isSwitch.value, (event) => {
-    form.is_active = event
+    form.is_active = props.item.isActive
 })
 </script>
 
@@ -101,14 +82,14 @@ watch(() => isSwitch.value, (event) => {
                             v-model="form.name"
                             type="text"
                             label="Name"
-                            :error="form.errors && form.errors.name ? form.errors.name[0] : ''"
+                            :error="form.errors && form.errors.name ? form.errors.name : ''"
                         />
                     </div>
 
                     <div class="flex w-full justify-start items-center">
                         <x-input
-                            v-model="form.to"
-                            :error="form.errors && form.errors.to ? form.errors.to[0] : ''"
+                            v-model="form.path"
+                            :error="form.errors && form.errors.to ? form.errors.path : ''"
                             type="text"
                             label="Social media URL"
                         />
@@ -119,7 +100,7 @@ watch(() => isSwitch.value, (event) => {
                             v-model="form.icon"
                             label="Icon Name"
                             type="text"
-                            :error="form.errors && form.errors.icon ? form.errors.icon[0] : ''"
+                            :error="form.errors && form.errors.icon ? form.errors.icon : ''"
                         />
                     </div>
 
@@ -128,11 +109,11 @@ watch(() => isSwitch.value, (event) => {
                     </p>
 
                     <div class="flex w-full justify-end items-center ">
-                        <span v-if="isSwitch" class="mr-3 text-sm font-medium text-green-500">active link</span>
+                        <span v-if="form.is_active" class="mr-3 text-sm font-medium text-green-500">active link</span>
                         <span v-else class="mr-3 text-sm font-medium text-red-500">link not active</span>
 
-                        <label for="toggle-social-create" class="inline-flex relative items-center mr-5 cursor-pointer">
-                            <input @click="isSwitch = !isSwitch" v-model="isSwitch" type="checkbox"  id="toggle-social-create" class="sr-only peer" checked>
+                        <label for="toggle-social-update" class="inline-flex relative items-center mr-5 cursor-pointer">
+                            <input @click="form.is_active = !form.is_active" v-model="form.is_active" type="checkbox" :value="form.is_active" id="toggle-social-update" class="sr-only peer" checked>
                             
                             <div class="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
                         </label>
@@ -146,7 +127,7 @@ watch(() => isSwitch.value, (event) => {
         
         <template #footer>
             <div class="flex space-x-3">
-                <x-btn @click.prevent="onSubmit()"  @keydown.enter="onSubmit()" color="primary-outline" :loading="form.loading" rounded shadow>
+                <x-btn @click.prevent="onSubmit()"  @keydown.enter="onSubmit()" color="primary-outline" :loading="$social.loading" rounded shadow>
                    Update
                 </x-btn>
             </div>

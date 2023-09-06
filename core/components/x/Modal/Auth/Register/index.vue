@@ -25,7 +25,6 @@ const close = () => {
 };
 
 const minimization = ref(false)
-
 </script>
 
 <template>

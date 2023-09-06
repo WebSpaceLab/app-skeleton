@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Authorization;
+namespace App\Controller\Editor;
 
 use App\Controller\AbstractAPIController;
 use App\Entity\Article;
@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
 #[OA\Tag(name: 'Articles')]
-#[Route('/api/articles', name: 'dashboard-article')]
+#[Route('/api/editor', name: 'app_editor_articles')]
 class ArticleController extends AbstractAPIController
 {
     // #[OA\Response(
@@ -31,7 +31,7 @@ class ArticleController extends AbstractAPIController
     // )]
 
     #[IsGranted('ROLE_EDITOR')]
-    #[Route('/private', name: ':index', methods: ['GET'])]
+    #[Route('/articles', name: ':index', methods: ['GET'])]
     public function index(ArticleRepository $articleRepository): JsonResponse
     {
         return $this->response($articleRepository->findAll(), ['article:read:private', 'comment:read']);
@@ -43,7 +43,7 @@ class ArticleController extends AbstractAPIController
     //     content: new Model(type: Article::class)
     // )]
     #[IsGranted('ROLE_EDITOR')]
-    #[Route('', name: ':create', methods: ['POST'])]
+    #[Route('/articles', name: ':create', methods: ['POST'])]
     public function create(ArticleRepository $articleRepository, ValidatorInterface $validator, Request $request): JsonResponse
     {
         $article = $this->deserialize($request->getContent(), Article::class, 'json', []);

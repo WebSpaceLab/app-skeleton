@@ -25,16 +25,13 @@ const props = defineProps({
     }
 });
 
-let isSwitch = ref(false);
-
 const form = reactive({
-    title: '',
-    description: '',
-    logo: '/images/png/logo.png',
-    address: '',
-    openingHours: '',
-    phone: '',
-    map: '',
+    name: $contact.data.name,
+    description: $contact.data.description,
+    address: $contact.data.address,
+    openingHours: $contact.data.openingHours,
+    phone: $contact.data.phone,
+    map: $contact.data.map
 });
 
 async function onSubmit() {
@@ -42,10 +39,7 @@ async function onSubmit() {
     $contact.loading = true
 
     try {
-       const response =  await $contact.update($contact.id, form)
-    } catch (error) {
-        console.error(error)
-        $contact.errors = error.response.data.errors
+        await $contact.update(form)
     } finally {
         $contact.loading = false
         close()
@@ -58,23 +52,22 @@ function close () {
 }
 
 function reset() {
-    form.title = ''
+    form.name = ''
     form.description = ''
-    form.logo = '/images/png/logo.png',
     form.address = ''
     form.openingHours = ''
     form.phone = ''
     form.map = ''
+    $contact.loading = false
 }
 
 watch(() => props.show, () => {
-    form.title = $contact.title
-    form.description = $contact.description
-    form.logo = $contact.logo,
-    form.address = $contact.address
-    form.openingHours = $contact.openingHours
-    form.phone = $contact.phone
-    form.map = $contact.map
+    form.name = $contact.data.name
+    form.description = $contact.data.description
+    form.address = $contact.data.address
+    form.openingHours = $contact.data.openingHours
+    form.phone = $contact.data.phone
+    form.map = $contact.data.map
 })
 </script>
 
@@ -86,39 +79,23 @@ watch(() => props.show, () => {
         @close="close"
         :title="title"
     >
-        <div class="w-full h-full flex flex-col justify-center items-start space-x-6">
-
-            <form  class="relative w-full py-6 px-6 flex flex-col space-y-6" enctype="multipart/form-data">
+    <div class="w-full h-full box-border py-6">
+            <form  class="w-full">
                 <div class="flex flex-col w-full justify-start items-center space-y-3" >
-                    <div class="w-full h-30  flex justify-start items-start space-x-6">
-                        <div class="w-1/4 h-full">
-
-
-                            <img :src="form.logo"  alt="logo" class="w-30 h-full object-cover" />
-                        </div>
-                        
-                        <div class="w-3/4 h-full flex flex-col justify-end items-end">
-                            <div>
-
-                            </div>
-
-                            <div class="flex w-full justify-start items-center">
-                                <x-input
-                                    v-model="form.title"
-                                    type="text"
-                                    label="Title"
-                                    :error="$contact.errors && $contact.errors.title ? $contact.errors.title[0] : ''"
-                                />
-                            </div>
-                        </div>
+                    <div class="flex w-full justify-start items-center">
+                        <x-input
+                            v-model="form.name"
+                            type="text"
+                            label="Title"
+                            :error="$contact.errors && $contact.errors.name ? $contact.errors.name : ''"
+                        />
                     </div>
-
+      
                     <div class="flex w-full justify-start items-center">
                         <x-textarea
                             v-model="form.description"
-                            :error="$contact.errors && $contact.errors.description ? $contact.errors.description[0] : ''"
+                            :error="$contact.errors && $contact.errors.description ? $contact.errors.description : ''"
                             label="Description"
-
                         />
                     </div>
 
@@ -126,14 +103,14 @@ watch(() => props.show, () => {
                         <x-textarea
                             v-model="form.address"
                             label="Address"
-                            :error="$contact.errors && $contact.errors.address ? $contact.errors.address[0] : ''"
+                            :error="$contact.errors && $contact.errors.address ? $contact.errors.address : ''"
                             :rows="5"
                         />
 
                         <x-textarea
                             v-model="form.openingHours"
                             label="Opening hours"
-                            :error="$contact.errors && $contact.errors.openingHours ? $contact.errors.openingHours[0] : ''"
+                            :error="$contact.errors && $contact.errors.openingHours ? $contact.errors.openingHours : ''"
                             :rows="5"
                         />
                     </div>
@@ -144,7 +121,7 @@ watch(() => props.show, () => {
                             v-model="form.phone"
                             type="tel"
                             label="Phone"
-                            :error="$contact.errors && $contact.errors.phone ? $contact.errors.phone[0] : ''"
+                            :error="$contact.errors && $contact.errors.phone ? $contact.errors.phone : ''"
                         />
                     </div>
 
@@ -152,7 +129,7 @@ watch(() => props.show, () => {
                         <x-textarea
                             v-model="form.map"
                             label="Google map URL"
-                            :error="$contact.errors && $contact.errors.map ? $contact.errors.map[0] : ''"
+                            :error="$contact.errors && $contact.errors.map ? $contact.errors.map  : ''"
                             :rows="3"
                         />
                     </div>
@@ -163,9 +140,7 @@ watch(() => props.show, () => {
                 </div>
             </form>
 
-            <div v-if="form.map" class="w-full flex justify-center h-70" v-html="form.map">
-
-            </div>
+            <div v-if="form.map" class="w-full flex justify-center h-70" v-html="form.map"></div>
         </div>
         
         <template #footer>

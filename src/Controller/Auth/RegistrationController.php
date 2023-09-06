@@ -58,6 +58,9 @@ class RegistrationController extends AbstractAPIController
                 new Length(['min' => 8]),
                 new EqualTo(['value' => $data['password'], 'message' => 'Hasła nie są zgodne.']),
             ],
+            'isAgree' => [
+                new NotBlank(['message' => 'Wymagana jest zgoda.']),
+            ]
         ]);
 
         $violations = $validator->validate($data, $constraints);

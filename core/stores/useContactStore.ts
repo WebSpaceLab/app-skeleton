@@ -3,16 +3,16 @@ import { useFlashStore } from './useFlashStore'
 
 export const useContactStore = defineStore('contact', {
     state: () => ({
-        id: 1,
-        title: '',
-        description: '',
-        logo: '/images/png/logo.png',
-        address: '',
-        openingHours: '',
-        phone: '',
-        map: '',
-
-        errors: [],
+        data: {
+            name: '',
+            description: '',
+            logo: '/images/png/logo.png',
+            address: '',
+            openingHours: '',
+            phone: '',
+            map: '',
+        },
+        errors: null as object | null,
         loading: false,
     }),
 
@@ -20,80 +20,80 @@ export const useContactStore = defineStore('contact', {
         async get() {
             this.$state.loading = true 
 
-            await useFetchApi('/api/contact').then((res: any) => {
-                if(res.data.contact.length) {
-                    this.$state.title = res.data.contact[0].title
-                    this.$state.description = res.data.contact[0].description
-                    this.$state.address = res.data.contact[0].address
-                    this.$state.openingHours = res.data.contact[0].openingHours
-                    this.$state.phone = res.data.contact[0].phone
-                    this.$state.map = res.data.contact[0].map
-                } else {
-                    this.$state.title = ''
-                    this.$state.description = ''
-                    this.$state.address = ''
-                    this.$state.openingHours = ''
-                    this.$state.phone = ''
-                    this.$state.map = ''
-                }
-                
-                return res.data
-            }).catch(error => {
-                console.log(error)
+            const { data, error } = await useFetchApi('/api/contacts', {
+                method: 'GET',
+            }) as any 
 
-                this.$state.errors = error.response.data
-            }).finally (() => {
-                this.$state.loading = false
-            })
+            if(error.value) {
+                console.error(error.value)
+            } else {
+                if(data.value) {
+                    if(data.value.contact.length) {
+                        this.$state.data.name = data.value.contact[0].name
+                        this.$state.data.description = data.value.contact[0].description
+                        this.$state.data.address = data.value.contact[0].address
+                        this.$state.data.openingHours = data.value.contact[0].openingHours
+                        this.$state.data.phone = data.value.contact[0].phone
+                        this.$state.data.map = data.value.contact[0].map
+                    } else {
+                        this.$state.data.name = ''
+                        this.$state.data.description = ''
+                        this.$state.data.address = ''
+                        this.$state.data.openingHours = ''
+                        this.$state.data.phone = ''
+                        this.$state.data.map = ''
+                    }
+                }
+    
+                return data.value
+            }
+
+            this.$state.loading = false
         },
 
         async create(form: object) {
-            const res: any = await useFetchApi('/api/contact', {
+            const { data, error, status } = await useFetchApi('/api/admin/contacts', {
                 method: 'POST',
                 body: form
-            })
+            }) as any
 
-            useFlashStore().success(res.data.flash.message)
+            if(error.value) {
+                this.errors = error.value.data.errors
 
-            if(res.data.data) {
-               this.get() 
+                if(error.value.data.errors.flash) {
+                    useFlashStore().error(error.value.data.errors.flash.message)
+                }
+            } else {
+                if(data.value && status.value === 'success') {
+                    useFlashStore().success(data.value.flash.message)
+                }
             }
-
-            return res.data.data
+            
+            this.get()
+            this.errors = null
         },
 
-        async update(id: number, form: object) {
-            const res: any = await useFetchApi(`/api/contact/${id}/update`, {
-                method: 'PUT',
+        async update(form: object) {
+            const { data, error, status } = await useFetchApi('/api/admin/contacts', {
+                method: 'PATCH',
                 body: form
-            })
+            }) as any
 
-            useFlashStore().success(res.data.flash.message)
+            if(error.value) {
+                this.errors = error.value.data.errors
 
-            if(res.data.data) {
-               this.get() 
+                if(error.value.data.errors.flash) {
+                    useFlashStore().error(error.value.data.errors.flash.message)
+                }
+            } else {
+                if(data.value && status.value === 'success') {
+                    useFlashStore().success(data.value.flash.message)
+                }
             }
-
-            return res.data.data
+            
+            this.get()
+            this.errors = null
         },
-
-        async delete(id: number) {
-            const res: any = await useFetchApi(`/api/contact`, {
-                // preserveState: false,
-                method: 'DELETE',
-                body: {
-                    contactIds: [id],
-                },
-            })
-
-            useFlashStore().success(res.data.flash.message)
-
-            if(res.data.data) {
-               this.get() 
-            }
-
-            return res.data.data
-        }
     },
 
     persist: true

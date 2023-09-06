@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Authorization;
+namespace App\Controller\Admin;
 
 use App\Controller\AbstractAPIController;
 use App\Entity\User;
@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[OA\Tag(name: 'Users')]
-#[Route('/api/users', name: 'app_users_')]
+#[Route('/api/admin', name: 'app_admin_users')]
 class UserController extends AbstractAPIController
 {
     // #[OA\Response(
@@ -26,7 +26,7 @@ class UserController extends AbstractAPIController
     // )]
 
     #[IsGranted('ROLE_ADMIN')]
-    #[Route('', name: 'index', methods: ['GET'])]
+    #[Route('/users', name: ':index', methods: ['GET'])]
     public function index(UserRepository $userRepository): JsonResponse
     {
         return $this->response($userRepository->findAll(), ['user:all']);

@@ -1,12 +1,13 @@
 <script setup>
+const { $dashboard } = useNuxtApp()
+
 const props = defineProps({
     link: Object,
-    isRailSidebar: Boolean
 });
 
 let open = ref(false);
 
-watch(() => props.isRailSidebar, (event) => {
+watch(() => $dashboard.sidebar.isRail, (event) => {
     if(event === true) {
         open.value = false
     }
@@ -14,10 +15,10 @@ watch(() => props.isRailSidebar, (event) => {
 </script>
 
 <template>
-    <li class="w-full mt-4 transition-all duration-300 ease-in list-none">
+    <li class="w-full mt-4 transition-all duration-300  ease-in list-none">
         <NuxtLink
             v-if="!link.children.length"
-            :class="isRailSidebar ? '' : ''"
+            :class="$dashboard.sidebar.isRail ? '' : 'overflow-hidden'"
             :to="{path: link.path }"
             class="h-10 w-full flex decoration-none text-muted-light  dark:text-muted-dark hover:text-hover-800  dark:hover:text-hover-200  rounded"
             activeClass="link-active"
@@ -26,7 +27,7 @@ watch(() => props.isRailSidebar, (event) => {
                 <Icon class="text-2xl" :name="link.icon"></Icon>
             </div>
 
-            <span class="ml-3" v-if="!isRailSidebar" >{{ link.title }}</span>
+            <span class="ml-3" v-if="!$dashboard.sidebar.isRail" >{{ link.title }}</span>
 
         </NuxtLink>
 
@@ -34,13 +35,13 @@ watch(() => props.isRailSidebar, (event) => {
             v-else
             :to="{ path: link.path }"
             :class="[
-                isRailSidebar ? '' : '',
-                open ? 'font-semibold text-blue-600' : 'font-medium hover:bg-hover'
+                $dashboard.sidebar.isRail ? '' : 'overflow-hidden',
+                open ? 'font-semibold text-blue-600' : 'font-medium hover:bg-hover-200'
             ]"
             class="flex justify-between items-center cursor-pointer decoration-none h-10 w-full rounded  dark:text-muted-dark hover:text-hover-800  dark:hover:text-hover-200 "
             activeClass="link-active"
         >
-           <div v-if="!isRailSidebar" class="flex items-start">
+           <div v-if="!$dashboard.sidebar.isRail" class="flex items-start">
                <div v-if="!open" class="flex justify-start w-10 items-center">
                    <Icon class="text-2xl" :name="link.icon"></Icon>
                </div>
@@ -51,7 +52,7 @@ watch(() => props.isRailSidebar, (event) => {
             <span
                 v-if="link.children.length"
             >
-                <Icon v-if="isRailSidebar && !open" class="text-2xl" :name="link.icon"/>
+                <Icon v-if="$dashboard.sidebar.isRail && !open" class="text-2xl" :name="link.icon"/>
 
                 <Icon
                   v-else
@@ -71,9 +72,9 @@ watch(() => props.isRailSidebar, (event) => {
             leave-from-class="transform opacity-100 translate-x-0"
             leave-to-class="transform opacity-0 -translate-x-64"
         >
-            <ul v-if="link.children.length && open" :class="[isRailSidebar ? 'w-10 p-0' : 'w-[90%] pl-5']" class="list-none">
+            <ul v-if="link.children.length && open" :class="[$dashboard.sidebar.isRail ? 'w-10 p-0' : 'w-[90%] pl-5']" class="list-none">
                 <template v-for="(child, index) in link.children" :key="index">
-                    <x-sidebar-item :link="child" :isRailSidebar="isRailSidebar" />
+                    <x-sidebar-item :link="child" />
                 </template>
             </ul>
         </transition>

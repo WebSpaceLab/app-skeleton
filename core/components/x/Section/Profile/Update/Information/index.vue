@@ -8,11 +8,11 @@ let isMouseover = ref(false)
 let file = ref(null)
 let cropper = ref(null)
 let uploadedImage = ref(null)
-let userImage = ref(null)
-let userName = ref(null)
-let firstName = ref(null)
-let lastName = ref(null)
-let userDescription = ref(null)
+let userImage = ref('')
+let userName = ref('')
+let firstName = ref('')
+let lastName = ref('')
+let userDescription = ref('')
 let isUpdated = ref(false)
 
 const getUploadedImage = (e) => {
@@ -102,7 +102,7 @@ onMounted(() => {
 <template>
     <div 
         @mouseover="isMouseover = true" @mouseleave="isMouseover = false"
-        class="relative w-full flex flex-col  bg-prime-light dark:bg-prime-dark rounded-lg border-dashed border-muted-light dark:border-muted-dark box-border"
+        class="relative w-full flex flex-col  bg-prime-light dark:bg-prime-dark rounded-lg  box-border"
         :class="[
             !uploadedImage ? 'h-full' : 'h-full',
             isMouseover ? 'shadow-xl shadow-black' : '',
@@ -112,7 +112,7 @@ onMounted(() => {
             <div v-if="!uploadedImage" class="flex flex-col space-y-8">
                 <div  class="w-full flex flex-col lg:h-[118px] h-[145px] px-1.5 py-6 box-border">
                     <div class="font-semibold lg:mb-0 mb-1 lg:text-left text-center">
-                        Zjęcie profilowe
+                        Zdjęcie profilowe
                     </div>
 
                     <div class="flex items-center justify-center lg:-mt-6">
@@ -154,6 +154,7 @@ onMounted(() => {
                                 label="Nazwa użytkownika"
                                 icon
                                 error=""
+                                name="input_username"
                             >
                                 <template #icon>
                                     <Icon name="material-symbols:person-3-rounded" class="text-xl" />
@@ -181,6 +182,7 @@ onMounted(() => {
                                 label="Imię"
                                 icon
                                 error=""
+                                name="input_first-name"
                             >
                                 <template #icon>
                                     <Icon name="material-symbols:person-3-rounded" class="text-xl" />
@@ -205,6 +207,7 @@ onMounted(() => {
                                 label="Nazwisko"
                                 icon
                                 error=""
+                                name="input_last-name"
                             >
                                 <template #icon>
                                     <Icon name="material-symbols:person-3-rounded" class="text-xl" />
@@ -226,14 +229,13 @@ onMounted(() => {
                     <div class="flex items-center justify-center lg:-mt-6">
                         <div class="lg:w-[60%] w-full max-w-lg">
                             <x-textarea 
-                                cols="30"
-                                rows="4"
+                                :cols="30"
+                                :rows="4"
                                 v-model="userDescription"
-                                maxlength="80"
+                                :maxlength="80"
                                 label="Opis "
+                                name="textarea_user-description"
                             ></x-textarea>
-
-                            <div v-if="userDescription" class="text-[11px] text-gray-500">{{ userDescription.length }}/80</div>
                         </div>
                     </div>
                 </div>

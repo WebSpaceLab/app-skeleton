@@ -1,5 +1,5 @@
 <script setup>
-    const { $auth, $social, $navbar } = useNuxtApp()
+    const { $auth,  $navbar } = useNuxtApp()
     const bufferOfferId = ref(null)
     const setColorTheme = (newTheme) => {
         useColorMode().preference = newTheme
@@ -54,58 +54,59 @@
                     </template>
 
                     <template #action>
-                        <x-btn @click="setColorTheme($colorMode.preference == 'dark' ? 'light' : 'dark')" color="secondary" :tooltip="{text: `Zmień motyw na ${$colorMode.value == 'dark' ? 'jasny' : 'ciemny'}`}" ring strip icon class="mr-3">
-                            <template #icon>
-                                <Icon v-if="$colorMode.value == 'dark'" class="text-lg" name="line-md:moon-filled-loop" />
-                                <Icon v-else class="text-lg" name="line-md:moon-filled-to-sunny-filled-loop-transition" />
-                            </template>
-                        </x-btn>
-
-                        <!--
-                            <template v-for="(item, index) in $social?.social" :key="index">
+                        <div class="flex ">
+                            <x-btn @click="setColorTheme($colorMode.preference == 'dark' ? 'light' : 'dark')" color="secondary" :tooltip="{text: `Zmień motyw na ${$colorMode.value == 'dark' ? 'jasny' : 'ciemny'}`}" ring strip icon class="mr-3">
+                                <template #icon>
+                                    <div>
+                                        <Icon v-if="$colorMode.value == 'dark'" class="text-lg" name="line-md:moon-filled-loop" />
+                                        <Icon v-else class="text-lg" name="line-md:moon-filled-to-sunny-filled-loop-transition" />
+                                    </div>
+                                </template>
+                            </x-btn>
+    
+                            <template v-for="(item, index) in $social.data" :key="index">
                                 <x-link
-                                    v-if="item.is_active == true"
-                                    :to="item.to"
+                                    v-if="item.isActive"
+                                    :to="item.path"
                                     class="w-8 h-8 flex items-center justify-center rounded-full text-basic-light dark:text-basic-dark mr-3 sm:mr-4 lg:mr-3 xl:mr-4"
                                     target="_blank"
                                 >
                                     <Icon :name="item.icon" class="text-2xl" />
                                 </x-link>
                             </template>
-                        -->
-
-
-                        <div v-if="!$auth.isLoggedIn"  class="h-full flex items-center justify-center" >                  
-                            <x-btn @click="$navbar.showLogin()"  color="secondary" :tooltip="{text: 'Logowanie'}" ring strip icon class="mr-3">
-                                <template #icon>
-                                    <Icon name="bi:person-fill" class="text-2xl"/>
-                                </template>
-                            </x-btn>
-
-                            <x-btn @click="$navbar.showRegister()"  color="secondary" :tooltip="{text: 'Rejestracja'}" ring strip icon class="mr-3">
-                                <template #icon>
-                                    <Icon name="bi:person-fill-add" class="text-2xl"/>
-                                </template>
-                            </x-btn>
-                        </div>
-
-                        <div v-if="$auth.isLoggedIn"  class="h-full flex items-center justify-center" >
-                            <x-dropdown-manage-account :user="$auth.user" >
-                                <template #links>
-                                    <x-dropdown-link to="/dashboard" class="text-muted-light dark:text-muted-dark mb-2">
-                                        Dashboard
-                                    </x-dropdown-link>
-                    
-                                    <x-dropdown-link to="/dashboard/profile" class="text-muted-light dark:text-muted-dark mb-2"  >
-                                        Profile
-                                    </x-dropdown-link>
-
-                                    <!-- Authentication -->
-                                    <x-dropdown-link @click="$auth.logout()" class="mt-2 bg-danger-600 rounded">
-                                        <span class="text-red-200 uppercase font-bold">Logout</span>
-                                    </x-dropdown-link>
-                                </template>
-                            </x-dropdown-manage-account>
+    
+                            <div v-if="!$auth.isLoggedIn"  class="h-full flex items-center justify-center" >                  
+                                <x-btn @click="$navbar.showLogin()"  color="secondary" :tooltip="{text: 'Logowanie'}" ring strip icon class="mr-3">
+                                    <template #icon>
+                                        <Icon name="bi:person-fill" class="text-2xl"/>
+                                    </template>
+                                </x-btn>
+    
+                                <x-btn @click="$navbar.showRegister()"  color="secondary" :tooltip="{text: 'Rejestracja'}" ring strip icon class="mr-3">
+                                    <template #icon>
+                                        <Icon name="bi:person-fill-add" class="text-2xl"/>
+                                    </template>
+                                </x-btn>
+                            </div>
+    
+                            <div v-if="$auth.isLoggedIn"  class="h-full flex items-center justify-center" >
+                                <x-dropdown-manage-account :user="$auth.user" >
+                                    <template #links>
+                                        <x-dropdown-link to="/dashboard" class="text-muted-light dark:text-muted-dark mb-2">
+                                            Dashboard
+                                        </x-dropdown-link>
+                        
+                                        <x-dropdown-link to="/dashboard/profile" class="text-muted-light dark:text-muted-dark mb-2"  >
+                                            Profile
+                                        </x-dropdown-link>
+    
+                                        <!-- Authentication -->
+                                        <x-dropdown-link @click="$auth.logout()" class="mt-2 bg-danger-600 rounded">
+                                            <span class="text-red-200 uppercase font-bold">Logout</span>
+                                        </x-dropdown-link>
+                                    </template>
+                                </x-dropdown-manage-account>
+                            </div>
                         </div>
                     </template>
 
@@ -125,27 +126,29 @@
         </template>
 
         <template #addons>
-            <x-modal-auth-login
-                :show="$navbar.isShowLogin"
-                :minimization="null"
-                :closeable="true"
-                @close="(event) => $navbar.switchLogin(event)"
-            /> 
-            
-            <x-modal-auth-register
-                :show="$navbar.isShowRegister"
-                :minimization="null"
-                :closeable="true"
-                @close="(event) => $navbar.switchRegister(event)"
-            /> 
-            
-            <x-modal-auth-forgot-password
-                :show="$navbar.isShowForgotPassword"
-                :minimization="null"
-                max-width="max"
-                :closeable="true"
-                @close="(event) => $navbar.switchForgotPassword(event)"
-            />
+            <div>
+                <x-modal-auth-login
+                    :show="$navbar.isShowLogin"
+                    :minimization="null"
+                    :closeable="true"
+                    @close="(event) => $navbar.switchLogin(event)"
+                /> 
+
+                <x-modal-auth-register
+                    :show="$navbar.isShowRegister"
+                    :minimization="null"
+                    :closeable="true"
+                    @close="(event) => $navbar.switchRegister(event)"
+                /> 
+                
+                <x-modal-auth-forgot-password
+                    :show="$navbar.isShowForgotPassword"
+                    :minimization="null"
+                    max-width="max"
+                    :closeable="true"
+                    @close="(event) => $navbar.switchForgotPassword(event)"
+                />
+            </div>
         </template>
     </x-layout>
 </template>

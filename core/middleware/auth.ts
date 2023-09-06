@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-    const { $auth } = useNuxtApp()
+    const { $auth, $dashboard } = useNuxtApp()
 
     if(!$auth.isLoggedIn) {
         return navigateTo('/', {replace: true})

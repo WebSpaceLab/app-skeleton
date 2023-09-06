@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Authorization;
+namespace App\Controller\User;
 
 use App\Controller\AbstractAPIController;
 use App\Entity\User;
@@ -24,7 +24,7 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[OA\Tag(name: 'Account')]
-#[Route('/api/profile', name: 'app_profile', methods: ["GET"])]
+#[Route('/api/user', name: 'app_user_account', methods: ["GET"])]
 class AccountController extends AbstractAPIController
 {
     #[IsGranted('ROLE_USER')]

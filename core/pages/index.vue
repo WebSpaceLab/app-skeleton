@@ -1,9 +1,7 @@
 <script setup>
-const {$dashboard} = useNuxtApp()
-
-onMounted(() => {
-$dashboard.get()
-})
+    definePageMeta({
+        layout: "default",
+    })
 </script>
 
 <template>

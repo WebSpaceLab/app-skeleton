@@ -18,13 +18,13 @@ onMounted(() => {
 <template>
     <div
         :class="[
-            $navbar.isScroll ? 'fixed top-0 right-0 bg-gradient-to-r from-prime-light/80 to-second-light/80 dark:from-prime-dark/80 dark:to-second-dark/80 backdrop-blur ' : 'relative',
+            $navbar.isScroll ? 'fixed top-0 right-0 backdrop-blur ' : 'relative',
             isShowSidebar ?
                 isRailSidebar ? 'is-rail-sidebar ' : 'is-show-sidebar'
                 : 'w-screen',
         ]"
         id="main-nav"
-        class="h-20 duration-300 shadow-black shadow-lg"
+        class="h-20 duration-300 shadow-black shadow-lg  bg-gradient-to-r from-prime-light to-second-light dark:from-prime-dark dark:to-second-dark"
     >
         <div class=" h-full flex items-center justify-center lg:justify-between ">
             <div class="relative  hidden lg:flex">

@@ -82,14 +82,14 @@ let labelColor = computed(() => {
 </script>
 
 <template>
-    <div class="relative w-full ">
+    <ClientOnly class="relative w-full">
         <div class="relative w-full">
             <div
                 v-if="icon"
                 :class="[iconPosition === 'left' ? 'left-0' : 'right-0']"
                 class="absolute inset-y-0 flex items-center p-3 text-slate-500"
             >
-                <slot name="icon"></slot>
+                <slot name="icon"/>
             </div>
     
             <div
@@ -122,6 +122,8 @@ let labelColor = computed(() => {
             </label>
         </div>
 
-        <div v-if="error" class="w-full text-center text-error-900 text-[14px] font-semibolds bg-error-300 p-2 box-border mt-1 rounded">{{ error }}</div>
-    </div>
+        <div v-if="error" class="w-full text-center text-error-900 text-[14px] font-semibolds bg-error-300 p-2 box-border mt-1 rounded">
+            {{ error }}
+        </div>
+    </ClientOnly>
 </template>

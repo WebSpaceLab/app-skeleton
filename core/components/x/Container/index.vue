@@ -1,9 +1,5 @@
 <script setup>
 const props = defineProps({
-    isRailSidebar: {
-        type: Boolean,
-        default: false,
-    },
     container: {
         type: Boolean,
         default: false,
@@ -17,7 +13,7 @@ const props = defineProps({
         class="relative w-full min-h-screen duration-300 box-border md:ml-8 px-8 pt-6"
         :class="[
             $dashboard.sidebar.isShow ?
-                isRailSidebar ? 'md:is-rail-sidebar' : 'md:is-show-sidebar'
+            $dashboard.sidebar.isRail ? 'md:is-rail-sidebar' : 'md:is-show-sidebar'
                 : '',
             container ? 'container mx-auto' : ''
         ]"

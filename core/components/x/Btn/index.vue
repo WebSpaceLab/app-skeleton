@@ -117,60 +117,61 @@ function rippleClick () {
         ]"
         :disabled="disabled"
     >
-   
-        <NuxtLink v-if="link" class="bold no-underline flex justify-center item-center p-1" :to="to" :rel="rel" :target="target">
-            <span :class="ripple ? color !== '' ? `btn-ripple btn-ripple-${color}`: 'btn-ripple bg-white/70' : ''"></span>
-
-            <span v-if="icon && ring" >
-                <slot :name="icon ? true : false"></slot>
-            </span>
-
-            <span v-else class="flex justify-center items-center space-x-2">
-                <span v-if="iconLeft">
-                    <slot name="icon-left"></slot>
+        <ClientOnly>
+            <NuxtLink v-if="link" class="bold no-underline flex justify-center item-center p-1" :to="to" :rel="rel" :target="target">
+                <span :class="ripple ? color !== '' ? `btn-ripple btn-ripple-${color}`: 'btn-ripple bg-white/70' : ''"></span>
+    
+                <span v-if="icon && ring" >
+                    <slot :name="icon ? true : false"></slot>
                 </span>
-
-                <span>
-                    <slot >{{ text }}</slot>
+    
+                <span v-else class="flex justify-center items-center space-x-2">
+                    <span v-if="iconLeft">
+                        <slot name="icon-left"></slot>
+                    </span>
+    
+                    <span>
+                        <slot >{{ text }}</slot>
+                    </span>
+    
+                    <Icon v-if="loading" name="eos-icons:bubble-loading" />
+    
+                    <span v-if="iconRight">
+                        <slot name="icon-right"></slot>
+                    </span>
                 </span>
-
-                <Icon v-if="loading" name="eos-icons:bubble-loading" />
-
-                <span v-if="iconRight">
-                    <slot name="icon-right"></slot>
+            </NuxtLink>
+    
+            <div v-else >
+                <span :class="ripple ? color !== '' ? `btn-ripple btn-ripple-${color}`: 'btn-ripple bg-white/70' : ''" ></span>
+    
+                <span v-if="icon && ring">
+                    <slot :name="icon ? 'icon' : false"></slot>
                 </span>
-            </span>
-        </NuxtLink>
-
-        <div v-else >
-            <span :class="ripple ? color !== '' ? `btn-ripple btn-ripple-${color}`: 'btn-ripple bg-white/70' : ''" ></span>
-
-            <span v-if="icon && ring">
-                <slot :name="icon ? 'icon' : false"></slot>
-            </span>
-
-            <span v-else class="flex justify-center items-center space-x-2">
-                <span v-if="iconLeft">
-                    <slot name="icon-left"></slot>
+    
+                <span v-else class="flex justify-center items-center space-x-2">
+                    <span v-if="iconLeft">
+                        <slot name="icon-left"></slot>
+                    </span>
+    
+                    <span>
+                        <slot >{{ text }}</slot>
+                    </span>
+    
+                    <Icon v-if="loading" name="eos-icons:bubble-loading" />
+    
+                    <span v-if="iconRight">
+                        <slot name="icon-right"></slot>
+                    </span>
                 </span>
-
-                <span>
-                    <slot >{{ text }}</slot>
-                </span>
-
-                <Icon v-if="loading" name="eos-icons:bubble-loading" />
-
-                <span v-if="iconRight">
-                    <slot name="icon-right"></slot>
-                </span>
-            </span>
-        </div>
-
-        <x-tooltip
-            v-if="tooltip && isTooltip"
-            :position="tooltip.position"
-            :text="tooltip.text"
-        />
+            </div>
+    
+            <x-tooltip
+                v-if="tooltip && isTooltip"
+                :position="tooltip.position"
+                :text="tooltip.text"
+            />
+        </ClientOnly>
     </button>
 </template>
 

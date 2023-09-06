@@ -20,20 +20,8 @@ definePageMeta({
         
         <template #main>
             <div class="container mx-auto">
-                <div>
-                    <h1>Dashboard</h1>
-                    <pre>
-                        
-                        user: {{ $auth.user }}
-            
-                        isLoggedIn : {{ $auth.isLoggedIn }}
-                        isLoading: {{ $auth.isLoading }}
-                        tokenExpiresAt:
-       
-        
-            
-                    </pre>
-                </div>
+   
+
 
             </div>
 

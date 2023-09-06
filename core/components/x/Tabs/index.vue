@@ -39,17 +39,17 @@ function switchTab(index) {
              </span>
         </div>
 
-        <div class="w-full relative">
+        <div class="w-full relative overflow-hidden">
             <template v-for="(tab, index) in tabs " :key="index">
                 <transition
-                    enter-active-class="ease duration-500"
-                    :enter-from-class="`opacity-0 translate-x-[${active > buffer ? '-100%' : '100%' }] blur-200`"
+                    enter-active-class="ease-in duration-500 delay-350"
+                    :enter-from-class="`${active > buffer ? 'translate-x-[-100%]' : 'translate-x-[100%]' } blur-200`"
                     enter-to-class="opacity-100 translate-x-0 blur-0"
-                    leave-active-class="ease duration-500"
-                    leave-from-class="opacity-100 translate-x-0 blur-0"
-                    :leave-to-class="`opacity-0 translate-x-[${active > buffer ? '100%' : '-100%' }] blur-200`"
+                    leave-active-class="ease-in duration-300"
+                    leave-from-class="translate-x-0 blur-0"
+                    :leave-to-class="`${active < buffer ? 'translate-x-[-100%]' : 'translate-x-[100%]' } blur-200`"
                 >
-                    <div v-if="index === active" class="w-full ">
+                    <div v-if="index === active" class="w-full">
         
                         <slot :name="`tab-${index}`"></slot>
                     </div>

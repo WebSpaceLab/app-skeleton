@@ -1,5 +1,5 @@
 <script setup>
-const {  $metaStore } = useNuxtApp()
+const {  $metaTags } = useNuxtApp()
 
 const form = ref({
     name: '',
@@ -46,14 +46,12 @@ function resetForm() {
     }
 }
 
-async function createdMetaTag() {
-    try {
-        await $metaStore.createdMetaTag(form.value)
+async function create() {
 
-        resetForm()
-    } catch (error) {
-        console.log(error)
-    } 
+    await $metaTags.create(form.value)
+
+    resetForm()
+    
 }
 
 </script>
@@ -63,7 +61,7 @@ async function createdMetaTag() {
         <x-adding-fields :action="true" >
             <template #action>
                 <div class="">
-                   <x-btn @click="createdMetaTag()" color="primary-outline" shadow rounded>Create</x-btn>
+                   <x-btn @click.prevent="create()" color="primary-outline" shadow rounded>Create</x-btn>
                 </div>
             </template>
 
@@ -78,7 +76,7 @@ async function createdMetaTag() {
                     </div>
         
                     <div class="w-full flex flex-col ">
-                        <label class="w-full" for="meta_name">Meta charset</label>
+                        <label class="w-full" for="meta_charset">Meta charset</label>
     
                         <select v-model="form.charset" aria-label="Meta charset" id="meta_charset" class="w-full bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
                             <option v-for="item in allCharset" :key="item.value" :value="item.value">{{ item.label }}</option>
@@ -86,9 +84,9 @@ async function createdMetaTag() {
                     </div>
         
                     <div class="w-full flex flex-col ">
-                        <label class="w-full" for="meta_name">Meta http_equiv</label>
+                        <label class="w-full" for="meta_http_equiv">Meta http_equiv</label>
     
-                        <select v-model="form.http_equiv" aria-label="Meta charset" id="meta_charset" class="w-full bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
+                        <select v-model="form.http_equiv" aria-label="Meta http_equiv" id="meta_http_equiv" class="w-full bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
                             <option v-for="item in allHttpEquiv" :key="item.value" :value="item.value">{{ item.label }}</option>
                         </select>
                     </div>

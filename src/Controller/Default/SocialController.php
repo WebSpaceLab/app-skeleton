@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Controller\Default;
+
+use App\Controller\AbstractAPIController;
+use App\Repository\SocialRepository;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Attributes as OA;
+
+#[OA\Tag(name: 'Socials')]
+#[Route('/api/socials', name: 'app_socials')]
+class SocialController extends AbstractAPIController
+{
+    #[Route('', name: ':index', methods: ['GET'])]
+    public function index(SocialRepository $socialRepository): Response
+    {
+        $socials = $socialRepository->findAll();
+
+        return $this->response(['socials' => $socials]);
+    }
+    
+}

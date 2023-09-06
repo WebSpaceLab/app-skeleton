@@ -121,6 +121,8 @@ let labelColor = computed(() => {
             {{ label }}
         </label>
 
+        <div v-if="modelValue && maxlength" class="text-[11px] text-gray-500">{{ modelValue.length }}/{{ maxlength }}</div>
+
         <span v-if="error" class="text-danger-600 text-[14px] font-semibold ml-4">{{ error }}</span>
     </div>
 </template>
