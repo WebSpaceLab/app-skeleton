@@ -27,7 +27,7 @@ watch(() => props.selected, (e) => {
         </div>
 
         <div class="w-full h-46 relative flex justify-center">
-            <img :src="file.preview_url" :alt="file.name" class="h-full object-cover" />
+            <img :src="file.previewUrl" :alt="file.name" class="h-full object-cover" />
         </div>
 
         <div class="relative h-20 w-full bg-gradient-to-r from-prime-light to-second-light dark:from-prime-dark dark:to-second-dark">

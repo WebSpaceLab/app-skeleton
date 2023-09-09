@@ -4,15 +4,18 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
 
 abstract class AbstractAPIController extends AbstractController
 {
     protected SerializerInterface $serializer;
+ 
 
     public function response( mixed $data, array $groups = [], int $status = 200, array $headers = []): JsonResponse
     {
@@ -55,9 +58,28 @@ abstract class AbstractAPIController extends AbstractController
         return $this->redirect($fullUrl, $status);
     }
 
+    // public function validate(mixed $value = null, array $data = null): mixed
+    // {
+    //     $constraints = new Assert\Collection($value);
+
+    //     $violations = $this->validator->validate($data, $constraints);
+
+    //     if (count($violations) > 0) {
+    //         $errors = [];
+    //         foreach ($violations as $violation) {
+    //             $propertyPath = trim($violation->getPropertyPath(), '[\]');
+    //             $errors[$propertyPath] = $violation->getMessage();
+    //         }
+
+    //         return $this->json(['errors' => $errors], Response::HTTP_BAD_REQUEST); 
+    //     }
+    // }
+
     #[Required]
     public function setServices(SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
+
+        // $this->validator = $validator;
     }
 }

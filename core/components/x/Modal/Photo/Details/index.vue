@@ -32,7 +32,7 @@ const loading = ref(false)
 const errors = ref(null)
 const SwitchFile = ref()
 const fileDetails = reactive({
-    preview_url: '',
+    previewUrl: '',
     description: '',
     name: '',
     mime_type: '',
@@ -96,7 +96,7 @@ function uploadCropImage(data) {
     .then(({data}) => {
         emits('addedToLibrary', data.file)
 
-        fileDetails.preview_url = data.file.preview_url
+        fileDetails.previewUrl = data.file.previewUrl
         fileDetails.description = data.file.description
         fileDetails.name = data.file.name
         fileDetails.mime_type = data.file.mime_type
@@ -120,7 +120,7 @@ function uploadCropImage(data) {
 
 const resetFileDetails = () => {
     
-    fileDetails.preview_url = ''
+    fileDetails.previewUrl = ''
     fileDetails.description = ''
     fileDetails.name = ''
     fileDetails.mime_type = ''
@@ -137,7 +137,7 @@ watch(() => props.file, (file) => {
         fileDetails.mime_type = file.mime_type ? file.mime_type : ''
         fileDetails.name = file.name ? props.file.name : ''
         fileDetails.description = file.description ? file.description : ''
-        fileDetails.preview_url = file.preview_url ? file.preview_url : ''
+        fileDetails.previewUrl = file.previewUrl ? file.previewUrl : ''
     }
 })
 

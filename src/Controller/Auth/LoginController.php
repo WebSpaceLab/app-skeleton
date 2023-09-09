@@ -36,7 +36,7 @@ class LoginController extends AbstractAPIController
     )]
 
     #[Route('/auth/login', name: 'app_auth_login', methods: ['POST'])]
-    public function login(#[CurrentUser()] User $user = null, ApiTokenHandler $apiTokenHandler, Request $request, ValidatorInterface $validator): JsonResponse
+    public function login(#[CurrentUser()] User $user = null, ApiTokenHandler $apiTokenHandler): JsonResponse
     {
         if(!$user) {
             return $this->json([

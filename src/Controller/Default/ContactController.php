@@ -16,6 +16,6 @@ class ContactController extends AbstractAPIController
     public function index(ContactRepository $contactRepository): Response
     {
         $contact = $contactRepository->findAll();
-        return $this->response(['contact' => $contact]);
+        return $this->response(['contact' => $contact], ['content:read']);
     }
 }

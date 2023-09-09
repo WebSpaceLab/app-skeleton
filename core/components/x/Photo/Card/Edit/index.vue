@@ -35,7 +35,7 @@ function uploadFile(files) {
          progress: 0,
          error: null,
          uploaded: false,
-         preview_url: '',
+         previewUrl: '',
      });
  });
 
@@ -55,7 +55,7 @@ function uploadFile(files) {
          .then(({data}) => {
             media.uploaded = true;
             media.id = data.file.id;
-            media.preview_url = data.file.preview_url;
+            media.previewUrl = data.file.previewUrl;
             emits('addedToLibrary', data.file)
             $flash.success(data.flash.message)
          })

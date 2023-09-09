@@ -32,11 +32,13 @@ const setColorTheme = (newTheme) => {
                     </template>
     
                     <template #action>
+<!--
                         <div v-if="$auth.accessGranted('ROLE_USER')" class="w-20 h-full flex justify-center items-center p-2 space-x-3 mr-8">
                             <template v-for="(role, index) in $account.roles" :key="index">
                                 <div>{{ role }}</div>
                             </template>
                         </div>
+-->
 
                         <x-btn @click="setColorTheme($colorMode.preference == 'dark' ? 'light' : 'dark')" color="secondary" :tooltip="{text: `Zmień motyw na ${$colorMode.value == 'dark' ? 'jasny' : 'ciemny'}`}" ring strip icon class="mr-3">
                             <template #icon>

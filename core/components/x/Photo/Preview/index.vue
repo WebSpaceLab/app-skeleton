@@ -241,7 +241,7 @@ function onTouchmove(touch) {
                             :leave-to-class="right ? 'transform -translate-x-[100%] blur-100' : 'transform translate-x-[100%] blur-100'"
                         >
                                 <div v-if="preview && isShowPreview" class="relative w-full md:w-auto md:h-full">
-                                    <img @touchend="onTouchmove" class="w-full md:w-auto md:h-full" :src="preview.preview_url" :alt="preview.name" />
+                                    <img @touchend="onTouchmove" class="w-full md:w-auto md:h-full" :src="preview.previewUrl" :alt="preview.name" />
 
                                     <transition
                                         enter-active-class="transition ease-in duration-300"
@@ -297,7 +297,7 @@ function onTouchmove(touch) {
                                 v-if="photo"
                                 :alt="photo.name"
                                 :class="[photo.index === preview.index ? 'border border-active scale-100 transition-all duration-300 ease-linear shadow-xl shadow-black' : 'scale-80 transition-all duration-300 ease-linear']"
-                                :src="photo.preview_url"
+                                :src="photo.previewUrl"
                                 @click="openPreview(photo)"
                                 class="h-full w-30 cursor-pointer object-cover rounded-lg"
                             />

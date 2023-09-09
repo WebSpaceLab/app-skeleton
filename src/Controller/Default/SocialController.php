@@ -17,7 +17,7 @@ class SocialController extends AbstractAPIController
     {
         $socials = $socialRepository->findAll();
 
-        return $this->response(['socials' => $socials]);
+        return $this->response(['socials' => $socials], ['social:read']);
     }
     
 }

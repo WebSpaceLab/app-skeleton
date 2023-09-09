@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ContactRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 class Contact
@@ -13,22 +14,27 @@ class Contact
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
+    #[Groups(['content:read'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['content:read'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    #[Groups(['content:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
 
+    #[Groups(['content:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $openingHours = null;
 
+    #[Groups(['content:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $phone = null;
-
+    
+    #[Groups(['content:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $map = null;
 

@@ -31,7 +31,7 @@ function getPreviewImage(photo) {
                 <img 
                     @click="getPreviewImage(photo)"
                     class="w-full rounded-lg cursor-pointer duration-300 hover:shadow-lg hover:shadow-black"
-                    :src="photo.preview_url"
+                    :src="photo.previewUrl"
                     :alt="photo.name"
                 />
 

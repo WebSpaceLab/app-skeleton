@@ -85,12 +85,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isAgree = null;
 
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Media::class)]
+    private Collection $media;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->articles = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->resetPasswordTokens = new ArrayCollection();
+        $this->media = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -414,6 +418,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsAgree(bool $isAgree): static
     {
         $this->isAgree = $isAgree;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Media>
+     */
+    public function getMedia(): Collection
+    {
+        return $this->media;
+    }
+
+    public function addMedium(Media $medium): static
+    {
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(Media $medium): static
+    {
+        if ($this->media->removeElement($medium)) {
+            // set the owning side to null (unless already changed)
+            if ($medium->getAuthor() === $this) {
+                $medium->setAuthor(null);
+            }
+        }
 
         return $this;
     }

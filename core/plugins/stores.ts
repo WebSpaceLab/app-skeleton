@@ -8,6 +8,7 @@ import { useSocialStore } from "~~/core/stores/useSocialStore";
 import { useAccountStore } from "~~/core/stores/useAccountStore";
 import { useDashboardStore } from "~~/core/stores/useDashboardStore";
 import { useMetaTagsStore } from "~~/core/stores/useMetaTagsStore";
+import { useMediaStore } from "~~/core/stores/useMediaStore";
 
 export default defineNuxtPlugin((nuxtApp) => {
     return {
@@ -22,6 +23,7 @@ export default defineNuxtPlugin((nuxtApp) => {
             account: useAccountStore(),
             dashboard: useDashboardStore(),
             metaTags: useMetaTagsStore(),
+            media: useMediaStore(),
         }
     }
 })

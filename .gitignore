@@ -41,3 +41,5 @@ logs
 ###> symfony/asset-mapper ###
 /public/assets/
 ###< symfony/asset-mapper ###
+
+/public/uploads

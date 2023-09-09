@@ -17,6 +17,6 @@ class MetaTagsController extends AbstractAPIController
     {
         $metaTags = $metaTagsRepository->findAll();
 
-        return $this->response(['metaTags' => $metaTags]);
+        return $this->response(['metaTags' => $metaTags], ['meta:read']);
     }
 }

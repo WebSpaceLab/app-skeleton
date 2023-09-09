@@ -10,6 +10,7 @@ export const useDashboardStore = defineStore('dashboard', {
             links: [
                 {  title: 'Homepage',  icon: 'ic:sharp-home', name: 'index', path: '/', type: 'basic', access: 'ROLE_USER', children: []},
                 {  title: 'Dashboard', icon: 'mdi:desktop-mac-dashboard', name: 'dashboard', path: '/dashboard', access: 'ROLE_USER', type: 'basic', children: [] },
+                {  title: 'Media', icon: 'material-symbols:media-link', name: 'dashboard.media', path: '/dashboard/media', access: 'ROLE_USER', type: 'basic', children: [] },
                 {  title: 'Profile', icon: 'material-symbols:manage-accounts-rounded', name: 'dashboard.profile', path: '/dashboard/profile', access: 'ROLE_USER', type: 'settings', children: [] },
                 {  title: 'Settings', icon: 'material-symbols:settings-suggest-outline-sharp', name: 'dashboard.settings', access: 'ROLE_ADMIN', path: '/dashboard/settings', type: 'settings', children: [] },
             ]

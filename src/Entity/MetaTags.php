@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MetaTagsRepository;
 use App\Trait\Timestamps;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MetaTagsRepository::class)]
 class MetaTags
@@ -16,15 +17,19 @@ class MetaTags
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['meta:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
-
+    
+    #[Groups(['meta:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $content = null;
 
+    #[Groups(['meta:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $charset = null;
-
+    
+    #[Groups(['meta:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $http_equiv = null;
 

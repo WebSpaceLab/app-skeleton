@@ -9,6 +9,9 @@ export default defineNuxtConfig({
     },
     srcDir: 'core/',
     // ssr: true,
+    // experimental: {
+    //     componentIslands: true
+    // },
     
     modules: [
         [
@@ -44,7 +47,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         indexable: true,
         public: {
-            api: process.env.NUXT_PUBLIC_API
+            api: process.env.BACKEND_URL
         }
     },
 
@@ -64,7 +67,7 @@ export default defineNuxtConfig({
     },
 
     nitro: {
-        baseURL: "https://localhost:8000",
+        baseURL: process.env.BACKEND_URL,
         prerender: {
           crawlLinks: true,
           failOnError: false, 

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SocialRepository;
 use App\Trait\Timestamps;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SocialRepository::class)]
 class Social
@@ -16,16 +17,20 @@ class Social
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['social:read'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Groups(['social:read'])]
     #[ORM\Column(length: 255)]
     private ?string $icon = null;
 
+    #[Groups(['social:read'])]
     #[ORM\Column(length: 255)]
     private ?string $path = null;
 
     #[ORM\Column]
+    #[Groups(['social:read'])]
     private ?bool $isActive = null;
 
     public function __construct()

@@ -1,8 +1,9 @@
 <script setup >
 import axios from '~/plugins/axios'
-const { $flash } = useNuxtApp()
+const { $flash, $media, $auth } = useNuxtApp()
 
 const $axios = axios().provide.axios
+
 const emits = defineEmits(['addedToLibrary'])
 
 const props = defineProps({
@@ -30,7 +31,7 @@ function uploadFiles(files) {
             progress: 0,
             error: null,
             uploaded: false,
-            preview_url: '',
+            previewUrl: '',
         });
     });
 
@@ -41,7 +42,8 @@ function uploadFiles(files) {
             let form = new FormData;
 
             form.append('file', media.file)
-
+   
+            $axios.default.headers['Authorization'] = 'Bearer ' + $auth.token
             $axios.post('/api/media', form, {
                 onUploadProgress: (event) => {
                     media.progress = Math.round(event.loaded * 100 / event.total);
@@ -52,7 +54,7 @@ function uploadFiles(files) {
 
                 media.uploaded = true;
                 media.id = data.file.id;
-                media.preview_url = data.file.preview_url;
+                media.previewUrl = data.file.previewUrl;
                 media.file = data.file
                 $flash.success(data.flash.message)
             })
@@ -119,7 +121,7 @@ function uploadCropImage(data) {
         progress: 0,
         error: null,
         uploaded: false,
-        preview_url: '',
+        previewUrl: '',
     })
 
     media.value
@@ -137,7 +139,7 @@ function uploadCropImage(data) {
 
                 media.uploaded = true;
                 media.id = data.file.id;
-                media.preview_url = data.file.preview_url;
+                media.previewUrl = data.file.previewUrl;
                 media.file = data.file
 
                 $flash.success(data.flash.message)
@@ -225,8 +227,8 @@ function uploadCropImage(data) {
                 class="p-3 bg-prime-light dark:bg-prime-dark text-muted-light dark:text-muted-dark flex items-center space-x-2 my-2 rounded-lg"
             >
 
-                <div v-if="item.preview_url" class="w-20 h-20 bg-gray-300 flex-shrink-0 rounded-lg">
-                    <img :src="item.preview_url" :alt="item.file.name" class="h-full w-full rounded-lg" />
+                <div v-if="item.previewUrl" class="w-20 h-20 bg-gray-300 flex-shrink-0 rounded-lg">
+                    <img :src="item.previewUrl" :alt="item.file.name" class="h-full w-full rounded-lg" />
                 </div>
 
                 <div class="text-xs text-gray-400 flex-1 truncate">{{ item.file.name }}</div>

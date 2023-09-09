@@ -1,16 +1,23 @@
 <script setup>
-const {$general, $contact, $metaTags,  $social} = useNuxtApp()
+const {$general, $contact, $metaTags,  $social } = useNuxtApp()
+
+const loading = ref(true);
+// const LoadProgress = ref(0)
 
 onMounted(async () => {
+
     await $general.get()
     await $contact.get()
     await $metaTags.get()
     await $social.get()
+
+    // LoadProgress.value = Math.round(event.loaded * 100 / event.total);
+    loading.value = false
 })
 </script>
 
-<template>
-    <x-app v-if="!$general.isLoading">
+<template> 
+    <x-app :loading="loading">
         <Head v-if="$general.data.name">
             <Title>{{ $general.data.name }}</Title>
             
@@ -27,10 +34,6 @@ onMounted(async () => {
         
         <x-toast />
     </x-app>
-
-    <div v-else class="w-screen h-screen flex justify-center items-center">
-        <Spinner :loading="$general.isLoading"/>
-    </div>
 </template>
 
 <style>
