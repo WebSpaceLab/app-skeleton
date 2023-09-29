@@ -52,7 +52,7 @@ class Article
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
     #[Groups(['article:read'])]
-    private ?User $owner = null;
+    private ?User $owner = null; /* TODO: Zmienić nazwe 'owner' na 'author' */
 
     public function __construct()
     {

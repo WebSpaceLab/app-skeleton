@@ -13,7 +13,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <x-section-dashboard v-if="$auth.accessGranted('ROLE_ADMIN')" title="Settings" :container="false">
+    <x-section-dashboard v-if="$auth.accessGranted('ROLE_ADMIN')" title="Settings">
         <template #header-panel>
             
         </template>

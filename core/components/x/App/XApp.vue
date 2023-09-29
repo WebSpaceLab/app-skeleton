@@ -8,19 +8,19 @@ const props = defineProps({
 </script>
 
 <template>
-    <div id="app" class="w-screen overflow-hidden box-border font-sans">
+    <div id="app" class="w-screen box-border font-sans bg-background-light dark:bg-background-dark text-basic-light dark:text-basic-dark">
         <div v-if="!loading" class="w-full">
             <slot />
         </div>
 
-        <div v-else class="w-screen h-screen flex justify-center items-center">
+        <div v-else class="w-full h-screen flex justify-center items-center">
             <Spinner :loading="loading"/>
         </div>
     </div>
 </template>
 
 <style>
-    body {
-        @apply bg-background-light dark:bg-background-dark text-basic-light dark:text-basic-dark box-border overflow-x-hidden m-0 p-0;
-    }
+    /* body {
+        @apply w-screen  m-0 p-0;
+    } */
 </style>

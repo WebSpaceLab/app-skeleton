@@ -24,7 +24,13 @@ onMounted(async () => {
             <Meta name="description" :content="$general.data.description" />
     
             <template v-for="(item, index) in $metaTags.data" :key="index" >
-                <Meta v-if="item.name != 'description'" :name="item.name" :content="item.content" :charset="item.charset" :http_equiv="item.http_equiv" />
+                <Meta
+                    v-if="item.name != 'description'"
+                    :charset="item.charset"
+                    :content="item.content"
+                    :http_equiv="item.http_equiv"
+                    :name="item.name"
+                />
             </template>
         </Head>
 

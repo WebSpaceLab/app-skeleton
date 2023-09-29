@@ -47,7 +47,8 @@ export default defineNuxtConfig({
     runtimeConfig: {
         indexable: true,
         public: {
-            api: process.env.BACKEND_URL
+            apiUrl: process.env.BACKEND_URL,
+            appUrl: process.env.FRONTEND_URL
         }
     },
 

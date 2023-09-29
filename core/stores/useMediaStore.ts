@@ -1,8 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from '../plugins/axios'
 import { useFlashStore } from './useFlashStore'
-
-const $axios = axios().provide.axios
 
 export const useMediaStore = defineStore('media', {
     state: () => ({
@@ -20,7 +17,9 @@ export const useMediaStore = defineStore('media', {
     }),
     
     actions: {
-        async get(page = 2, per_page = 8, fileType, month, term, orderBy, orderDir ) {
+        async get(page = 2, per_page = 8, fileType: string, month: string, term: string, orderBy: string, orderDir: string ) {
+            this.isLoading = true
+            
             let {data, pending, status, error } = await useFetchApi(`/api/media`, {
                 method: 'GET',
                 query: {
@@ -32,12 +31,14 @@ export const useMediaStore = defineStore('media', {
                     orderBy: orderBy,
                     orderDir: orderDir
                 }
-            })
+            }) as any
+
+            this.isLoading = pending.value
 
             if(error.value) {
                 console.error(error.value)
             } else {
-                if(data.value) {
+                if(data.value && status.value === 'success') {
                     this.data = data.value.media
         
                     this.pagination.total = data.value.pagination.total
@@ -80,13 +81,20 @@ export const useMediaStore = defineStore('media', {
         //     return res.data.data
         // }, 
 
-        async uploadFiles(files) {
+        async uploadFiles(files: object) {
             const { data, error } = await useFetchApi('/api/media', {
                 method: 'POST',
                 body: files,
             }) as any 
-        }
 
+            if(error.data) {
+                useFlashStore().error(error.value.data.errors.flash.message)
+            } else {
+                if(data.value) {
+                    return data.value
+                }
+            }
+        }
     },
 
     persist: true

@@ -42,30 +42,31 @@ function uploadFiles(files) {
             let form = new FormData;
 
             form.append('file', media.file)
-   
-            $axios.default.headers['Authorization'] = 'Bearer ' + $auth.token
-            $axios.post('/api/media', form, {
-                onUploadProgress: (event) => {
-                    media.progress = Math.round(event.loaded * 100 / event.total);
-                },
-            })
-            .then(({data}) => {
-                emitAddedToLibrary(data.file);
+            
+            $media.uploadFiles()
 
-                media.uploaded = true;
-                media.id = data.file.id;
-                media.previewUrl = data.file.previewUrl;
-                media.file = data.file
-                $flash.success(data.flash.message)
-            })
-            .catch(error => {
-                media.error = 'Uploaded Fail. Please try again later;';
-                if (error?.response.status === 422) {
-                    media.error = error.response.data.errors.file[0];
-                }
+            // $axios.post('/api/media', form, {
+            //     onUploadProgress: (event) => {
+            //         media.progress = Math.round(event.loaded * 100 / event.total);
+            //     },
+            // })
+            // .then(({data}) => {
+            //     emitAddedToLibrary(data.file);
+
+            //     media.uploaded = true;
+            //     media.id = data.file.id;
+            //     media.previewUrl = data.file.previewUrl;
+            //     media.file = data.file
+            //     $flash.success(data.flash.message)
+            // })
+            // .catch(error => {
+            //     media.error = 'Uploaded Fail. Please try again later;';
+            //     if (error?.response.status === 422) {
+            //         media.error = error.response.data.errors.file[0];
+            //     }
                 
-                $flash.error(media.error)
-            })
+            //     $flash.error(media.error)
+            // })
         })
     ;
 }

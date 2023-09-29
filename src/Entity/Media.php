@@ -21,12 +21,12 @@ class Media
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['media:read'])]
+    #[Groups(['media:read'])] 
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['media:read'])]
-    private ?string $fileName = null;
+    #[Groups(['media:read'])] 
+    private ?string $fileName = null; /* TODO: dodać unique */
 
     #[ORM\Column(length: 255)]
     #[Groups(['media:read'])]

@@ -17,7 +17,7 @@ watch(() => props.selected, (e) => {
 </script>
 
 <template>
-    <div @mouseover="isShowFieldAction = true"  @mouseleave="isShowFieldAction = false" class="w-full h-60 relative bg-black rounded overflow-hidden flex flex-col">
+    <div @mouseover="isShowFieldAction = true"  @mouseleave="isShowFieldAction = false" class="w-full h-60 relative bg-black  rounded-xl overflow-hidden flex flex-col">
         <div v-if="isFieldSelected" class="absolute left-0 top-2 w-10 text-center z-10">
            <slot name="selected"></slot>
         </div>

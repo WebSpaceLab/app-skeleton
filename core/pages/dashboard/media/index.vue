@@ -22,7 +22,7 @@ const orderDir = ref('desc')
 
 let isShowModalDialog = ref(false)
 let isShowPreviewImage = ref(false)
-let IsShowTable = ref(true)
+let IsShowTable = ref(false)
 let isShowModalPhotoDetails = ref(false)
 let fileEdit = ref(null)
 let isShowActions = ref(false)
@@ -179,8 +179,9 @@ function showFieldAction() {
 </script>
 
 <template>
-    <x-section-dashboard  >
+    <x-section-dashboard >
         <template #header-panel>
+
             <!--
                 <x-btn
                     class="h-9"
@@ -196,76 +197,74 @@ function showFieldAction() {
                     Add new folder
                 </x-btn>
             -->
+            <x-search v-model="query.term" icon />
 
             <x-btn
                 @click="isShowModalDialog = true"
-                class="h-9"
+                class="h-9 w-9"
+                color="secondary-outline"
+                :tooltip="{text: 'Add new assets'}"
+                shadow
+                rounded
+                icon
+            >
+                <Icon name="material-symbols:attach-file-add-rounded" class="text-xl" />
+            </x-btn>
+
+            <x-btn
+                @click="switchBetweenTablesPerTabs"
+                class="h-9 w-9"
+                :tooltip="{text: IsShowTable ? 'Grid preview':'List preview'}"
                 color="secondary-outline"
                 shadow
                 rounded
-                icon-left
+                icon
             >
-                <template #icon-left>
-                    <Icon name="material-symbols:attach-file-add-rounded" class="text-xl" />
-                </template>
-
-                Add new assets
+                <Icon v-if="IsShowTable" name="material-symbols:grid-view-rounded" class="text-xl" />
+                <Icon v-else name="material-symbols:view-list-rounded" class="text-xl" />
             </x-btn>
         </template>
 
         <template #main>
             <div class="w-full h-full p-6 lg:p-10 box-border dark:bg-gray-800/20 transition-all duration-500 rounded-xl">
-                <div class="w-full flex justify-between mb-8">
-                    <div class="flex justify-center items-center space-x-3 ">
+                <!--
+                    <div class="w-full flex justify-between mb-8">
                         <div class="flex justify-center items-center space-x-3 ">
-                            <div v-if="!IsShowTable">
-                                <div class="w-6 text-center bg-black/30 p-3 rounded-xl">
-                                    <input v-model="selectAll" type="checkbox" @change="toggleSelectAll" class="w-6 h-6 bg-background-light dark:bg-background-dark text-muted-light dark:text-muted-dark rounded border-solid border-muted-light dark:border-muted-dark lg:w-4 lg:h-4 focus:ring-blue-500">
+                            <div class="flex justify-center items-center space-x-3 ">
+                                <div v-if="!IsShowTable">
+                                    <div class="w-6 text-center bg-black/30 p-3 rounded-xl">
+                                        <input v-model="selectAll" type="checkbox" @change="toggleSelectAll" class="w-6 h-6 bg-background-light dark:bg-background-dark text-muted-light dark:text-muted-dark rounded border-solid border-muted-light dark:border-muted-dark lg:w-4 lg:h-4 focus:ring-blue-500">
+                                    </div>
+                                </div>
+    
+                                <select v-model="orderBy" name="orderBy" aria-label="orderBy" id="orderBy" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
+                                    <option value="created_at">Uploading</option>
+                                    <option value="name">Alphabetically</option>
+                                    <option value="updated_at">Updates</option>
+                                </select>
+        
+                                <select v-model="orderDir" name="orderDir" aria-label="orderDir" id="orderDir" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
+                                    <option value="desc">Sort by descending</option>
+                                    <option value="asc">Sort by ascending</option>
+                                </select>
+    
+                                <select v-model="query.fileType"  aria-label="Media type" id="type" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
+                                    <option v-for="fileType in allFileTypes" :key="fileType.value" :value="fileType.value">{{ fileType.label }}</option>
+                                </select>
+    
+                                <select v-model="query.month"  aria-label="Media date" id="date" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
+                                    <option v-for="month in allMonths" :key="month.value" :value="month.value">{{ month.label }}</option>
+                                </select>
+    
+                                <div >
+                                    <x-select-action :actions="actions" :isShowActions="isShowActions" @execute="executeAction" />
                                 </div>
                             </div>
-
-                            <select v-model="orderBy" name="orderBy" aria-label="orderBy" id="orderBy" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
-                                <option value="created_at">Uploading</option>
-                                <option value="name">Alphabetically</option>
-                                <option value="updated_at">Updates</option>
-                            </select>
-    
-                            <select v-model="orderDir" name="orderDir" aria-label="orderDir" id="orderDir" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
-                                <option value="desc">Sort by descending</option>
-                                <option value="asc">Sort by ascending</option>
-                            </select>
-
-                            <select v-model="query.fileType"  aria-label="Media type" id="type" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
-                                <option v-for="fileType in allFileTypes" :key="fileType.value" :value="fileType.value">{{ fileType.label }}</option>
-                            </select>
-
-                            <select v-model="query.month"  aria-label="Media date" id="date" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
-                                <option v-for="month in allMonths" :key="month.value" :value="month.value">{{ month.label }}</option>
-                            </select>
-
-                            <div >
-                                <x-select-action :actions="actions" :isShowActions="isShowActions" @execute="executeAction" />
-                            </div>
                         </div>
+    
+    
                     </div>
-
-                    <div class="flex justify-center items-center space-x-3">
-                        <x-btn
-                            @click="switchBetweenTablesPerTabs"
-                            class="h-9 w-9"
-                            :tooltip="{text: IsShowTable ? 'Grid preview':'List preview'}"
-                            color="secondary-outline"
-                            shadow
-                            rounded
-                            icon
-                        >
-                            <Icon v-if="IsShowTable" name="material-symbols:grid-view-rounded" class="text-xl" />
-                            <Icon v-else name="material-symbols:view-list-rounded" class="text-xl" />
-                        </x-btn>
-
-                        <x-search v-model="query.term" icon />
-                    </div>
-                </div>
+                -->
 
 
                 <div class="w-full h-full">
@@ -274,11 +273,12 @@ function showFieldAction() {
                              v-if="IsShowTable"
                              :head="['preview', 'name', 'size', 'created', 'last update', '' ]"
                              @select-all="toggleSelectAll"
+                             :loading="$media.isLoading"
                          >
                          
                              <x-table-body v-for="(file, index) in $media.data" :key="file.index = index">
                                  <x-table-body-cell  justify="center">
-                                     <input v-model="file.selected" @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light dark:bg-background-dark text-blue-600 rounded border-gray-300 lg:w-4 lg:h-4 focus:ring-blue-500">
+                                     <input v-model="file.selected" @change="showFieldAction" type="checkbox" class="hidden md:block w-6 h-6 bg-background-light dark:bg-background-dark text-blue-600 rounded border-gray-300 lg:w-4 lg:h-4 focus:ring-blue-500">
                                  </x-table-body-cell>
          
                                  <x-table-body-cell justify="start">
@@ -330,52 +330,52 @@ function showFieldAction() {
                          </x-table>
 
                          <div v-else >                    
-                             <div v-if="$media.data" class="grid grid-cols-4 gap-6">
-                                 <x-photo-card
-                                   v-for="(file, index) in $media.data"
-                                   :key="file.index = index"
-                                   :file="file"
-                                   @showFieldAction="showFieldAction"
-                                 >
-                                     <template #selected>
-                                         <input v-model="file.selected"  @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light dark:bg-background-dark text-muted-light dark:text-muted-dark rounded border-solid border-muted-light dark:border-muted-dark lg:w-4 lg:h-4 focus:ring-blue-500">
-                                     </template>
-         
-                                     <template #action>
-                                         <x-btn  @click="getPreviewImage(file)" color="secondary-outline" icon  :tooltip="{text: 'Preview'}" rounded>
-                                             <Icon name="mdi:eye"  class="text-2xl"/>
-                                         </x-btn>
-         
-                                         <x-btn
-                                             @click="openEditFile(file)"
-                                             class="h-9 w-9"
-                                             :tooltip="{text: 'Edit'}"
-                                             color="secondary-outline"
-                                             rounded
-                                             icon
-                                         >
-                                             <Icon name="material-symbols:edit" class="text-xl" />
-                                         </x-btn>
-         
-                                         
-                                         <x-btn
-                                             :tooltip="{text: 'Deleted'}"
-                                             class="h-9 w-9"
-                                             @click="deletedFile(file.id)"
-                                             color="danger-outline"
-                                             icon
-                                             rounded
-                                         >
-                                             <Icon name="material-symbols:restore-from-trash-outline-sharp"  class="text-2xl" />
-                                         </x-btn>
-                                     </template>
-                                 </x-photo-card>
-                             </div>
-                         </div>
+                            <div v-if="$media.data" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 xl:gap-6">
+                                <x-photo-card
+                                    v-for="(file, index) in $media.data"
+                                    :key="file.index = index"
+                                    :file="file"
+                                    @showFieldAction="showFieldAction"
+                                >
+                                    <template #selected>
+                                        <input v-model="file.selected"  @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light/50 dark:bg-background-dark/50 text-muted-light dark:text-muted-dark rounded border-solid border-muted-light dark:border-muted-dark lg:w-4 lg:h-4 focus:ring-blue-500">
+                                    </template>
+        
+                                    <template #action>
+                                        <x-btn  @click="getPreviewImage(file)" color="secondary-outline" icon  :tooltip="{text: 'Preview'}" rounded>
+                                            <Icon name="mdi:eye"  class="text-2xl"/>
+                                        </x-btn>
+        
+                                        <x-btn
+                                            @click="openEditFile(file)"
+                                            class="h-9 w-9"
+                                            :tooltip="{text: 'Edit'}"
+                                            color="secondary-outline"
+                                            rounded
+                                            icon
+                                        >
+                                            <Icon name="material-symbols:edit" class="text-xl" />
+                                        </x-btn>
+        
+                                        
+                                        <x-btn
+                                            :tooltip="{text: 'Deleted'}"
+                                            class="h-9 w-9"
+                                            @click="deletedFile(file.id)"
+                                            color="danger-outline"
+                                            icon
+                                            rounded
+                                        >
+                                            <Icon name="material-symbols:restore-from-trash-outline-sharp"  class="text-2xl" />
+                                        </x-btn>
+                                    </template>
+                                </x-photo-card>
+                            </div>
+                        </div>
 
-                         <div v-if="$media.data">
-                             <x-pagination :count="$media.data.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
-                         </div>
+                        <div v-if="$media.data">
+                            <x-pagination :count="$media.data.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
+                        </div>
                     </div>
 
                 </div>

@@ -20,19 +20,19 @@ function typeLinks(type) {
 
 <template>
     <transition
-        enter-active-class="transition ease-out duration-300"
-        enter-from-class="transform opacity-0 -translate-x-64"
-        enter-to-class="transform opacity-100 translate-x-0"
-        leave-active-class="transition ease-in duration-300"
-        leave-from-class="transform opacity-100 translate-x-0"
-        leave-to-class="transform opacity-0 -translate-x-64"
+        enter-active-class="transition ease-out duration-500"
+        :enter-from-class="`transform ${ $dashboard.sidebar.isRightSide ? 'translate-x-64' : '-translate-x-64'}`"
+        enter-to-class="transform  translate-x-0"
+        leave-active-class="transition ease-in duration-500"
+        leave-from-class="transform translate-x-0"
+        :leave-to-class="`transform  ${ $dashboard.sidebar.isRightSide ? 'translate-x-64' : '-translate-x-64'}`"
     >
         <div
             v-show="$dashboard.sidebar.isShow"
-            class="fixed md:relative z-20 duration-300 transition-all h-screen md:top-0 top-20"
+            class="fixed w-full z-30 h-screen top-0 transition-all duration-500"
             :class="[
                 $dashboard.sidebar.isRightSide ? 'right-0' : 'left-0',
-                $dashboard.sidebar.isRail? 'w-14' : 'w-full md:w-64'
+                $dashboard.sidebar.isRail ? 'w-24' : ' w-64'
             ]"
         >
         
@@ -40,14 +40,13 @@ function typeLinks(type) {
                 :class="[
                     $dashboard.sidebar.isRail ? 'w-24' : 'w-64',
                 ]"
-                class="w-full  h-full fixed h-screen top-0 box-border flex justify-center shadow-black shadow-lg rounded-xl p-4 bg-background-light dark:bg-background-dark"
+                class="w-full  h-full h-screen transition-all duration-500 top-0 box-border flex justify-center shadow-black shadow-lg rounded-xl p-4 bg-background-light dark:bg-background-dark"
             >
 
                 <div 
-                    class="w-full h-full pt-20 flex flex-col justify-between duration-300 overscroll-contain box-border"
+                    class="w-full h-full pt-20 flex flex-col justify-between transition-all duration-500 overscroll-contain box-border"
                     :class="[
                         $dashboard.sidebar.isRail ? 'w-14' : 'w-60',
-                        $navbar.isScroll ? 'fixed  md:top-0' : 'md:top-0 '
                     ]"
                 >
                     <div class="w-full">

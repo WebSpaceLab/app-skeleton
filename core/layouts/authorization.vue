@@ -11,16 +11,26 @@ const setColorTheme = (newTheme) => {
                 <NavbarDashboard >
                     <template  #bar>
                         <div
-                            class="flex justify-start px-4"
+                            class="flex justify-start px-4 "
                             :class="[$dashboard.sidebar.isRail ? '' : 'w-64']"
                         >
-                            <x-btn @click="$dashboard.sidebar.isShow = !$dashboard.sidebar.isShow" class=" bg-slate-400/80 hover:bg-slate-600/80" color="secondary" rounded icon>
+                            <x-btn @click="$dashboard.sidebar.isShow = !$dashboard.sidebar.isShow" class=" bg-slate-400/80 hover:bg-slate-600/80" color="secondary-outline" rounded icon>
                                 <Icon v-if="$dashboard.sidebar.isShow" class="text-2xl" name="mdi:close" />
                                 <Icon v-else class="text-2xl" name="material-symbols:menu-rounded" />
                             </x-btn>
     
-                            <x-btn v-if="$dashboard.sidebar.isShow" @click="$dashboard.sidebar.isRail = !$dashboard.sidebar.isRail" color="secondary" class="hidden lg:inline-block ml-3 bg-slate-400/80 hover:bg-slate-600/80" rounded icon>
+                            <x-btn v-if="$dashboard.sidebar.isShow" @click="$dashboard.sidebar.isRail = !$dashboard.sidebar.isRail" color="secondary-outline" class="ml-3 bg-slate-400/80 hover:bg-slate-600/80" rounded icon>
                                 <Icon class="text-2xl transition-all duration-300 ease-in" name="material-symbols:swap-horizontal-circle-rounded" :class="{'rotate-180' : $dashboard.sidebar.isRail}"/>
+                            </x-btn>
+
+                            <x-btn v-if="$dashboard.sidebar.isShow" @click="$dashboard.sidebar.isRightSide = !$dashboard.sidebar.isRightSide" color="secondary-outline" class="ml-3 bg-slate-400/80 hover:bg-slate-600/80" rounded icon>
+                                <Icon v-if="$dashboard.sidebar.isRightSide" class="text-2xl transition-all duration-300 ease-in" name="streamline:interface-layout-5-column-header-layout-layouts-masthead-sidebar" />
+                                <Icon v-else class="text-2xl transition-all duration-300 ease-in" name="streamline:interface-layout-4-column-header-layout-layouts-masthead-sidebar"/>
+                            </x-btn>
+
+                            <x-btn @click="$dashboard.sidebar.isShowHelperBar = !$dashboard.sidebar.isShowHelperBar" class="ml-3 bg-slate-400/80 hover:bg-slate-600/80" color="secondary-outline" rounded icon>
+                                <Icon class="text-2xl" name="octicon:sidebar-expand-16" :class="$dashboard.sidebar.isShowHelperBar ? 'rotate-90' : 'rotate-270'" />
+             
                             </x-btn>
                         </div>
                     </template>

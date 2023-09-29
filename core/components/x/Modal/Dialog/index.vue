@@ -36,7 +36,7 @@ const minimization = ref(false)
         :closeable="closeable"
         @close="close"
     >   
-        <div class="bg-prime-light dark:bg-prime-dark max-h-[calc(100vh-40px)] flex flex-col">
+        <div class="bg-prime-light overflow-auto dark:bg-prime-dark max-h-[calc(100vh-40px)] flex flex-col">
             <div class="h-full">
                 <div class="h-10 px-3 py-2 flex justify-between items-center text-lg bg-gradient-to-r from-prime-light to-second-light dark:from-prime-dark dark:to-second-dark ">
                     <h3 class="text-bold text-basic-light dark:text-basic-dark">
@@ -51,7 +51,7 @@ const minimization = ref(false)
                     </div>
                 </div>
     
-                <div class="max-h-200 px-6 overflow-y-auto">
+                <div class="px-6 overflow-auto">
                     <slot  />
                 </div>
             </div>

@@ -7,6 +7,7 @@ export const useDashboardStore = defineStore('dashboard', {
             isShow: true,
             isRail: true,
             isRightSide: true,
+            isShowHelperBar: true,
             links: [
                 {  title: 'Homepage',  icon: 'ic:sharp-home', name: 'index', path: '/', type: 'basic', access: 'ROLE_USER', children: []},
                 {  title: 'Dashboard', icon: 'mdi:desktop-mac-dashboard', name: 'dashboard', path: '/dashboard', access: 'ROLE_USER', type: 'basic', children: [] },

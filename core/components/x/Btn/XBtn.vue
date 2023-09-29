@@ -92,6 +92,12 @@ function rippleClick () {
     ripple.value = !ripple.value;
     }, 300);
 }
+
+watch(() => isTooltip.value, () => {
+    setTimeout(() => {
+        isTooltip.value = false
+    }, 3000);
+})
 </script>
 
 <template>

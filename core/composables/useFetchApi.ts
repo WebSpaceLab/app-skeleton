@@ -5,7 +5,10 @@ export function useFetchApi<T>(path: string, options: UseFetchOptions<T> = { hea
     // const token: string | any = useCookie('Api-Token')
     const { $auth } = useNuxtApp()
 
-    let headers: any = {}
+    let headers: any = {
+        accept: "application/json",
+        referer: config.public.appUrl
+    }
 
     if($auth.token) {
         headers['Authorization'] = 'Bearer ' + $auth.token as string
@@ -14,11 +17,11 @@ export function useFetchApi<T>(path: string, options: UseFetchOptions<T> = { hea
     if(process.server) {
         headers = {
             ...headers,
-            ...useRequestHeaders(["referer", "cookie"])
+            ...useRequestHeaders(["cookie"])
         }
     }
 
-    return useFetch(config.public.api + path, {
+    return useFetch(config.public.apiUrl + path, {
         ...options, 
         credentials: 'include',
         watch: false,

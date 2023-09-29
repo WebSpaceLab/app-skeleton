@@ -10,24 +10,13 @@ const props = defineProps({
 
 <template>
     <div
-        class="relative w-full min-h-screen duration-300 box-border md:ml-8 px-8 pt-6"
+        class="relative w-full flex min-h-screen transition-all duration-500 box-border "
         :class="[
-            $dashboard.sidebar.isShow ?
-            $dashboard.sidebar.isRail ? 'md:is-rail-sidebar' : 'md:is-show-sidebar'
-                : '',
+            $dashboard.sidebar.isRightSide ? 'justify-start' : 'justify-end',
+
             container ? 'container mx-auto' : ''
         ]"
     >
         <slot />
     </div>
 </template>
-
-<style lang="scss" scoped>
-.is-show-sidebar {
-    width: calc(100% - 250px);
-}
-
-.is-rail-sidebar {
-    width: calc(100% - 60px);
-}
-</style>

@@ -15,19 +15,21 @@ watch(() => $dashboard.sidebar.isRail, (event) => {
 </script>
 
 <template>
-    <li class="w-full mt-4 transition-all duration-300  ease-in list-none">
+    <li class="w-full mt-4 ease-in list-none">
         <NuxtLink
             v-if="!link.children.length"
             :class="$dashboard.sidebar.isRail ? '' : 'overflow-hidden'"
             :to="{path: link.path }"
-            class="h-10 w-full flex decoration-none text-muted-light  dark:text-muted-dark hover:text-hover-800  dark:hover:text-hover-200  rounded"
+            class="h-10 w-full flex decoration-none text-muted-light  dark:text-muted-dark hover:text-hover-800  dark:hover:text-hover-200 rounded"
             activeClass="link-active"
         >
             <div class="w-10">
                 <Icon class="text-2xl" :name="link.icon"></Icon>
             </div>
 
-            <span class="ml-3" v-if="!$dashboard.sidebar.isRail" >{{ link.title }}</span>
+            <span class="ml-3 transition-all duration-500" v-if="!$dashboard.sidebar.isRail" >
+                {{ link.title }}
+            </span>
 
         </NuxtLink>
 
@@ -38,10 +40,10 @@ watch(() => $dashboard.sidebar.isRail, (event) => {
                 $dashboard.sidebar.isRail ? '' : 'overflow-hidden',
                 open ? 'font-semibold text-blue-600' : 'font-medium hover:bg-hover-200'
             ]"
-            class="flex justify-between items-center cursor-pointer decoration-none h-10 w-full rounded  dark:text-muted-dark hover:text-hover-800  dark:hover:text-hover-200 "
+            class="flex justify-between items-center cursor-pointer decoration-none h-10 w-full rounded  dark:text-muted-dark hover:text-hover-800  dark:hover:text-hover-200"
             activeClass="link-active"
         >
-           <div v-if="!$dashboard.sidebar.isRail" class="flex items-start">
+           <div v-if="!$dashboard.sidebar.isRail" class="flex items-start transition-all duration-500">
                <div v-if="!open" class="flex justify-start w-10 items-center">
                    <Icon class="text-2xl" :name="link.icon"></Icon>
                </div>
@@ -52,7 +54,7 @@ watch(() => $dashboard.sidebar.isRail, (event) => {
             <span
                 v-if="link.children.length"
             >
-                <Icon v-if="$dashboard.sidebar.isRail && !open" class="text-2xl" :name="link.icon"/>
+                <Icon v-if="$dashboard.sidebar.isRail && !open" class="text-2xl transition-all duration-500" :name="link.icon"/>
 
                 <Icon
                   v-else
