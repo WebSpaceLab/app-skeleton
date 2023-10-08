@@ -88,6 +88,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Media::class)]
     private Collection $media;
 
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Inbox::class)]
+    private Collection $inboxes;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -95,6 +98,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->comments = new ArrayCollection();
         $this->resetPasswordTokens = new ArrayCollection();
         $this->media = new ArrayCollection();
+        $this->inboxes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -446,6 +450,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($medium->getAuthor() === $this) {
                 $medium->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Inbox>
+     */
+    public function getInboxes(): Collection
+    {
+        return $this->inboxes;
+    }
+
+    public function addInbox(Inbox $inbox): static
+    {
+        if (!$this->inboxes->contains($inbox)) {
+            $this->inboxes->add($inbox);
+            $inbox->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInbox(Inbox $inbox): static
+    {
+        if ($this->inboxes->removeElement($inbox)) {
+            // set the owning side to null (unless already changed)
+            if ($inbox->getOwner() === $this) {
+                $inbox->setOwner(null);
             }
         }
 

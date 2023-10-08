@@ -1,7 +1,5 @@
 <script setup>
-const { $inbox, $flash } = useNuxtApp()
-
-const errors = ref(null)
+const { $inbox } = useNuxtApp()
 
 const data = ref({
     subject: '',
@@ -22,12 +20,8 @@ const reset = () => {
 }
 
 const onSubmit = () => {
-    $inbox.send(data.value).then(res => {
-        $flash.success(res.data.flash.message)
-        reset()
-    }).catch((err) => {
-        errors.value = err.response.data.errors
-    })
+    $inbox.send(data.value)
+    reset()
 }
 
 </script>
@@ -52,7 +46,7 @@ const onSubmit = () => {
                 "
                 />
 
-                <span v-if="errors && errors.subject" class="text-danger-600 text-[14px] font-semibold ml-4">{{ errors.subject[0] }}</span>
+                <span v-if="$inbox.errors && $inbox.errors.subject" class="text-danger-600 text-[14px] font-semibold ml-4">{{ $inbox.errors.subject }}</span>
         </div>
 
         <div class="mb-6">
@@ -73,7 +67,7 @@ const onSubmit = () => {
                 "
             />
 
-            <span v-if="errors && errors.sender" class="text-danger-600 text-[14px] font-semibold ml-4">{{ errors.sender[0] }}</span>
+            <span v-if="$inbox.errors && $inbox.errors.sender" class="text-danger-600 text-[14px] font-semibold ml-4">{{ $inbox.errors.sender }}</span>
         </div>
 
         <div class="mb-6">
@@ -94,7 +88,7 @@ const onSubmit = () => {
                 "
             />
 
-            <span v-if="errors && errors.email" class="text-danger-600 text-[14px] font-semibold ml-4">{{ errors.email[0] }}</span>
+            <span v-if="$inbox.errors && $inbox.errors.email" class="text-danger-600 text-[14px] font-semibold ml-4">{{ $inbox.errors.email }}</span>
         </div>
 
         <div class="mb-6">
@@ -115,7 +109,7 @@ const onSubmit = () => {
                 "
             />
 
-            <span v-if="errors && errors.phone" class="text-danger-600 text-[14px] font-semibold ml-4">{{ errors.phone[0] }}</span>
+            <span v-if="$inbox.errors && $inbox.errors.phone" class="text-danger-600 text-[14px] font-semibold ml-4">{{ $inbox.errors.phone }}</span>
         </div>
 
         <div class="mb-6">
@@ -137,7 +131,7 @@ const onSubmit = () => {
                 "
             ></textarea>
 
-            <span v-if="errors && errors.content" class="text-danger-600 text-[14px] font-semibold ml-4">{{ errors.content[0] }}</span>
+            <span v-if="$inbox.errors && $inbox.errors.content" class="text-danger-600 text-[14px] font-semibold ml-4">{{ $inbox.errors.content }}</span>
         </div>
 
         <div>

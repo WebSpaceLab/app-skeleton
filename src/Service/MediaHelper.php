@@ -42,10 +42,6 @@ class MediaHelper
         ],
     ];
 
-    protected static $keys = [
-
-    ];
-
     public function __construct(private Packages $packages, private MediaRepository $mediaRepository) {}
 
     public function getFileType($media)

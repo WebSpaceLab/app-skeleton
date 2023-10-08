@@ -36,8 +36,8 @@ class MediaController extends AbstractAPIController
         private QueryHelper $QueryHelper
     ) {}
 
-    #[Route('', name: ':index', methods: ['GET'])]
-    public function list(Request $request, MediaRepository $mediaRepository, #[CurrentUser()] User $user,): JsonResponse
+    #[Route('', name: ':list', methods: ['GET'])]
+    public function list(Request $request, MediaRepository $mediaRepository, #[CurrentUser()] User $user): JsonResponse
     {
         $query = $request->query->all();
 

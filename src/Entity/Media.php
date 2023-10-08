@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\MediaRepository;
-use App\Service\MediaHelper;
 use App\Trait\Timestamps;
 use Carbon\Carbon;
 use Doctrine\DBAL\Types\Types;
