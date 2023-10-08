@@ -15,7 +15,8 @@ use Symfony\Contracts\Service\Attribute\Required;
 abstract class AbstractAPIController extends AbstractController
 {
     protected SerializerInterface $serializer;
- 
+    protected ValidatorInterface $validator;
+    protected $flashBag;
 
     public function response( mixed $data, array $groups = [], int $status = 200, array $headers = []): JsonResponse
     {
@@ -25,6 +26,10 @@ abstract class AbstractAPIController extends AbstractController
             },
             AbstractNormalizer::GROUPS => $groups,
         ];
+
+        if($this->flashBag) {
+            $data['flash'] = $this->flashBag;
+        }
 
         return $this->json(
             $data,
@@ -58,28 +63,41 @@ abstract class AbstractAPIController extends AbstractController
         return $this->redirect($fullUrl, $status);
     }
 
-    // public function validate(mixed $value = null, array $data = null): mixed
-    // {
-    //     $constraints = new Assert\Collection($value);
+    protected function flash( mixed $message, string $type = 'success'): void
+    {
+        if($message) {
+            $this->flashBag = [
+                'type' => $type, 
+                'message' => $message
+            ];
+        }
+    }
 
-    //     $violations = $this->validator->validate($data, $constraints);
+    public function validate(mixed $value = null, mixed $data = null)
+    {
+        $constraints = new Assert\Collection($value);
 
-    //     if (count($violations) > 0) {
-    //         $errors = [];
-    //         foreach ($violations as $violation) {
-    //             $propertyPath = trim($violation->getPropertyPath(), '[\]');
-    //             $errors[$propertyPath] = $violation->getMessage();
-    //         }
+        $violations = $this->validator->validate($data, $constraints);
 
-    //         return $this->json(['errors' => $errors], Response::HTTP_BAD_REQUEST); 
-    //     }
-    // }
+        if (count($violations) > 0) {
+            $errors = [];
+            foreach ($violations as $violation) {
+                $propertyPath = trim($violation->getPropertyPath(), '[\]');
+                $errors[$propertyPath] = $violation->getMessage();
+            }
+
+            return $this->json(['errors' => $errors], Response::HTTP_BAD_REQUEST); 
+        }
+
+        return;
+    }
+
+    
 
     #[Required]
-    public function setServices(SerializerInterface $serializer)
+    public function setServices(SerializerInterface $serializer, ValidatorInterface $validator)
     {
         $this->serializer = $serializer;
-
-        // $this->validator = $validator;
+        $this->validator = $validator;
     }
 }

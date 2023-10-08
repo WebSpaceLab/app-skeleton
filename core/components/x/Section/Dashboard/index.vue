@@ -30,7 +30,7 @@
         <x-section-dashboard-header>
             <template #panel>
                 <div class="flex items-center">
-                    <div class="flex justify-end space-x-3">
+                    <div class="flex justify-end  space-x-3">
                         <slot name="header-panel"></slot>
                         
                         <x-btn

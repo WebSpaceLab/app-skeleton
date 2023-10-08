@@ -17,10 +17,10 @@ export const useMediaStore = defineStore('media', {
     }),
     
     actions: {
-        async get(page = 2, per_page = 8, fileType: string, month: string, term: string, orderBy: string, orderDir: string ) {
+        async get(page = 2, per_page = 8, fileType: string, month: string, term: string, orderBy: string, orderDir: string, path = `/api/media`) {
             this.isLoading = true
             
-            let {data, pending, status, error } = await useFetchApi(`/api/media`, {
+            let {data, pending, status, error } = await useFetchApi(path, {
                 method: 'GET',
                 query: {
                     per_page: per_page,
@@ -52,48 +52,67 @@ export const useMediaStore = defineStore('media', {
             }
         },
         
-        // async updatedMedia(mediaId, form) {
-        //     const res = await $axios.put(`/api/media/${mediaId}/update`, form)
+        async updatedMedia(mediaId = null, form = null) {
+            this.isLoading = true
+            
+            let {data, pending, status, error } = await useFetchApi(`/api/media/${mediaId}`, {
+                method: 'PATCH',
+                body: form
+            }) as any
 
-        //     useFlashStore().success(res.data.flash.message)
+            this.isLoading = pending.value
 
-        //     if(res.data.data) {
-        //        this.getMedia() 
-        //     }
+            if(error.value) {
+                console.error(error.value)
+                useFlashStore().error(error.value.data.flash.message)
 
-        //     return res.data
-        // },
+                return error.value
+            } else {
+                if(data.value && status.value === 'success') {
+                    useFlashStore().success(data.value.flash.message)
+                    
+                    return data.value
+                }
+            }
+        },
 
-        // async deletedMedia(mediaId) {
-        //     const res = await $axios.delete(`/api/media`, {
-        //         preserveState: false,
-        //         data: {
-        //             mediaIds: [mediaId],
-        //         },
-        //     })
+        async deletedMedia(mediaId = null) {
+            const { data, error, status } = await useFetchApi('/api/media/' + mediaId, {
+                method: 'DELETE'
+            }) as any 
 
-        //     useFlashStore().success(res.data.flash.message)
+            if(error.value) {
+                useFlashStore().error(error.value.data.flash.message)
 
-        //     if(res.data.data) {
-        //        this.getMedia() 
-        //     }
+                console.error(error.value)
+                return error.value
+            } else {
+                if(data.value && status.value === 'success') {
+                    useFlashStore().success(data.value.flash.message)
+                    
+                    return status.value
+                }
+            }
+        }, 
 
-        //     return res.data.data
-        // }, 
-
-        async uploadFiles(files: object) {
-            const { data, error } = await useFetchApi('/api/media', {
+        async uploadMovieFile(files: object) {
+            this.isLoading = true
+            const { data, error } = await useFetchApi('/api/media/movie', {
                 method: 'POST',
                 body: files,
             }) as any 
+            
+            this.isLoading = false
 
             if(error.data) {
                 useFlashStore().error(error.value.data.errors.flash.message)
             } else {
                 if(data.value) {
+                    useFlashStore().success(data.value.flash.message)
                     return data.value
                 }
             }
+
         }
     },
 

@@ -10,6 +10,8 @@
         "doctrine/doctrine-bundle": "^2.10",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.15",
+        "intervention/image": "^2.7",
+        "janwebdev/symfony-intervention-image-bundle": "^1.0",
         "nelmio/api-doc-bundle": "^4.12",
         "nelmio/cors-bundle": "^2.3",
         "nesbot/carbon": "^2.68",

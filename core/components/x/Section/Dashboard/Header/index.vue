@@ -95,15 +95,14 @@ onMounted(() => {
                         : '',
                 $dashboard.sidebar.isRightSide ? 'left-0' : 'right-0',
             ]"
-            class="z-20 fixed top-20 w-full flex flex-col md:flex-row pl-4 pr-6 space-y-2 justify-between items-start box-border rounded-xl transition-all duration-500"
+            class="z-20 fixed top-20 w-full flex flex-col md:flex-row pl-4 pr-6 space-y-2 justify-between items-end box-border rounded-xl transition-all duration-500"
         >
             <div class="h-full hidden md:block  -translate-x-2 translate-y-3">
                 <x-breadcrumb :first-link="firstLink[0]" :second-link="secondLink[0]" :third-link="thirdLink[0]" :last-link="currentLink[0]" />
                 <slot name="header"></slot>
             </div>
 
-            <div class="h-full flex justify-center items-center p-2 transition-all duration-500 rounded-lg  space-x-3 box-border" :class="$navbar.isScroll ? 'bg-second-light/70 dark:bg-second-dark/70' : ''">
-
+            <div class="h-full flex justify-center items-center p-2 transition-all duration-500 rounded-lg  space-x-3 box-border" :class="$navbar.isScroll ? 'bg-second-light/70 dark:bg-second-dark/90' : ''">
                 <slot name="panel"/>
             </div>
         </header>

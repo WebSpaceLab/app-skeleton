@@ -1,4 +1,5 @@
 <script setup>
+// TODO: Poprawić paginacje, jak jest wiecej zakładek to cyfry nie wczytują się jak należy .
 const props = defineProps({
     pagination: {
         type: Object,
@@ -72,14 +73,14 @@ function getPreviewPages() {
 }
 
 
-// watch(() => input.value, (page) => {
-//     const numberPage = Number(page)
+watch(() => input.value, (page) => {
+    const numberPage = Number(page)
 
-//     if(numberPage >= 0 && numberPage <= props.pagination.total_pages ) {
-//         getPage(page)
+    if(numberPage >= 0 && numberPage <= props.pagination.total_pages ) {
+        getPage(page)
     
-//     }
-// })
+    }
+})
 
 watch(() => props.pagination.per_page, (perPage) => {
     emits('per_page', perPage)

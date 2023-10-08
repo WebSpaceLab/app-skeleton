@@ -27,12 +27,18 @@ const props = defineProps({
     modelValue: {
         type: String,
         required: true
-    }
+    },
+    closeable: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const emits = defineEmits([
-    'update:modelValue'
+    'update:modelValue',
 ]);
+
+let isShowFieldAction = ref(false)
 
 let inputColor = computed(() => {
     return {
@@ -60,31 +66,99 @@ let iconColor = computed(() => {
 </script>
 
 <template>
-    <div class="relative">
-        <div
-            v-if="icon"
-            :class="[iconColor, iconPosition === 'left' ? 'left-0' : 'right-0']"
-            class="absolute inset-y-0 flex items-center p-3"
-        >
-            <Icon name="bi:search" class="text-xl"></Icon>
+    <div class="relative w-full">
+        <div class="flex space-x-3">
+            <div class="hidden md:flex">
+                <div
+                    v-if="icon"
+                    :class="[iconColor, iconPosition === 'left' ? 'left-0' : 'right-0']"
+                    class="absolute inset-y-0 flex items-center p-3"
+                >
+                    <Icon name="bi:search" class="text-xl"></Icon>
+                </div>
+        
+                <div
+                    v-if="rightIcon"
+                    :class="[iconColor]"
+                    class="absolute inset-y-0 right-0 flex items-center p-3"
+                >
+                    <Icon name="bi:search" class="text-xl"></Icon>
+                </div>
+        
+                <input
+                    :value="modelValue"
+                    @input="event => emits('update:modelValue', event.target.value)"
+                    :class="[inputColor, icon & iconPosition === 'left' ? 'pl-10' : 'pl-3']"
+                    :placeholder="placeholder"
+                    class="block px-3 pb-2 h-9 pt-2 w-full text-sm rounded-2xl border-1 bg-background dark:bg-background-dark appearance-none focus:right-1 focus:outline-none focus:ring-1 left-3"
+                    type="search"
+                    autofocus
+                />
+            </div>
+            
+            <x-btn
+                @click="isShowFieldAction = true"
+                class="h-9 w-9"
+                color="secondary-outline"
+                :tooltip="{text: 'Filters'}"
+                shadow
+                rounded
+                icon
+            >
+                <Icon name="ic:sharp-manage-search" class="text-xl" />
+            </x-btn>
         </div>
 
-        <div
-            v-if="rightIcon"
-            :class="[iconColor]"
-            class="absolute inset-y-0 right-0 flex items-center p-3"
-        >
-            <Icon name="bi:search" class="text-xl"></Icon>
-        </div>
+        <x-modal
+            :show="isShowFieldAction"
+            max-width="max"
+            :closeable="closeable"
+            @close="event => isShowFieldAction = event"
+        >   
+            <div class="w-full h-screen lg:h-150 bg-prime-light dark:bg-prime-dark max-h-[calc(100vh-40px)] flex flex-col">
+                <div class="w-full h-full flex flex-col items-center">
+                    <div class="relative w-full flex h-15 rounded-t-lg">
+                        <div
+                            v-if="icon"
+                            :class="[iconColor, iconPosition === 'left' ? 'left-0' : 'right-0']"
+                            class="absolute inset-y-0 flex items-center p-3"
+                        >
+                            <Icon name="bi:search" class="text-xl"></Icon>
+                        </div>
+                
+                        <v-btn
+                            @click="isShowFieldAction = false"
+                            :class="[iconColor]"
+                            class="absolute top-4 right-3 h-7 box-border bg-gray-600 inset-y-0 right-0 flex items-center p-3"
+                            rounded
+                        >
+                            <Icon name="mdi:keyboard-esc" class="text-xl text-gray-400"></Icon>
+                        </v-btn>
+                
+                        <input
+                            :value="modelValue"
+                            @input="event => emits('update:modelValue', event.target.value)"
+                            :class="[inputColor, icon & iconPosition === 'left' ? 'pl-10' : 'pl-3']"
+                            :placeholder="placeholder"
+                            class="block px-3 h-15 w-full text-xl border-1 rounded-t-lg bg-background dark:bg-background-dark appearance-none focus:right-1 focus:outline-none focus:ring-1 left-3"
+                            type="search"
+                            autofocus
+                        />
+                    </div>
 
-        <input
-            :value="modelValue"
-            @input="event => emits('update:modelValue', event.target.value)"
-            :class="[inputColor, icon & iconPosition === 'left' ? 'pl-10' : 'pl-3']"
-            :placeholder="placeholder"
-            class="block px-3 pb-2 h-9 pt-2 w-full text-sm rounded-2xl border-1 bg-background dark:bg-background-dark appearance-none focus:right-1 focus:outline-none focus:ring-1 left-3"
-            type="search"
-            autofocus
-        />
+                    <div class="w-full h-auto md:px-3 py-2 z-10 flex flex-col space-y-3 box-border">
+                        <div class="w-full h-auto pb-3 flex justify-center items-center box-border transition-all duration-300">
+                            <slot  name="selectedAction"/>
+                        </div>
+                    </div>
+
+                    <div class="w-full h-full flex flex-col space-y-3 box-border">
+                        <div class="w-full h-full py-3 md:px-3 overflow-y-scroll box-border mb-36">
+                            <slot name="answer"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </x-modal>
     </div>
 </template>

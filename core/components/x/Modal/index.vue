@@ -97,7 +97,7 @@ const maxWidthClass = computed(() => {
                     leave-to-class="opacity-0"
                 >
                     <div v-show="show" class="fixed inset-0 transform transition-all" @click="close">
-                        <div class="absolute inset-0 bg-black/20" />
+                        <div class="absolute inset-0 bg-black/60" />
                     </div>
                 </transition>
 
@@ -111,7 +111,7 @@ const maxWidthClass = computed(() => {
                 >
                     <div
                         v-show="show"
-                        class="rounded-lg shadow-xl shadow-black transform transition-all sm:mx-auto z-80"
+                        class="rounded-lg m-4 shadow-xl shadow-black transform transition-all sm:mx-auto z-80 border-solid border-1 border-gray-300 dark:border-gray-700 rounded-lg"
                         :class="[
                             maxWidthClass,
                             overflowHidden ? 'overflow-hidden' : ''

@@ -1,6 +1,6 @@
 <script setup>
 import { storeToRefs } from 'pinia';
-const { $media } = useNuxtApp()
+const { $media, $auth } = useNuxtApp()
 const { pagination, fileTypes, months, queryParams  } = storeToRefs($media)
 
 definePageMeta({
@@ -17,8 +17,8 @@ const query = ref({
 })
 
 const perPage = ref()
-const orderBy = ref('created_at')
-const orderDir = ref('desc')
+const orderBy = ref('createdAt')
+const orderDir = ref('DESC')
 
 let isShowModalDialog = ref(false)
 let isShowPreviewImage = ref(false)
@@ -41,7 +41,6 @@ const allFileTypes =  computed(() => {
     ];
 })
 
-
 const allMonths = computed(() => {
     return [
         {value: null, label: 'Any date'},
@@ -50,10 +49,10 @@ const allMonths = computed(() => {
 }) 
 
 async function  getMedia () {
-    try {
+    if($auth.accessGranted('ROLE_ADMIN')) {
+        await $media.get(page.value, perPage.value, query.value.fileType, query.value.month, query.value.term, orderBy.value, orderDir.value, '/api/admin/media' )
+    } else {
         await $media.get(page.value, perPage.value, query.value.fileType, query.value.month, query.value.term, orderBy.value, orderDir.value )
-    } catch (error) {
-        console.error(error)
     }
 }
 
@@ -183,6 +182,7 @@ function showFieldAction() {
         <template #header-panel>
 
             <!--
+                TODO: Dodaj możliwość dodawania folderów do zdjęć
                 <x-btn
                     class="h-9"
                     color="secondary-outline"
@@ -197,7 +197,75 @@ function showFieldAction() {
                     Add new folder
                 </x-btn>
             -->
-            <x-search v-model="query.term" icon />
+            <x-search class="" v-model="query.term" icon >
+                <template #selectedAction>
+                    <div class="relative grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 xl:gap-4 xl:px-6">
+                        <select v-model="orderBy" name="orderBy" aria-label="orderBy" id="orderBy" class="w-full h-10 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
+                            <option value="createdAt">Uploading</option>
+                            <option value="name">Alphabetically</option>
+                            <option value="updatedAt">Updates</option>
+                        </select>
+    
+                        <select v-model="orderDir" name="orderDir" aria-label="orderDir" id="orderDir" class="w-full h-10 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
+                            <option value="desc">Sort by descending</option>
+                            <option value="asc">Sort by ascending</option>
+                        </select>
+    
+                        <select v-model="query.fileType"  aria-label="Media type" id="type" class="w-full h-10 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
+                            <option v-for="fileType in allFileTypes" :key="fileType.value" :value="fileType.value">{{ fileType.label }}</option>
+                        </select>
+    
+                        <select v-model="query.month"  aria-label="Media date" id="date" class="w-full h-10 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
+                            <option v-for="month in allMonths" :key="month.value" :value="month.value">{{ month.label }}</option>
+                        </select>
+                    </div>
+                </template>
+
+                <template #answer>
+                    <div v-if="$media.data" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 xl:gap-4 px-6">
+                        <x-card-media
+                            v-for="(file, index) in $media.data"
+                            :key="file.index = index"
+                            :file="file"
+                            @showFieldAction="showFieldAction"
+                            class="h-50"
+                        >
+                            <template #selected>
+                                <input v-model="file.selected"  @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light/50 dark:bg-background-dark/50 text-muted-light dark:text-muted-dark rounded border-solid border-muted-light dark:border-muted-dark lg:w-4 lg:h-4 focus:ring-blue-500">
+                            </template>
+
+                            <template #action>
+                                <x-btn  @click="getPreviewImage(file)" color="secondary-outline" icon  :tooltip="{text: 'Preview'}" rounded>
+                                    <Icon name="mdi:eye"  class="text-2xl"/>
+                                </x-btn>
+
+                                <x-btn
+                                    @click="openEditFile(file)"
+                                    class="h-9 w-9"
+                                    :tooltip="{text: 'Edit'}"
+                                    color="secondary-outline"
+                                    rounded
+                                    icon
+                                >
+                                    <Icon name="material-symbols:edit" class="text-xl" />
+                                </x-btn>
+
+                                
+                                <x-btn
+                                    :tooltip="{text: 'Deleted'}"
+                                    class="h-9 w-9"
+                                    @click="deletedFile(file.id)"
+                                    color="danger-outline"
+                                    icon
+                                    rounded
+                                >
+                                    <Icon name="material-symbols:restore-from-trash-outline-sharp"  class="text-2xl" />
+                                </x-btn>
+                            </template>
+                        </x-card-media>
+                    </div>
+                </template>
+            </x-search>
 
             <x-btn
                 @click="isShowModalDialog = true"
@@ -227,51 +295,27 @@ function showFieldAction() {
 
         <template #main>
             <div class="w-full h-full p-6 lg:p-10 box-border dark:bg-gray-800/20 transition-all duration-500 rounded-xl">
-                <!--
-                    <div class="w-full flex justify-between mb-8">
-                        <div class="flex justify-center items-center space-x-3 ">
-                            <div class="flex justify-center items-center space-x-3 ">
-                                <div v-if="!IsShowTable">
-                                    <div class="w-6 text-center bg-black/30 p-3 rounded-xl">
-                                        <input v-model="selectAll" type="checkbox" @change="toggleSelectAll" class="w-6 h-6 bg-background-light dark:bg-background-dark text-muted-light dark:text-muted-dark rounded border-solid border-muted-light dark:border-muted-dark lg:w-4 lg:h-4 focus:ring-blue-500">
-                                    </div>
-                                </div>
-    
-                                <select v-model="orderBy" name="orderBy" aria-label="orderBy" id="orderBy" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
-                                    <option value="created_at">Uploading</option>
-                                    <option value="name">Alphabetically</option>
-                                    <option value="updated_at">Updates</option>
-                                </select>
-        
-                                <select v-model="orderDir" name="orderDir" aria-label="orderDir" id="orderDir" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
-                                    <option value="desc">Sort by descending</option>
-                                    <option value="asc">Sort by ascending</option>
-                                </select>
-    
-                                <select v-model="query.fileType"  aria-label="Media type" id="type" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
-                                    <option v-for="fileType in allFileTypes" :key="fileType.value" :value="fileType.value">{{ fileType.label }}</option>
-                                </select>
-    
-                                <select v-model="query.month"  aria-label="Media date" id="date" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
-                                    <option v-for="month in allMonths" :key="month.value" :value="month.value">{{ month.label }}</option>
-                                </select>
-    
-                                <div >
-                                    <x-select-action :actions="actions" :isShowActions="isShowActions" @execute="executeAction" />
-                                </div>
-                            </div>
-                        </div>
-    
-    
-                    </div>
-                -->
-
-
                 <div class="w-full h-full">
+                    <div class="flex justify-start items-center py-1">
+                        <div v-if="!IsShowTable" class="flex justify-center items-center mr-4">
+                            <div class="w-6 text-center  bg-black/30 p-3 rounded-xl mr-2">
+                                <input v-model="selectAll" type="checkbox" @change="toggleSelectAll" class="w-3 h-3 bg-background-light dark:bg-background-dark text-muted-light dark:text-muted-dark rounded border-solid border-muted-light dark:border-muted-dark lg:w-4 lg:h-4 focus:ring-blue-500">
+                            </div>
+
+                            <span class="text-muted-light dark:text-muted-dark">
+                                Select all
+                            </span>
+                        </div>
+
+                        <div >
+                            <x-select-action :actions="actions" :isShowActions="isShowActions" @execute="executeAction" />
+                        </div>
+                    </div>
+
                     <div class="w-full h-full">
                         <x-table
                              v-if="IsShowTable"
-                             :head="['preview', 'name', 'size', 'created', 'last update', '' ]"
+                             :head="['preview', 'name', 'size', 'deleted', 'Used', 'created', 'last update', '' ]"
                              @select-all="toggleSelectAll"
                              :loading="$media.isLoading"
                          >
@@ -282,7 +326,9 @@ function showFieldAction() {
                                  </x-table-body-cell>
          
                                  <x-table-body-cell justify="start">
-                                     <x-photo-card-preview :file="file" />
+                                     <x-photo-card-preview v-if="file.mimeType === 'image/jpeg' || file.mimeType === 'image/png'" :file="file" />
+
+                                     <x-card-media v-else  :file="file" />
                                  </x-table-body-cell>
          
                                  <x-table-body-cell>
@@ -292,15 +338,25 @@ function showFieldAction() {
                                  <x-table-body-cell>
                                      {{ file.size }} KB
                                  </x-table-body-cell>
-         
-                                 <x-table-body-cell>
-                                     {{ file.created_at }}
+
+                                 <x-table-body-cell >
+                                    <span :class="file.isDelete ? 'text-danger-600' : ''">
+                                        {{ file.isDelete ? 'Yes' : 'No' }}
+                                    </span>
+                                 </x-table-body-cell>
+
+                                 <x-table-body-cell >
+                                    <span :class="file.isUsed ? 'text-danger-600' : ''">
+                                        {{ file.isUsed ? 'Yes' : 'No' }}
+                                    </span>
                                  </x-table-body-cell>
          
-                                 <x-table-body-cell >
-                                     <div v-if="file.created_at !== file.updated_at">
-                                         {{ file.updated_at }}
-                                     </div>
+                                 <x-table-body-cell>
+                                     {{ file.createdAtAgo }}
+                                 </x-table-body-cell>
+         
+                                 <x-table-body-cell>
+                                    {{ file.updatedAtAgo }}
                                  </x-table-body-cell>
          
                                  <x-table-body-cell justify="center">
@@ -331,11 +387,12 @@ function showFieldAction() {
 
                          <div v-else >                    
                             <div v-if="$media.data" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 xl:gap-6">
-                                <x-photo-card
+                                <x-card-media
                                     v-for="(file, index) in $media.data"
                                     :key="file.index = index"
                                     :file="file"
                                     @showFieldAction="showFieldAction"
+                                    class="h-60"
                                 >
                                     <template #selected>
                                         <input v-model="file.selected"  @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light/50 dark:bg-background-dark/50 text-muted-light dark:text-muted-dark rounded border-solid border-muted-light dark:border-muted-dark lg:w-4 lg:h-4 focus:ring-blue-500">
@@ -369,7 +426,7 @@ function showFieldAction() {
                                             <Icon name="material-symbols:restore-from-trash-outline-sharp"  class="text-2xl" />
                                         </x-btn>
                                     </template>
-                                </x-photo-card>
+                                </x-card-media>
                             </div>
                         </div>
 
@@ -382,7 +439,7 @@ function showFieldAction() {
                 
                 <x-modal-photo-dropzone
                     :show="isShowModalDialog"
-                    @close="event = isShowModalDialog = event"
+                    @close="event => isShowModalDialog = event"
                     @addedToLibrary="addedToLibrary"
                     :multiple="true"
                     title="Add new assets"
@@ -391,7 +448,7 @@ function showFieldAction() {
                 <x-modal-photo-details
                     :show="isShowModalPhotoDetails"
                     :file="fileEdit"
-                    @close="event = isShowModalPhotoDetails = false"
+                    @close="event => isShowModalPhotoDetails = false"
                     @addedToLibrary="addedToLibrary"
                     title="Photo details"
                 />

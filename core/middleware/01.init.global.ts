@@ -25,7 +25,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         } else {
             $auth.isLoggedIn = false
         }
-
+        // TODO - jeżeli jest error 401 to wyloguj
         if($auth.token === null ) {
             $auth.logout()
         }

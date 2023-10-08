@@ -44,23 +44,20 @@ const addedToLibrary = (event) => {
         @close="close"
         :title="title"
         :minimization="minimization"
+        :footer="false"
     >
-        <x-tabs :tabs="['from computer']">
+        <x-tabs :tabs="['Add media', 'Add media from url']">
             <template #tab-0>
                 <div class="py-6">
                     <x-photo-dropzone @addedToLibrary="addedToLibrary" :multiple="multiple" />
                 </div>
             </template>
 
-            <!--
-                
-                            <template #tab-1>
-                                <div>
-                                    <x-photo-from-url />
-                                </div>
-                            </template>
-            -->
-
+            <template #tab-1>
+                <div>
+                    <x-form-movie @addedToLibrary="addedToLibrary" @close="close" />
+                </div>
+            </template>
         </x-tabs>
     </x-modal-dialog>
 </template>

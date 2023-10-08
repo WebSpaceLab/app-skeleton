@@ -7,6 +7,7 @@ export function useFetchApi<T>(path: string, options: UseFetchOptions<T> = { hea
 
     let headers: any = {
         accept: "application/json",
+        "Content-Type": "application/json",
         referer: config.public.appUrl
     }
 
@@ -26,7 +27,6 @@ export function useFetchApi<T>(path: string, options: UseFetchOptions<T> = { hea
         credentials: 'include',
         watch: false,
         headers: {
-            "Content-Type": "application/json",
             ...headers,
             ...options?.headers,
         }

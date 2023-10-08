@@ -179,8 +179,16 @@ function onTouchmove(touch) {
             
                 <header @mouseover="isShowHeader = true" @mouseleave="isShowHeader = false" class="h-20 w-screen px-8  box-border" :class="isFullScreen ? isShowHeader ? 'absolute top-0 left-0 z-50 bg-black/60' : 'hidden' : 'relative mb-6 bg-black'">
                     <div class="w-full h-full flex justify-between items-center px-5 box-border">
-                        <h2 v-if="viewPhotos.length > 1" class="flex text-lg text-blue-300">
-                            <span class="text-gray-600">{{ preview.index + 1 }}</span> <span class="text-gray-600"> / </span> <span class="text-gray-600">{{ viewPhotos.length }}</span>
+                        <h2 v-if="viewPhotos.length > 1" class="flex text-lg text-blue-300 space-x-4">
+                            <span class=" text-gray-600 flex uppercase truncate ">{{ preview.name }}</span>
+                            
+                            <div class="flex space-x-1">
+                                <span class="text-gray-600">[</span>
+                                <span class="text-gray-600">{{ preview.index + 1 }}</span> 
+                                <span class="text-gray-600"> / </span> 
+                                <span class="text-gray-600">{{ viewPhotos.length }} </span>
+                                <span class="text-gray-600">]</span>
+                            </div>
                         </h2>
         
                         <div class="w-full flex justify-end space-x-3 px-1 md:px-3 lg:px-6" >
@@ -223,7 +231,7 @@ function onTouchmove(touch) {
                         
                     -->
                     
-                    <div class="relative w-full md:w-auto md:h-full flex justify-center items-center bg-black overflow-hidden">
+                    <div class="relative w-screen md:h-full flex justify-center items-center bg-black overflow-hidden">
                         <div
                             @click="previous(preview.index)"
                             v-if="preview.index != 0"
@@ -241,7 +249,19 @@ function onTouchmove(touch) {
                             :leave-to-class="right ? 'transform -translate-x-[100%] blur-100' : 'transform translate-x-[100%] blur-100'"
                         >
                                 <div v-if="preview && isShowPreview" class="relative w-full md:w-auto md:h-full">
-                                    <img @touchend="onTouchmove" class="w-full md:w-auto md:h-full" :src="preview.previewUrl" :alt="preview.name" />
+                                    <img v-if="preview.mimeType === 'image/jpeg' || preview.mimeType === 'image/png'" @touchend="onTouchmove" class="w-full md:w-auto md:h-full" :src="preview.previewUrl" :alt="preview.name" />
+                                    
+                                    <video v-if="preview.mimeType === 'video/mp4'" class="w-screen h-full px-20 box-border" controls>
+                                        <source :src="preview.previewUrl" :type="preview.mimeType">
+                                    </video>
+
+                                    <iframe 
+                                        v-if="preview.movieUrl" 
+                                        :src="preview.movieUrl" 
+                                        class="w-screen h-full px-20 box-border aspect-video"
+                                        frameborder="0"
+                                        allowfullscreen
+                                    ></iframe>
 
                                     <transition
                                         enter-active-class="transition ease-in duration-300"
@@ -294,13 +314,31 @@ function onTouchmove(touch) {
         
                         <div v-for="(photo, index) in viewPhotos" :key="photo.index = index" class="h-full flex justify-center items-center my-4 rounded-lg duration-300 ">
                             <img
-                                v-if="photo"
+                                v-if="photo.mimeType === 'image/jpeg' || photo.mimeType === 'image/png'"
                                 :alt="photo.name"
                                 :class="[photo.index === preview.index ? 'border border-active scale-100 transition-all duration-300 ease-linear shadow-xl shadow-black' : 'scale-80 transition-all duration-300 ease-linear']"
                                 :src="photo.previewUrl"
                                 @click="openPreview(photo)"
                                 class="h-full w-30 cursor-pointer object-cover rounded-lg"
                             />
+
+                            <video 
+                                v-if="photo.mimeType === 'video/mp4'"
+                                :class="[photo.index === preview.index ? 'border border-active scale-100 transition-all duration-300 ease-linear shadow-xl shadow-black' : 'scale-80 transition-all duration-300 ease-linear']"
+                                @click="openPreview(photo)"
+                                class="h-full w-30 cursor-pointer object-cover rounded-lg"
+                            >
+                                <source :src="photo.previewUrl" :type="photo.mimeType">
+                            </video>
+
+                            <iframe 
+                                v-if="photo.movieUrl" 
+                                :src="photo.movieUrl" 
+                                :class="[photo.index === preview.index ? 'border border-active scale-100 transition-all duration-300 ease-linear shadow-xl shadow-black' : 'scale-80 transition-all duration-300 ease-linear']"
+                                class="h-full w-30 cursor-pointer object-cover rounded-lg aspect-video"
+                                frameborder="0"
+                                allowfullscreen
+                            ></iframe>
                         </div>
         
                         <div v-if="viewPhotos.length > 6" @click="nextImages()" class="h-full p-3 flex justify-center items-center cursor-pointer bg-black/30 hover:bg-hover-600/30 rounded-r-xl">

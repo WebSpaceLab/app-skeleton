@@ -35,6 +35,9 @@
             "./migrations/.gitignore"
         ]
     },
+    "janwebdev/symfony-intervention-image-bundle": {
+        "version": "v1.0.0"
+    },
     "nelmio/api-doc-bundle": {
         "version": "4.12",
         "recipe": {

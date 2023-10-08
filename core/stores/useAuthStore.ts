@@ -95,7 +95,7 @@ export const useAuthStore = defineStore('auth', {
                         useAccountStore().init(this.user as IUser | any)
                         
                         navigateTo('/dashboard')
-                        useFlashStore().success(`Logowanie urzytkownika , przebiegło pomyślnie. Witaj :)`)
+                        useFlashStore().success(data.value.flash.message)
                         useNavbarStore().switchLogin(false)
                     }
                 }
@@ -162,15 +162,17 @@ export const useAuthStore = defineStore('auth', {
                 this.iri = null
                 this.roles = []
 
-                const {error, status} = await useFetchApi('/auth/logout', {method: 'POST'})                   
+                const {error, status, data} = await useFetchApi('/auth/logout', {method: 'POST'})                   
 
                 if(error.value) {
                     console.error(error.value)
+                } else {
+                    if(data.value && status.value == 'success') {
+                        navigateTo('/')
+                        useFlashStore().success(data.value.flash.message)
+                    }
                 }
 
-                navigateTo('/')
-                useFlashStore().success(`Wylogowanie przebiegło pomyślnie.`)
-                
                 this.status = status.value
                 this.isLoading = false
             }

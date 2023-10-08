@@ -52,7 +52,10 @@ class AccountController extends AbstractAPIController
         $userRepository->save($user, true);
 
         return $this->json([
-            'massage' => 'Dane użytkownika zostały zaktualizowane.'
+            'flash' => [
+                'type' => 'success',
+                'message' => 'Dane użytkownika zostały zaktualizowane.'
+            ],
         ]);
     }
 

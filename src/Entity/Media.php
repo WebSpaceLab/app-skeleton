@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\MediaRepository;
+use App\Service\MediaHelper;
 use App\Trait\Timestamps;
 use Carbon\Carbon;
 use Doctrine\DBAL\Types\Types;
@@ -10,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 class Media
 {
     use Timestamps;
@@ -17,34 +19,46 @@ class Media
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['media:read'])]
+    #[Groups(['media:read', 'admin:media:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['media:read'])] 
+    #[Groups(['media:read','admin:media:read'])] 
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
-    #[Groups(['media:read'])] 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['media:read', 'admin:media:read'])] 
     private ?string $fileName = null; /* TODO: dodać unique */
 
-    #[ORM\Column(length: 255)]
-    #[Groups(['media:read'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['media:read', 'admin:media:read'])]
     private ?string $mimeType = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $filePath = null;
 
-    #[ORM\Column]
-    #[Groups(['media:read'])]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups(['media:read', 'admin:media:read'])]
     private ?int $size = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['media:read'])]
+    #[Groups(['media:read', 'admin:media:read'])]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
     private ?User $author = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['admin:media:read'])]
+    private ?bool $isDelete = false;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['media:read', 'admin:media:read'])]
+    private ?string $movieUrl = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['admin:media:read'])]
+    private ?bool $isUsed = false;
 
     public function __construct()
     {
@@ -128,7 +142,7 @@ class Media
         return $this;
     }
 
-    #[Groups(['media:read'])]
+    #[Groups(['media:read', 'admin:media:read'])]
     public function getAuthor(): ?User
     {
         return $this->author;
@@ -141,13 +155,13 @@ class Media
         return $this;
     }
 
-    #[Groups(['media:read'])]
+    #[Groups(['media:read', 'admin:media:read'])]
     public function getCreatedAtAgo(): ?string
     {
         return  Carbon::instance($this->createdAt)->diffForHumans();
     }
 
-    #[Groups(['media:read'])]
+    #[Groups(['media:read', 'admin:media:read'])]
     public function getUpdatedAtAgo(): ?string
     {
         $updatedAtAgo = $this->updatedAt;
@@ -159,10 +173,52 @@ class Media
         return  $updatedAtAgo;
     }
 
-    #[Groups(['media:read'])]
+    #[Groups(['media:read', 'admin:media:read'])]
     public function getPreviewUrl(): ?string
     {
-
         return 'https://localhost:8000' . $this->filePath;
+    }
+
+    public function setPreviewUrl($url): self
+    {
+        $this->filePath = $url;
+
+        return $this;
+    }
+
+    public function isIsDelete(): ?bool
+    {
+        return $this->isDelete;
+    }
+
+    public function setIsDelete(?bool $isDelete): static
+    {
+        $this->isDelete = $isDelete;
+
+        return $this;
+    }
+
+    public function getMovieUrl(): ?string
+    {
+        return $this->movieUrl;
+    }
+
+    public function setMovieUrl(?string $movieUrl): static
+    {
+        $this->movieUrl = $movieUrl;
+
+        return $this;
+    }
+
+    public function isIsUsed(): ?bool
+    {
+        return $this->isUsed;
+    }
+
+    public function setIsUsed(?bool $isUsed): static
+    {
+        $this->isUsed = $isUsed;
+
+        return $this;
     }
 }

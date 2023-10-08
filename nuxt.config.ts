@@ -24,6 +24,7 @@ export default defineNuxtConfig({
         'nuxt-icon',
         '@nuxtjs/color-mode',
         '@unocss/nuxt',
+        
     ],
 
     imports: {

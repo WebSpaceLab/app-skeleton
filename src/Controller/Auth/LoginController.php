@@ -47,6 +47,8 @@ class LoginController extends AbstractAPIController
 
         $apiToken = $apiTokenHandler->createForUser($user);
 
+        $this->flash('Logowanie przebiegło pomyślnie.');
+
         return $this->response([
             'apiToken' => $apiToken,
             'iri' => $user->getIriFromResource(),
@@ -57,5 +59,16 @@ class LoginController extends AbstractAPIController
     public function logout(): void
     {
         throw new \Exception('Logout failed?'); 
+    }
+
+    #[Route('/auth/logout', name: 'app_auth_logout_redirected')]
+    public function logoutRedirected(): JsonResponse
+    {
+        return $this->response([
+            'flash' => [
+                'type' => 'success',
+                'message'=> 'Wylogowanie przebiegło pomyślnie.'
+            ]
+        ]);
     }
 }

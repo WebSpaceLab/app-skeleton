@@ -9,6 +9,9 @@ parameters:
     uploads_path: "%env(BACKEND_URL)%/public/uploads/"
 services:
     # default configuration for services in *this* file
+    Janwebdev\ImageBundle\Image: '@janwebdev.intervention.image'
+
+    Intervention\Image\ImageManagerStatic: '@intervention.image.factory'
     _defaults:
         autowire: true # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.

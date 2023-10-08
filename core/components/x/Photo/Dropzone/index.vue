@@ -18,7 +18,7 @@ const media = ref([])
 const files = ref()
 let fileEdit = ref(null)
 let isShowModalPhotoDetails = ref(false)
-let isCheckboxAddWithCropper = ref(true)
+let isCheckboxAddWithCropper = ref(false)
 let isShowModalPhotoCropper = ref(false)
 let uploadedImage = ref(null)
 let uploadedImageUrl = ref(null)
@@ -43,30 +43,33 @@ function uploadFiles(files) {
 
             form.append('file', media.file)
             
-            $media.uploadFiles()
+            $axios.post('/api/media', form, {
+                headers: {
+                    "Authorization": 'Bearer ' + $auth.token,
+                },
+                onUploadProgress: (event) => {
+                    media.progress = Math.round(event.loaded * 100 / event.total);
+                },
+            })
+            .then(({data}) => {
+                console.log(data)
+                emitAddedToLibrary(data.media);
 
-            // $axios.post('/api/media', form, {
-            //     onUploadProgress: (event) => {
-            //         media.progress = Math.round(event.loaded * 100 / event.total);
-            //     },
-            // })
-            // .then(({data}) => {
-            //     emitAddedToLibrary(data.file);
-
-            //     media.uploaded = true;
-            //     media.id = data.file.id;
-            //     media.previewUrl = data.file.previewUrl;
-            //     media.file = data.file
-            //     $flash.success(data.flash.message)
-            // })
-            // .catch(error => {
-            //     media.error = 'Uploaded Fail. Please try again later;';
-            //     if (error?.response.status === 422) {
-            //         media.error = error.response.data.errors.file[0];
-            //     }
+                media.uploaded = true;
+                media.id = data.media.id;
+                media.previewUrl = data.media.previewUrl;
+                media.mimeType = data.media.mimeType;
+                media.file = data.media
+                $flash.success(data.flash.message)
+            })
+            .catch(error => {
+                media.error = 'Uploaded Fail. Please try again later;';
+                if (error?.response.status === 422) {
+                    media.error = error.response.data.errors.file[0];
+                }
                 
-            //     $flash.error(media.error)
-            // })
+                $flash.error(media.error)
+            })
         })
     ;
 }
@@ -131,18 +134,20 @@ function uploadCropImage(data) {
             data.append('image', uploadedImage.value || '')
 
             $axios.post(`/api/media/with-cropper`, data, {
+                headers: {
+                    "Authorization": 'Bearer ' + $auth.token,
+                },
                 onUploadProgress: (event) => {
                     media.progress = Math.round(event.loaded * 100 / event.total);
                 },
             })
             .then(({data}) => {
-                emitAddedToLibrary(data.file);
+                emitAddedToLibrary(data.media);
 
                 media.uploaded = true;
-                media.id = data.file.id;
-                media.previewUrl = data.file.previewUrl;
-                media.file = data.file
-
+                media.id = data.media.id;
+                media.previewUrl = data.media.previewUrl;
+                media.file = data.media
                 $flash.success(data.flash.message)
             })
             .catch(error => {
@@ -182,7 +187,7 @@ function uploadCropImage(data) {
 
                 </svg>
 
-                <p class="text-xl text-gray-700">Drop files to upload</p>
+                <p class="text-xl text-gray-700">Drop image to upload</p>
 
                 <p class="mb-2 text-gray-700">or</p>
 
@@ -207,19 +212,19 @@ function uploadCropImage(data) {
                         name="files"
                         ref="files"
                         type="file"
-                        accept="image/png, image/jpeg, image/jpg"
                     >
                 </label>
 
-                <p class="text-xs text-gray-600 mt-4">Maximum upload file size: 512MB.</p>
+                <p class="text-xs text-gray-600 mt-4">Maximum upload image size: 512MB.</p>
             </div>
-
-            <div class="text-muted-light dark:text-muted-dark">
-                <div class="flex items-center mb-4">
-                    <input id="default-checkbox" type="checkbox" v-model="isCheckboxAddWithCropper"   class="w-4 h-4 text-muted-light dark:text-muted-dark bg-gray-300 border-gray-700 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="default-checkbox" class="ml-2 text-sm font-medium text-muted-light dark:text-muted-dark">Add with cropper</label>
+            <!--
+                <div class="text-muted-light dark:text-muted-dark">
+                    <div class="flex items-center mb-4">
+                        <input id="default-checkbox" type="checkbox" v-model="isCheckboxAddWithCropper"   class="w-4 h-4 text-muted-light dark:text-muted-dark bg-gray-300 border-gray-700 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="default-checkbox" class="ml-2 text-sm font-medium text-muted-light dark:text-muted-dark">Add image with cropper</label>
+                    </div>
                 </div>
-            </div>
+            -->
         </div>
  
         <ul v-if="media.length"  class="relative w-full  overflow-y-scroll">
@@ -229,7 +234,11 @@ function uploadCropImage(data) {
             >
 
                 <div v-if="item.previewUrl" class="w-20 h-20 bg-gray-300 flex-shrink-0 rounded-lg">
-                    <img :src="item.previewUrl" :alt="item.file.name" class="h-full w-full rounded-lg" />
+                    <img v-if="item.mimeType === 'image/jpeg' || item.mimeType === 'image/png'" :src="item.previewUrl" :alt="item.file.name" class="h-full w-full rounded-lg" />
+                    
+                    <video v-if="item.mimeType === 'video/mp4'" class="w-full h-full object-cover aspect-video">
+                        <source :src="item.previewUrl" :type="item.mimeType" :title="item.name">
+                    </video>
                 </div>
 
                 <div class="text-xs text-gray-400 flex-1 truncate">{{ item.file.name }}</div>

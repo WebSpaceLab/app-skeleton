@@ -27,11 +27,9 @@ trait Timestamps
         return $this->updatedAt;
     }
 
-    // #[ORM\PreUpdate()]
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
     {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
+        $this->updatedAt = new \DateTimeImmutable();
     }
 }
