@@ -1,7 +1,7 @@
 <script setup>
 import { storeToRefs } from 'pinia';
-const { $mediaStore } = useNuxtApp()
-const { media , pagination, months, queryParams  } = storeToRefs($mediaStore)
+const { $media } = useNuxtApp()
+const { data , pagination, months, queryParams  } = storeToRefs($media)
 
 const emits = defineEmits(['addedToLibrary', 'close'])
 
@@ -12,22 +12,24 @@ const props = defineProps({
     },
     fileType: {
         type: String,
-        default: 'image'
+        default: 'image/jpeg'
     },
     multiple: {
         type: Boolean,
         default: false
     },
-    currentImages: Array
+    currentImages: {
+        type: Array,
+        default: () => []
+    }
 })
 
-const loading = ref(false)
 const page = ref(1)
 
 const query = ref({
     term: queryParams.value.term ? queryParams.value.term : '',
-    fileType: props.fileType,
-    month: queryParams.value.month
+    fileType: queryParams.value.fileType ? queryParams.value.fileType : null,
+    month: queryParams.value.month ? queryParams.value.month : null
 })
 
 const gridCols = computed(() => {
@@ -41,7 +43,7 @@ const gridCols = computed(() => {
 })
 
 const perPage = ref()
-const orderBy = ref('created_at')
+const orderBy = ref('createdAt')
 const orderDir = ref('desc')
 
 let isShowModalDialog = ref(false)
@@ -63,18 +65,10 @@ const allMonths = computed(() => {
 }) 
 
 async function  getMedia () {
-    loading.value = true
-
-    try {
-        await $mediaStore.getMedia(page.value, perPage.value, props.fileType, query.value.month, query.value.term, orderBy.value, orderDir.value )
-       
-        if(props.currentImages.length) {
-            getSelectedImages()
-        }
-    } catch (error) {
-        console.error(error)
-    } finally {
-        loading.value = false
+    await $media.get(page.value, perPage.value, props.fileType, query.value.month, query.value.term, orderBy.value, orderDir.value, '/api/admin/media' )
+ 
+    if(props.currentImages.length) {
+        getSelectedImages()
     }
 }
 
@@ -93,7 +87,7 @@ function switchPerPage (event)  {
     getMedia()
 }
 function getSelectedImages() {
-    media.value.forEach(file => {
+    data.value.forEach(file => {
         props.currentImages.forEach((currentImage) => {
             if(file.id == currentImage.id) {
                 file.current = true
@@ -104,7 +98,7 @@ function getSelectedImages() {
 
 function toggleSelectAll(e) {
     console.log(e.target.checked)
-    media.value.forEach(file => file.selected = e.target.checked)
+    data.value.forEach(file => file.selected = e.target.checked)
     
     showFieldAction()
 }
@@ -122,7 +116,7 @@ function openEditFile(file) {
 async function deletedFile(mediaId) {
     if (confirm(`Czy na pewno chcesz usunąć ten plik?`)) {
         try {
-            await $mediaStore.deletedMedia(mediaId)
+            await $media.deletedMedia(mediaId)
         } catch (error) {
             console.error(error)
         } finally {
@@ -132,7 +126,7 @@ async function deletedFile(mediaId) {
 }
 
 async function executeAction(actionId) {
-    const fileIds = media.value.filter(file => file.selected)
+    const fileIds = data.value.filter(file => file.selected)
         .map(file => file.id);
 
     if (!actionId.length) return;
@@ -140,20 +134,14 @@ async function executeAction(actionId) {
     switch (actionId) {
         case 'delete':
             if (confirm(`Czy jesteś pewny, że chcesz usunąć?`)) {
-                fileIds.forEach(async (fileId) => {
-                    try {
-                        
-                        const deleteFile = await $mediaStore.deletedMedia(fileId)
-            
-                        if(deleteFile) {
-                            isShowActions.value = false
-                            selectAll.value = false
-    
-                            getMedia()
-                        }
+                fileIds.forEach(async (fileId) => {                   
+                    const deleteFile = await $media.deletedMedia(fileId)
+        
+                    if(deleteFile) {
+                        isShowActions.value = false
+                        selectAll.value = false
 
-                    } catch (error) {
-                        console.error(error)
+                        getMedia()
                     }
                 })
             }
@@ -161,7 +149,7 @@ async function executeAction(actionId) {
 
         case 'add photo':
                 fileIds.forEach((fileId) => {
-                    const photo = media.value.filter(item=> 
+                    const photo = data.value.filter(item=> 
                         item.id === fileId
                     )
 
@@ -179,13 +167,10 @@ async function executeAction(actionId) {
 }
 
 function showFieldAction() {
-    const isSelectedFile = media.value.filter(file => file.selected)
+    const isSelectedFile = data.value.filter(file => file.selected)
 
     if(isSelectedFile.length) {
         isShowActions.value = true
-
-
-
     } else {
         isShowActions.value = false
     }
@@ -219,7 +204,7 @@ function selectCheckbox(mediaId) {
     if(props.multiple) {
         showFieldAction()
     } else {
-        media.value.forEach(media => {
+        data.value.forEach(media => {
             if(media.id === mediaId) {
                 media.selected = true
             } else {
@@ -275,9 +260,9 @@ watch(() => orderDir.value, () => {
                     </div>
 
                     <select v-model="orderBy" name="orderBy" aria-label="orderBy" id="orderBy" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
-                        <option value="created_at">Uploading</option>
+                        <option value="createdAt">Uploading</option>
                         <option value="name">Alphabetically</option>
-                        <option value="updated_at">Updates</option>
+                        <option value="updatedAt">Updates</option>
                     </select>
 
                     <select v-model="orderDir" name="orderDir" aria-label="orderDir" id="orderDir" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
@@ -296,20 +281,20 @@ watch(() => orderDir.value, () => {
             </div>
 
             <div class="flex justify-center items-center space-x-3">
-                <x-search v-model="query.term" icon />
+                <x-search v-model="query.term" icon :filter="false" />
             </div>
         </div>
 
 
         <div class="w-full">
-            <div v-if="loading" class="w-full h-100 flex justify-center ">
-                <Spinner :loading="loading" />
+            <div v-if="$media.isLoading" class="w-full h-100 flex justify-center ">
+                <Spinner :loading="$media.isLoading" />
             </div>
 
             <div v-else class="w-full">
-                <div v-if="media" class="grid gap-6" :class="gridCols">
+                <div v-if="data" class="grid gap-6" :class="gridCols">
                     <template
-                        v-for="(file, index) in media"
+                        v-for="(file, index) in data"
                         :key="file.index = index"
                     >
                         <x-photo-card
@@ -355,8 +340,8 @@ watch(() => orderDir.value, () => {
                 </div>
             </div>
 
-            <div v-if="media">
-                <x-pagination :count="media.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
+            <div v-if="data">
+                <x-pagination :count="data.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
             </div>
 
         </div>
@@ -376,10 +361,10 @@ watch(() => orderDir.value, () => {
             title="Editing a photo"
         />
 
-        <div v-if="media && preview">
+        <div v-if="data && preview">
             <x-photo-preview
                 :isShowPreviewImage="isShowPreviewImage"
-                :photos="media"
+                :photos="data"
                 :preview="preview"
                 @close="event => isShowPreviewImage = event"
                 @preview="event => preview = event"

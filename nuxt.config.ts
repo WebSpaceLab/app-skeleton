@@ -8,10 +8,10 @@ export default defineNuxtConfig({
       }
     },
     srcDir: 'core/',
-    // ssr: true,
-    // experimental: {
-    //     componentIslands: true
-    // },
+    ssr: true,
+    experimental: {
+        componentIslands: true
+    },
     
     modules: [
         [

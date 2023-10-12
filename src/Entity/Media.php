@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\MediaRepository;
 use App\Trait\Timestamps;
 use Carbon\Carbon;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -18,15 +20,15 @@ class Media
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['media:read', 'admin:media:read'])]
+    #[Groups(['media:read', 'admin:media:read', 'admin:about:read', 'about:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['media:read','admin:media:read'])] 
+    #[Groups(['media:read','admin:media:read', 'admin:about:read', 'about:read'])] 
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['media:read', 'admin:media:read'])] 
+    #[Groups(['media:read', 'admin:media:read', 'admin:about:read'])] 
     private ?string $fileName = null; /* TODO: dodać unique */
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -59,9 +61,13 @@ class Media
     #[Groups(['admin:media:read'])]
     private ?bool $isUsed = false;
 
+    #[ORM\OneToMany(mappedBy: 'media', targetEntity: About::class)]
+    private Collection $abouts;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->abouts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -172,7 +178,7 @@ class Media
         return  $updatedAtAgo;
     }
 
-    #[Groups(['media:read', 'admin:media:read'])]
+    #[Groups(['media:read', 'admin:media:read', 'admin:about:read', 'about:read'])]
     public function getPreviewUrl(): ?string
     {
         return 'https://localhost:8000' . $this->filePath;
@@ -217,6 +223,36 @@ class Media
     public function setIsUsed(?bool $isUsed): static
     {
         $this->isUsed = $isUsed;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, About>
+     */
+    public function getAbouts(): Collection
+    {
+        return $this->abouts;
+    }
+
+    public function addAbout(About $about): static
+    {
+        if (!$this->abouts->contains($about)) {
+            $this->abouts->add($about);
+            $about->setMedia($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAbout(About $about): static
+    {
+        if ($this->abouts->removeElement($about)) {
+            // set the owning side to null (unless already changed)
+            if ($about->getMedia() === $this) {
+                $about->setMedia(null);
+            }
+        }
 
         return $this;
     }

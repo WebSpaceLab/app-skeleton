@@ -1,6 +1,14 @@
 <script setup>
 const props = defineProps({
-    head: Array
+    head: Array,
+    selected: {
+        type: Boolean,
+        default: true
+    },
+    justify: {
+        type: String,
+        default: 'center'
+    }
 })
 
 const emits = defineEmits([
@@ -14,12 +22,12 @@ function toggleSelectAll (e) {
 
 <template>
     <tr v-if="head">
-        <th class="w-6 text-center">
+        <th v-if="selected" class="w-6 text-center">
             <input type="checkbox" @change="toggleSelectAll" class="w-6 h-6 bg-background-light dark:bg-background-dark text-muted-light dark:text-muted-dark rounded border-solid border-muted-light dark:border-muted-dark lg:w-4 lg:h-4 focus:ring-blue-500">
         </th>
 
         <template v-for="(cell, index) in head" :key="index">
-            <x-table-head-cell :name="cell" />
+            <x-table-head-cell :name="cell" :justify="justify" />
         </template>
     </tr>
 

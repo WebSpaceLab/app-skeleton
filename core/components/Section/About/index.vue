@@ -70,13 +70,13 @@ watch(() => isChoice.value, () => {
 <template>
     <section v-if="$about.activeAbout.length != 0" id="o-nas" class="w-full min-h-screen relative scroll-mt-50 snap-start mb-20 lg:mb-0">
          <header class="relative w-full mt-4 flex justify-center">
-            <h2 style="background-image: url('/images/vector/background.jpg')"  class="relative w-[50%]  bg-fixed  bg-no-repeat bg-cover bg-center text-center  py-10 text-white text-3xl text-bold uppercase rounded-lg">
+            <!--
+            style="background-image: url('/images/vector/background.jpg')" 
+        -->
+            <h2  class="relative w-[50%]  bg-fixed  bg-no-repeat bg-cover bg-center text-center  py-10 text-white text-3xl text-bold uppercase rounded-lg">
                 <span class="bg-black/30 px-5 py-3 rounded-lg">
                     O nas 
                 </span>
-
-                <img src="/images/png/tribal-flower.png" alt="tribal flower" class="absolute -top-20 rotate-60 -left-5 w-30">
-                <img src="/images/png/tribal-flower.png" alt="tribal flower" class="absolute -bottom-20 rotate-240  -right-5 w-30">
             </h2>
         </header>
 
@@ -92,7 +92,7 @@ watch(() => isChoice.value, () => {
                                 :class="isSwitchFirstText ? 'scale-100 z-10 animated-2' : 'scale-80 blur-sm -z-1'"
                                 class="relative flex flex-col justify-center items-end duration-500 border-box rounded-lg"
                             >
-                                <img :src="$about.activeAbout[0]?.preview_image?.preview_url" :alt="$about?.activeAbout[0]?.name" data-aos="fade-down-right" data-aos-duration="1000" class="h-80 z-10 object-cover shadow-xl shadow-black rounded-lg">
+                                <img :src="$about.activeAbout[0]?.media?.previewUrl" :alt="$about?.activeAbout[0]?.media.name" data-aos="fade-down-right" data-aos-duration="1000" class="h-80 z-10 object-cover shadow-xl shadow-black rounded-lg">
                             </div>
     
                             <div
@@ -102,7 +102,7 @@ watch(() => isChoice.value, () => {
                                 :class="isSwitchLastText ? 'scale-100  z-10 animated-2' : 'scale-80 blur-sm -z-1'"
                                 class=" flex flex-col justify-center items-start duration-500 border-box rounded-lg"
                             >
-                                <img :src="$about?.activeAbout[2]?.preview_image?.preview_url" :alt="$about?.activeAbout[2]?.name" data-aos="fade-up-left" data-aos-duration="1000" class="h-80 object-cover shadow-xl shadow-black rounded-lg">
+                                <img :src="$about?.activeAbout[2]?.media?.previewUrl" :alt="$about?.activeAbout[2]?.media.name" data-aos="fade-up-left" data-aos-duration="1000" class="h-80 object-cover shadow-xl shadow-black rounded-lg">
                             </div>
                         </div>
     
@@ -113,7 +113,7 @@ watch(() => isChoice.value, () => {
                             :class=" isSwitchSecondText? 'sale-100 z-10 animated-1' : 'scale-80 blur-sm -z-1'"
                             class="duration-500 border-box rounded-lg"
                         >
-                            <img :src="$about?.activeAbout[1]?.preview_image?.preview_url" :alt="$about?.activeAbout[1]?.name" class="h-80 object-cover shadow-xl shadow-black rounded-lg" data-aos="zoom-in" data-aos-delay="500" data-aos-duration="1000">
+                            <img :src="$about?.activeAbout[1]?.media?.previewUrl" :alt="$about?.activeAbout[1]?.media.name" class="h-80 object-cover shadow-xl shadow-black rounded-lg" data-aos="zoom-in" data-aos-delay="500" data-aos-duration="1000">
                         </div>
                     </div>
                 </div>

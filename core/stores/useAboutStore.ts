@@ -18,21 +18,36 @@ export const useAboutStore = defineStore('about', {
 
             months: [],
             queryParams: {},
-            status: []
+            status: [],
+            isLoading: false,
+            errors: null as object | null,
         }
     },
 
     actions: {
         async get() {
-            let res: any = await useFetchApi(`/api/about`, {
+            this.isLoading = true
+
+            let {data, pending, status, error } = await useFetchApi(`/api/about`, {
                 method: 'GET'
-            })
+            }) as any
          
-            this.$state.activeAbout = res.data.about
+            
+            this.isLoading = pending.value
+            
+            if(error.value) {
+                console.error(error.value)
+            } else {
+                if(data.value && status.value === 'success') {
+                    this.$state.activeAbout = data.value.about
+                }
+            }
         },
 
-        async getAbout(query: any, perPage: any) {
-            let res: any = await useFetchApi(`/api/dashboard/about`, {
+        async getAbout(query: any, perPage: number, page: number) {
+            this.isLoading = true
+            
+            let {data, pending, status, error } = await useFetchApi(`/api/admin/about`, {
                 method: 'GET',
                 params: {
                     term: query.term,
@@ -40,60 +55,113 @@ export const useAboutStore = defineStore('about', {
                     month: query.month,
                     orderBy: query.orderBy,
                     orderDir: query.orderDir,
-                    per_page: perPage
+                    per_page: perPage,
+                    page: page
                 }
-            })
+            }) as any
          
-            this.$state.about = res.data.about
+            this.isLoading = pending.value
 
-            this.$state.pagination.total = res.data.pagination.total
-            this.$state.pagination.current_page = res.data.pagination.current_page
-            this.$state.pagination.per_page = res.data.pagination.per_page
-
-            this.$state.months = res.data.months
-            this.$state.status = res.data.status
-            this.$state.queryParams = res.data.queryParams   
+            if(error.value) {
+                console.error(error.value)
+            } else {
+                if(data.value && status.value === 'success') {
+                    this.about = data.value.about
+        
+                    this.pagination.total = data.value.pagination.total
+                    this.pagination.current_page = data.value.pagination.current_page
+                    this.pagination.per_page = data.value.pagination.per_page
+       
+                    this.status = data.value.status
+                    this.months = data.value.months
+                    this.queryParams = data.value.queryParams
+                }
+            }
         },
 
-        async store(form: object) {
-            const res: any = await useFetchApi(`/api/dashboard/about`, {
-                method: 'GET',
-                body: form
-            })
-            
-            if(res.data.flash.message) {
-                useFlashStore().success(res.data.flash.message)
-            }
+        async create(form: object) {
+            this.isLoading = true
+            this.errors = null
 
-            return res.data
+            let {data, pending, status, error } = await useFetchApi(`/api/admin/about`, {
+                method: 'POST',
+                body: form
+            }) as any
+
+            this.isLoading = pending.value
+
+            if(error.value) {
+                if (error.value.data.errors) {
+                    this.errors = error.value.data.errors
+                }
+
+                if(error.value.data.flash) {
+                    useFlashStore().error(error.value.data.flash.message)
+                }
+                return error.value
+            } else {
+                if(data.value && status.value === 'success') {
+                    useFlashStore().success(data.value.flash.message)
+
+                    return data.value
+                }
+            }
         },
         
         async update(aboutId: number, form: object) {
-            const res: any = await useFetchApi(`/api/dashboard/about/${aboutId}/update`, {
-                method: 'PUT',
+            this.isLoading = true
+            this.errors = null
+            
+            let {data, pending, status, error } = await useFetchApi(`/api/admin/about/${aboutId}`, {
+                method: 'PATCH',
                 body: form
-            })
+            }) as any
 
-            if(res.data.flash.message) {
-                useFlashStore().success(res.data.flash.message)
+            this.isLoading = pending.value
+
+            if(error.value) {
+                if (error.value.data.errors) {
+                    this.errors = error.value.data.errors
+                }
+
+                if(error.value.data.flash) {
+                    useFlashStore().error(error.value.data.flash.message)
+                }
+
+                return error.value
+            } else {
+                if(data.value && status.value === 'success') {
+                    useFlashStore().success(data.value.flash.message)
+
+                    return data.value
+                }
             }
-
-            return res.data
         },
 
         async destroy(aboutId: number) {
-            const res: any = await useFetchApi(`/api/dashboard/about`, {
-                method: 'PUT',
-                body: {
-                    aboutIds: [aboutId],
-                },
-            })
+            this.isLoading = true
+            this.errors = null
 
-            if(res.data.flash.message) {
-                useFlashStore().success(res.data.flash.message)
+            let {data, pending, status, error } = await useFetchApi(`/api/admin/about/${aboutId}`, {
+                method: 'DELETE'
+            }) as any
+
+            this.isLoading = pending.value
+
+            if(error.value) {
+                console.error(error.value)
+                if (error?.value.data.response.status === 422) {
+                    this.errors = error.value.data.response.file[0]
+                }
+                
+                useFlashStore().error(error.value.data.flash.message)
+            } else {
+                if(data.value && status.value === 'success') {
+                    useFlashStore().success(data.value.flash.message)
+
+                    return data.value
+                }
             }
-   
-            return res.data.data
         }
     },
 

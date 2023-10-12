@@ -35,7 +35,6 @@ function uploadFiles(files) {
         });
     });
 
-
     media.value
         .filter(media => !media.uploaded)
         .forEach(async media => {
@@ -52,7 +51,6 @@ function uploadFiles(files) {
                 },
             })
             .then(({data}) => {
-                console.log(data)
                 emitAddedToLibrary(data.media);
 
                 media.uploaded = true;

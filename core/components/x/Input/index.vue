@@ -122,7 +122,7 @@ let labelColor = computed(() => {
             </label>
         </div>
 
-        <div v-if="error" class="w-full text-center text-error-900 text-[14px] font-semibolds bg-error-300 p-2 box-border mt-1 rounded">
+        <div v-if="error" class="w-full text-center text-error-300 text-[14px] font-semibolds bg-error-900 p-1 box-border mt-1 rounded">
             {{ error }}
         </div>
     </ClientOnly>

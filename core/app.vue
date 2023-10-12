@@ -1,5 +1,5 @@
 <script setup>
-const {$general, $contact, $metaTags,  $social } = useNuxtApp()
+const {$general, $contact, $metaTags,  $social, $about } = useNuxtApp()
 
 const loading = ref(true);
 // const LoadProgress = ref(0)
@@ -10,6 +10,7 @@ onMounted(async () => {
     await $contact.get()
     await $metaTags.get()
     await $social.get()
+    await $about.get()
 
     // LoadProgress.value = Math.round(event.loaded * 100 / event.total);
     loading.value = false
@@ -45,31 +46,31 @@ onMounted(async () => {
 <style>
 .page-enter-active,
 .page-leave-active {
-  transition: all 0.3s;
+    transition: all 0.3s;
 }
 
 .page-enter-from {
-  transform: translateX(100%);
-  filter: blur(64px);
+    transform: translateX(100%);
+    filter: blur(64px);
 }
 
 .page-leave-to {
-  transform: translateX(-100%);
-  filter: blur(64px);
+    transform: translateX(-100%);
+    filter: blur(64px);
 }
 
 .layout-enter-active,
 .layout-leave-active {
-  transition: all 0.3s;
+    transition: all 0.3s;
 }
 
 .layout-enter-from {
-  transform: translateX(-100%);
-  filter: blur(64px);
+    transform: translateX(-100%);
+    filter: blur(64px);
 }
 
 .layout-leave-to {
-  transform: translateX(100%);
-  filter: blur(64px);
+    transform: translateX(100%);
+    filter: blur(64px);
 }
 </style>

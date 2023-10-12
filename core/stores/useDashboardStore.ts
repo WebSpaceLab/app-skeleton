@@ -9,10 +9,13 @@ export const useDashboardStore = defineStore('dashboard', {
             isRightSide: true,
             isShowHelperBar: true,
             links: [
-                {  title: 'Homepage',  icon: 'ic:sharp-home', name: 'index', path: '/', type: 'basic', access: 'ROLE_USER', children: []},
+                {  title: 'Homepage',  icon: 'ic:sharp-home', name: 'index', path: '/', type: 'home', access: 'ROLE_USER', children: []},
+
                 {  title: 'Dashboard', icon: 'mdi:desktop-mac-dashboard', name: 'dashboard', path: '/dashboard', access: 'ROLE_USER', type: 'basic', children: [] },
                 {  title: 'Inbox', icon: 'material-symbols:forward-to-inbox-sharp', name: 'dashboard.inbox', path: '/dashboard/inbox', access: 'ROLE_ADMIN', type: 'basic', children: [] },
                 {  title: 'Media', icon: 'material-symbols:media-link', name: 'dashboard.media', path: '/dashboard/media', access: 'ROLE_USER', type: 'basic', children: [] },
+
+                {  title: 'About', icon: 'material-symbols:settings-account-box-outline', name: 'dashboard.about', path: '/dashboard/about', access: 'ROLE_ADMIN', type: 'settings', children: [] },
                 {  title: 'Profile', icon: 'material-symbols:manage-accounts-rounded', name: 'dashboard.profile', path: '/dashboard/profile', access: 'ROLE_USER', type: 'settings', children: [] },
                 {  title: 'Settings', icon: 'material-symbols:settings-suggest-outline-sharp', name: 'dashboard.settings', access: 'ROLE_ADMIN', path: '/dashboard/settings', type: 'settings', children: [] },
             ]

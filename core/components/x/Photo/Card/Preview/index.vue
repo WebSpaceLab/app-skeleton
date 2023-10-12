@@ -7,7 +7,7 @@ let isShowImage = ref(false)
 </script>
 
 <template>
-    <div class="w-full relative">
+    <div v-if="file" class="w-full relative">
         <img  @mouseover="isShowImage = true" @mouseleave="isShowImage = false" :src="file.previewUrl" :alt="file.name" class="w-20 h-15 object-cover rounded-xl">
 
         <transition

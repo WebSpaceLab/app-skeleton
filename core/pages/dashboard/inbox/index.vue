@@ -14,7 +14,6 @@ onMounted(() => {
     $auth.giveAccess($auth.accessGranted('ROLE_ADMIN'))
 })
 
-const loading = ref(false)
 const page = ref(1)
 
 const query = ref({
@@ -51,15 +50,7 @@ const allReads = computed(() => {
 });
 
 async function  getMails () {
-    // loading.value = true
-
-    try {
-
-        await $inbox.getMails(query.value, perPage.value, page.value)
-    } catch (error) {
-        console.error(error)
-    } 
-    // loading.value = false
+    await $inbox.getMails(query.value, perPage.value, page.value)
 }
 
 
@@ -245,8 +236,8 @@ watch(() => query.value.orderDir, () => {
 
                 <div class="w-full h-full flex">
                     <div class="transition-all duration-500 " :class="isShowMailPreview ? 'w-1/2' : 'w-full'">
-                        <div v-if="loading" class="w-full h-full flex justify-center items-center ">
-                            <Spinner :loading="loading" />
+                        <div v-if="$inbox.isLoading" class="w-full h-full flex justify-center items-center ">
+                            <Spinner :loading="$inbox.isLoading" />
                         </div>
     
                         <div v-else class="w-full h-full transition-all duration-500 " >

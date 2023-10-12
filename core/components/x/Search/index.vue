@@ -32,6 +32,14 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    filter: {
+        type: Boolean,
+        default: true,
+    },
+    answer: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const emits = defineEmits([
@@ -97,6 +105,7 @@ let iconColor = computed(() => {
             </div>
             
             <x-btn
+                v-if="filter"
                 @click="isShowFieldAction = true"
                 class="h-9 w-9"
                 color="secondary-outline"
@@ -115,7 +124,12 @@ let iconColor = computed(() => {
             :closeable="closeable"
             @close="event => isShowFieldAction = event"
         >   
-            <div class="w-full h-screen lg:h-150 bg-prime-light dark:bg-prime-dark max-h-[calc(100vh-40px)] flex flex-col">
+            <div 
+                class="w-full  bg-prime-light dark:bg-prime-dark max-h-[calc(100vh-40px)] flex flex-col"
+                :class="[
+                    answer ? 'h-screen lg:h-150' : 'h-full',
+                ]"
+            >
                 <div class="w-full h-full flex flex-col items-center">
                     <div class="relative w-full flex h-15 rounded-t-lg">
                         <div
@@ -146,13 +160,13 @@ let iconColor = computed(() => {
                         />
                     </div>
 
-                    <div class="w-full h-auto md:px-3 py-2 z-10 flex flex-col space-y-3 box-border">
+                    <div v-if="filter" class="w-full h-auto md:px-3 py-2 z-10 flex flex-col space-y-3 box-border">
                         <div class="w-full h-auto pb-3 flex justify-center items-center box-border transition-all duration-300">
                             <slot  name="selectedAction"/>
                         </div>
                     </div>
 
-                    <div class="w-full h-full flex flex-col space-y-3 box-border">
+                    <div v-if="answer" class="w-full h-full flex flex-col space-y-3 box-border">
                         <div class="w-full h-full py-3 md:px-3 overflow-y-scroll box-border mb-36">
                             <slot name="answer"/>
                         </div>

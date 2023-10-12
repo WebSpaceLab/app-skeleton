@@ -56,7 +56,7 @@ function close() {
 <template>
    <div
         :class="bgStyle"
-        class="rounded-lg py-2 flex w-full max-h-40"
+        class="rounded-lg py-2 flex w-full max-h-40 z-100 shadow-md"
     >
         <div class="w-full flex items-start justify-between">
             <div class="px-2 flex justify-center items-center space-x-2">

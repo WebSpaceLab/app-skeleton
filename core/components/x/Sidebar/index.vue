@@ -48,14 +48,26 @@ function typeLinks(type) {
                     :class="[
                         $dashboard.sidebar.isRail ? 'w-14' : 'w-60',
                     ]"
-                >
-                    <div class="w-full">
-                        <div class="w-full  shadow-lg shadow-black bg-gradient-to-r from-second-light/80 to-prime-light/80 dark:from-second-dark/80 dark:to-prime-dark/80 backdrop-blur rounded-lg">
-                            <ul class="list-none overflow-y-auto flex flex-col justify-center items-start p-0 px-4 box-border" :class="[$dashboard.sidebar.isRail ? 'w-10' : 'w-full']">
-                                <template v-for="(link, index) in typeLinks('basic')" :key="index">
-                                    <x-sidebar-item :link="link" />
-                                </template>
-                            </ul>
+                > 
+                    <div class="w-full flex flex-col">
+                        <div class="w-full">
+                            <div class="w-full  shadow-lg shadow-black bg-gradient-to-r from-second-light/80 to-prime-light/80 dark:from-second-dark/80 dark:to-prime-dark/80 backdrop-blur rounded-lg">
+                                <ul class="list-none overflow-y-auto flex flex-col justify-center items-start p-0 px-4 box-border" :class="[$dashboard.sidebar.isRail ? 'w-10' : 'w-full']">
+                                    <template v-for="(link, index) in typeLinks('home')" :key="index">
+                                        <x-sidebar-item :link="link" />
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+    
+                        <div class="w-full">
+                            <div class="w-full  shadow-lg shadow-black bg-gradient-to-r from-second-light/80 to-prime-light/80 dark:from-second-dark/80 dark:to-prime-dark/80 backdrop-blur rounded-lg">
+                                <ul class="list-none overflow-y-auto flex flex-col justify-center items-start p-0 px-4 box-border" :class="[$dashboard.sidebar.isRail ? 'w-10' : 'w-full']">
+                                    <template v-for="(link, index) in typeLinks('basic')" :key="index">
+                                        <x-sidebar-item :link="link" />
+                                    </template>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 

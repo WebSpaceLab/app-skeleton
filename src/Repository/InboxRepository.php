@@ -14,7 +14,7 @@ use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
  * @method Inbox|null findOneBy(array $criteria, array $orderBy = null)
  * @method Inbox[]    findAll()
  * @method Inbox[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
+ */ 
 class InboxRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)

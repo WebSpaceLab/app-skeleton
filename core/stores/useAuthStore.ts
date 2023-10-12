@@ -162,7 +162,7 @@ export const useAuthStore = defineStore('auth', {
                 this.iri = null
                 this.roles = []
 
-                const {error, status, data} = await useFetchApi('/auth/logout', {method: 'POST'})                   
+                const {error, status, data} = await useFetchApi('/auth/logout', {method: 'POST'}) as any                   
 
                 if(error.value) {
                     console.error(error.value)

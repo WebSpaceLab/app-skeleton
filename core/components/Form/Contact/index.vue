@@ -44,9 +44,9 @@ const onSubmit = () => {
                 focus-visible:shadow-none
                 focus:border-primary
                 "
-                />
+            />
 
-                <span v-if="$inbox.errors && $inbox.errors.subject" class="text-danger-600 text-[14px] font-semibold ml-4">{{ $inbox.errors.subject }}</span>
+            <span v-if="$inbox.errors && $inbox.errors.subject" class="text-danger-600 text-[14px] font-semibold ml-4">{{ $inbox.errors.subject }}</span>
         </div>
 
         <div class="mb-6">

@@ -7,7 +7,7 @@
                 <slot name="header" />
             </header>
     
-            <main class="w-full box-border relative flex justify-center items-start duration-500">
+            <main class="w-full h-full box-border relative flex justify-center items-start duration-500">
                 <slot name="main" />
             </main>
     

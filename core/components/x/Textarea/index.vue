@@ -83,18 +83,18 @@ let labelColor = computed(() => {
 </script>
 
 <template>
-    <div class="relative w-full ">
+    <div class="relative w-full">
         <div
-            v-if="icon"
-            :class="[iconPosition === 'left' ? 'left-0' : 'right-0']"
-            class="absolute inset-y-0 flex items-center p-3 text-slate-500"
+        v-if="icon"
+        :class="[iconPosition === 'left' ? 'left-0' : 'right-0']"
+        class="absolute inset-y-0 flex items-center p-3 text-slate-500"
         >
             <slot name="icon"></slot>
         </div>
 
         <div
-            v-if="rightIcon"
-            class="absolute inset-y-0 right-0 flex items-center p-3 text-slate-500"
+        v-if="rightIcon"
+        class="absolute inset-y-0 right-0 flex items-center p-3 text-slate-500"
         >
             <slot name="right-icon"></slot>
         </div>
@@ -111,18 +111,20 @@ let labelColor = computed(() => {
             :autofocus="autofocus"
             :cols="cols" :rows="rows"
             :maxlength="maxlength"
-        />
-
-       <label
+            />
+            
+            <label
             :for="name"
             :class="[labelColor, icon & iconPosition === 'left' ? 'translate-x-8 peer-focus:translate-x-8' : '', validatedType ? validatedType : '']"
             class="absolute text-sm text-gray-800 dark:text-gray-500 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5  peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 "
-        >
+            >
             {{ label }}
         </label>
-
+        
         <div v-if="modelValue && maxlength" class="text-[11px] text-gray-500">{{ modelValue.length }}/{{ maxlength }}</div>
-
-        <span v-if="error" class="text-danger-600 text-[14px] font-semibold ml-4">{{ error }}</span>
+        
+        <div v-if="error" class="w-full text-center text-error-300 text-[14px] font-semibolds bg-error-900 p-1 box-border mt-1 rounded">
+            {{ error }}
+        </div>
     </div>
 </template>

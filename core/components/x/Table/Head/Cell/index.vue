@@ -7,13 +7,19 @@ const props = defineProps({
     },
     sort: {
         type: Array
+    },
+    justify: {
+        type: String,
+        default: 'center'
     }
 })
 </script>
 
 <template>
     <th  class="px-5 py-3 w-10 text-center">
-       <div class="w-full flex justify-start items-center space-x-4">
+       <div class="w-full flex items-center space-x-4" :class="[
+            justify ? `justify-${justify}` : 'justify-start',
+       ]">
             <span class="text-sm" :class="uppercase ? 'uppercase' : ''">
                 {{ name }}
             </span>

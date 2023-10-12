@@ -25,51 +25,42 @@ const props = defineProps({
     },
 });
 
-const loading = ref(false)
-const errors = ref(null)
-
 let isSwitch = ref(false)
 let isShowPreviewImage = ref(false)
 let isShowModalPhotoDetails = ref(false)
 let isShowModalPhotoGallery = ref(false)
 
 const previewImage = ref({
-    preview_url: '/no-image-icon.png',
+    previewUrl: '/no-image-icon.png',
     name: 'No image'
 })
 
 const close = () => {
+    resetForm()
     emits('close', false)
 }
 
 const form = reactive({
     name: '',
     description: '',
-    media_id: null,
-    status: false,
+    mediaId: null,
+    isActive: false,
 })
 
 const resetForm = () => {
     form.name = ''
     form.description = ''
-    form.media_id = null
-    form.status = false
-    previewImage.value.preview_url = '/no-image-icon.png'
+    form.mediaId = null
+    form.isActive = false
+    previewImage.value.previewUrl = '/no-image-icon.png'
     previewImage.value.name = 'No image'
+    $about.errors = null
 }
 
 const create = async () => {
-    errors.value = null
-    loading.value = true
-    await $about.store(form).then((data) => {
-        loading.value = false
-        emits('addedToLibrary', true)
-        close()
-    }).catch(err => {
-        errors.value = err.response.data.errors
-    }).finally(() => {
-        resetForm()
-    })
+    await $about.create(form)
+    close()
+    emits('addedToLibrary', true)
 }
 
 async function deletedPreviewImage(mediaId) {
@@ -86,7 +77,7 @@ async function deletedPreviewImage(mediaId) {
 
 function resetPreviewImage() {
     previewImage.value = {
-        preview_url: '/no-image-icon.png',
+        previewUrl: '/no-image-icon.png',
         name: 'No image'
     }
 }
@@ -99,7 +90,7 @@ function openEditPreviewImage(file) {
 const addedToLibrary = (event) => {
     if(event) {
         previewImage.value = event
-        form.media_id = previewImage.value.id
+        form.mediaId = previewImage.value.id
     }
 }
 </script>
@@ -150,7 +141,7 @@ const addedToLibrary = (event) => {
                         </template>
                     </x-photo-card>
     
-                    <p v-if="errors && errors.media_id " class="text-sm text-error-600 m-0 ">{{ errors.media_id[0] }}</p>
+                    <p v-if="$about.errors && $about.errors.mediaId " class="text-sm text-error-600 m-0 ">{{ $about.errors.mediaId }}</p>
                 </div>
 
                 <div class="w-full h-full flex flex-col justify-between items-start space-y-6">
@@ -176,7 +167,7 @@ const addedToLibrary = (event) => {
                             v-model="form.name"
                             color="blue"
                             label="Name"
-                            :error="errors && errors.name ? errors.name[0]: ''"
+                            :error="$about.errors && $about.errors.name ? $about.errors.name : ''"
                         />
         
                     </div>
@@ -188,13 +179,13 @@ const addedToLibrary = (event) => {
                                 <span v-else class="mr-3 text-sm font-medium text-red-500">Status</span>
         
                                 <label for="toggle-social-create" class="inline-flex relative items-center mr-5 cursor-pointer">
-                                    <input @click="isSwitch = !isSwitch" v-model="form.status" type="checkbox" :value="isSwitch" id="toggle-social-create" class="sr-only peer" checked>
+                                    <input @click="isSwitch = !isSwitch" v-model="form.isActive" type="checkbox" :value="isSwitch" id="toggle-social-create" class="sr-only peer" checked>
                                     
                                     <div class="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
                                 </label>
                             </div>
         
-                            <p v-if="errors && errors.status " class="text-sm text-error-600 m-0 ">{{ errors.status[0] }}</p>
+                            <p v-if="$about.errors && $about.errors.isActive " class="text-sm text-error-600 m-0 ">{{ $about.errors.isActive }}</p>
                         </div>
                     </div>
                 </div>
@@ -207,7 +198,7 @@ const addedToLibrary = (event) => {
                     <x-textarea
                         v-model="form.description"
                         label="Description"
-                        :error="errors && errors.description ? errors.description[0] : ''"
+                        :error="$about.errors && $about.errors.description ? $about.errors.description : ''"
                         :rows="5"
                     />
                 </div>
@@ -243,7 +234,7 @@ const addedToLibrary = (event) => {
        <template #footer>
             <div class="flex space-x-3">
                 <x-btn @click="resetForm" type="submit" color="primary-outline" rounded >Reset</x-btn>
-                <x-btn @click.prevent="create" @keydown.enter="create" type="submit" color="primary-outline" rounded :loading="loading" :disabled="!form.name || !form.media_id">Create</x-btn>
+                <x-btn @click.prevent="create" @keydown.enter="create" type="submit" color="primary-outline" rounded :loading="$about.isLoading" :disabled="!form.name || !form.mediaId">Create</x-btn>
             </div>
        </template>
     </x-modal-dialog>

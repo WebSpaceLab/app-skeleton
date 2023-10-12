@@ -13,7 +13,8 @@ export const useMediaStore = defineStore('media', {
         fileTypes: [],
         months: [],
         queryParams: {},
-        isLoading: false
+        isLoading: false,
+        errors: null as object | null,
     }),
     
     actions: {

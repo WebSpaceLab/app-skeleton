@@ -2,11 +2,16 @@
 import axios from '~/plugins/axios'
 const $axios = axios().provide.axios
 
+const {$auth, $flash } = useNuxtApp()
 const emits = defineEmits(['addedToLibrary']);
 
 const props = defineProps({
     preview: {
         type: Object
+    },
+    isFieldSelected: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -18,69 +23,74 @@ const image = reactive({
 })
 
 const media = ref([])
+const SwitchFile = ref(null)
 
 function onSelectedFiles($event) {
-    let files2 = [...$event.target.files]
-
-    uploadFile(files2)
+    let f = [...$event.target.files]
+        
+    uploadFile(f)
     
     SwitchFile.value = null
 }
 
 function uploadFile(files) {
- 
- files.forEach(file => {
-     media.value.unshift({
-         file: file,
-         progress: 0,
-         error: null,
-         uploaded: false,
-         previewUrl: '',
-     });
- });
-
- 
- media.value
-     .filter(media => !media.uploaded)
-     .forEach(async media => {
-         let formFile = new FormData;
-
-         formFile.append('file', media.file)
-
-         $axios.post(`/api/media/${ props.preview.id }/update-file`, formFile, {
-             onUploadProgress: (event) => {
-                 media.progress = Math.round(event.loaded * 100 / event.total);
-             },
-         })
-         .then(({data}) => {
-            media.uploaded = true;
-            media.id = data.file.id;
-            media.previewUrl = data.file.previewUrl;
-            emits('addedToLibrary', data.file)
+    files.forEach(file => {
+        media.value.unshift({
+            file: file,
+            progress: 0,
+            error: null,
+            uploaded: false,
+            previewUrl: '',
+        })
+    })
+    
+    media.value
+    .filter(media => !media.uploaded)
+    .forEach(async media => {
+        let file = new FormData;
+        
+        file.append('file', media.file)
+        
+        await $axios.post(`/api/media/${ props.preview.id }`, file, {
+            headers: {
+                "Authorization": 'Bearer ' + $auth.token,
+            },
+            onUploadProgress: (event) => {
+                media.progress = Math.round(event.loaded * 100 / event.total)
+            },
+        })
+        .then(({data}) => {
+            emits('addedToLibrary', data.media.id)
+            image.preview = data.media
+            media.uploaded = true
             $flash.success(data.flash.message)
-         })
-         .catch(error => {
-             media.error = 'Uploaded Fail. Please try again later;';
-             if (error?.response.status === 422) {
-                 media.error = error.response.data.errors.file[0];
-             }
-             
-             $flash.error(media.error)
-         })
-     })
- ;
-}
+        })
+        .catch(error => {
+            media.error = 'Uploaded Fail. Please try again later;'
 
+            if (error?.response.status === 422) {
+                media.error = error.response.data.errors.file[0]
+            }
+            
+            $flash.error(media.error)
+        })
+    })
+}
 
 function addedToLibrary (event) {
     image.preview = event
     emits('addedToLibrary', event)
     isShowModalPhotoGallery.value = false
 }
+
+watch(() => props.preview, () => {
+    image.preview = props.preview
+})
 </script>
 
 <template>
     <div>
+
         <x-photo-card  v-if="image" :file="image.preview" :isFieldSelected="false" >
             <template #action>
                <label

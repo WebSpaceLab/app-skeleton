@@ -28,7 +28,7 @@ function remove(event) {
         leave-active-class="transition ease-in duration-300"
         leave-from-class="transform opacity-100 translate-x-0"
         leave-to-class="transform opacity-0 translate-x-full"
-        class="fixed top-20 right-5 z-50 space-y-4 w-full max-w-xs"
+        class="fixed top-20 right-5 z-50 space-y-4 w-full max-w-xs z-120"
     >
         <template v-for="item in $flash.items" :key="item.id">
            <x-toast-item
