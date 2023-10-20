@@ -7,8 +7,8 @@ export default defineNuxtConfig({
         enabled: true
       }
     },
-    srcDir: 'core/',
-    ssr: true,
+    srcDir: 'view/',
+    // ssr: true,
     experimental: {
         componentIslands: true
     },

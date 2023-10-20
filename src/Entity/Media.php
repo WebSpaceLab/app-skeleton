@@ -47,6 +47,7 @@ class Media
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
+    #[Groups(['admin:media:read'])]
     private ?User $author = null;
 
     #[ORM\Column(nullable: true)]

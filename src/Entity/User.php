@@ -42,7 +42,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['profile:read', 'user:all', 'article:read', 'profile:write'])]
+    #[Groups(['profile:read', 'user:all', 'article:read', 'profile:write', 'admin:media:read'])]
     private ?string $username = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -58,11 +58,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $isActiveAccount = false;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['profile:read', 'profile:write'])]
+    #[Groups(['profile:read', 'profile:write', 'admin:media:read'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['profile:read', 'profile:write'])]
+    #[Groups(['profile:read', 'profile:write', 'admin:media:read'])]
     private ?string $lastName = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Article::class)]
