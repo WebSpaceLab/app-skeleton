@@ -1,25 +1,23 @@
 <script setup>
-const {$general, $contact, $metaTags,  $social, $about, $price } = useNuxtApp()
-
-const loading = ref(true);
-// const LoadProgress = ref(0)
+const {$general, $metaTags,  $social } = useNuxtApp()
 
 onMounted(async () => {
-
-    await $general.get()
-    await $contact.get()
-    await $metaTags.get()
-    await $social.get()
-    await $about.get()
-    await $price.get()
-
-    // LoadProgress.value = Math.round(event.loaded * 100 / event.total);
-    loading.value = false
+    $general.isLoading = true
+    
+    try {
+        await $general.get()
+        await $metaTags.get()
+        await $social.get()
+    } catch (error) {
+        console.error(error)
+    } finally {
+        $general.isLoading = false
+    }
 })
 </script>
 
 <template> 
-    <x-app :loading="loading">
+    <x-app :loading="$general.isLoading">
         <Head v-if="$general.data.name">
             <Title>{{ $general.data.name }}</Title>
             

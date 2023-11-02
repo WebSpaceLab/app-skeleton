@@ -1,215 +1,82 @@
 <script setup>
-let isSwitchFirstText = ref(false)
-let isSwitchSecondText = ref(true)
-let isSwitchLastText = ref(false)
-let count = ref(1)
-let isChoice = ref(false)
-let interval = ref()
-
-function switchText(key) {
-    switch (key) {
-        case 3:
-            isSwitchFirstText.value = true
-            isSwitchSecondText.value = false
-            isSwitchLastText.value = false
-            break;
-
-        case 1:
-            isSwitchFirstText.value = false
-            isSwitchSecondText.value = true
-            isSwitchLastText.value = false
-            
-            break;
-
-        case 2:
-            isSwitchFirstText.value = false
-            isSwitchSecondText.value = false
-            isSwitchLastText.value = true
-            break;
-
-        default:
-            break;
-    }
-}
-
-function switchToMousemoveTarget(key) {
-    if(key) {
-        count.value = key
-        isChoice.value = true
-        switchText(key)
-    }
-}
-
-function start() {
-    interval.value = setInterval(() => {
-        count.value ++
-
-        if(count.value > 3) {
-            count.value = 1
-        }
-
-        switchText(count.value)
-
-    }, 3000)
-}
-
-onMounted(() => {
-    start()
-})
-
-watch(() => isChoice.value, () => {
-    if(!isChoice.value) {
-        start()
-    } else {
-        clearInterval(interval.value)
-    }
-})
-
+    const {$about } =  useNuxtApp()
+    
+    onMounted(async () => {
+        await $about.get()
+    })
 </script>
 
 <template>
-    <section v-if="$about.activeAbout.length != 0" id="o-nas" class="w-full min-h-screen relative scroll-mt-50 snap-start mb-20 lg:mb-0">
-         <header class="relative w-full mt-4 flex justify-center">
-            <!--
-            style="background-image: url('/images/vector/background.jpg')" 
-        -->
-            <h2  class="relative w-[50%]  bg-fixed  bg-no-repeat bg-cover bg-center text-center  py-10 text-white text-3xl text-bold uppercase rounded-lg">
-                <span class="bg-black/30 px-5 py-3 rounded-lg">
-                    O nas 
-                </span>
-            </h2>
-        </header>
+    <section v-if="$about.activeAbout" id="about" class="w-screen h-screen relative scroll-mt-50 snap-start mb-20 lg:mb-0 box-border">
+        <div class="overlay-1  -translate-y-30 xl:translate-y-0 xl:-translate-x-26 2xl:-translate-x-14 block overflow-hidden h-screen w-screen absolute bottom-0 right-0 bg-blue"></div>
+        <div class="overlay-2 hidden md:block overflow-hidden h-screen w-screen absolute top-0 left-0 bg-gradient-to-tr from-dark via-blue " ></div>
 
-        <div class="w-full relative px-8 md:py-50 box-border z-10  rounded-lg " >
-            <div class="w-full h-full flex flex-col md:flex-row justify-center items-center -space-y-4 lg:space-y-0">
-                <div class="w-full md:w-1/2 scale-50 md:scale-100 flex justify-center items-center ">
-                    <div v-if="$about?.activeAbout.length" class="relative h-100 flex justify-center items-center -space-x-20">
-                        <div class="flex flex-col lg:space-y-20">
-                            <div
-                                v-if="$about?.activeAbout[0]"
-                                @mousemove="switchToMousemoveTarget(3)"
-                                @mouseleave="isChoice = false"
-                                :class="isSwitchFirstText ? 'scale-100 z-10 animated-2' : 'scale-80 blur-sm -z-1'"
-                                class="relative flex flex-col justify-center items-end duration-500 border-box rounded-lg"
-                            >
-                                <img :src="$about.activeAbout[0]?.media?.previewUrl" :alt="$about?.activeAbout[0]?.media.name" data-aos="fade-down-right" data-aos-duration="1000" class="h-80 z-10 object-cover shadow-xl shadow-black rounded-lg">
+        <div class="container mx-auto w-full h-full flex flex-col justify-center items-center space-y-10">
+            <h1 class="font-extrabold tracking-tight mb-0 text-3xl xl:text-5xl lg:text-4xl">Informacje</h1>
+            
+            <div v-if="$about.activeAbout" class="w-full h-200 p-10 flex flex-col lg:flex-row  justify-center items-center space-y-4 lg:space-x-10 box-border">
+                <template v-for="(info, index) in $about.activeAbout" :key="index">
+                    <div                                                 
+                        :data-aos="index === 1 ? 'fade-right' : 'fade-up'"
+                        data-aos-easing="ease-out-cubic"
+                        data-aos-duration="1500"
+                        class="card w-full h-80"
+                    >
+                        <div class="card-inner w-full h-full ">
+                            <div class="card-front absolute  w-full h-full overflow-hidden rounded-xl">
+                                <div class="absolute left-0 top-0 w-full h-full  p-8 flex justify-start items-end bg-gradient-to-tr from-dark via-blue via-20%  to-dark/10 to-90% box-border rounded-xl">
+                                    <span class="text-3xl font-bold  text-white box-border">{{ info.name }}</span>
+                                </div>
+                                
+                                <img :src="info.media.previewUrl" :alt="info.media.name" class="w-full h-full object-cover  rounded-xl">
                             </div>
-    
-                            <div
-                                v-if="$about?.activeAbout[2]"
-                                @mousemove="switchToMousemoveTarget(2)"
-                                @mouseleave="isChoice = false"
-                                :class="isSwitchLastText ? 'scale-100  z-10 animated-2' : 'scale-80 blur-sm -z-1'"
-                                class=" flex flex-col justify-center items-start duration-500 border-box rounded-lg"
-                            >
-                                <img :src="$about?.activeAbout[2]?.media?.previewUrl" :alt="$about?.activeAbout[2]?.media.name" data-aos="fade-up-left" data-aos-duration="1000" class="h-80 object-cover shadow-xl shadow-black rounded-lg">
+
+                            <div class="card-back absolute  w-full h-full flex justify-center items-center  bg-gradient-to-tr from-dark via-blue to-dark px-8 rounded-xl box-border">
+                                <span class="text-sm md:text-md lg:text-lg xl:text-xl text-white">
+                                    {{ info.description }}
+                                </span>
                             </div>
                         </div>
-    
-                        <div
-                            v-if="$about?.activeAbout[1]"
-                            @mousemove="switchToMousemoveTarget(1)"
-                            @mouseleave="isChoice = false"
-                            :class=" isSwitchSecondText? 'sale-100 z-10 animated-1' : 'scale-80 blur-sm -z-1'"
-                            class="duration-500 border-box rounded-lg"
-                        >
-                            <img :src="$about?.activeAbout[1]?.media?.previewUrl" :alt="$about?.activeAbout[1]?.media.name" class="h-80 object-cover shadow-xl shadow-black rounded-lg" data-aos="zoom-in" data-aos-delay="500" data-aos-duration="1000">
-                        </div>
                     </div>
-                </div>
-                
-                <div v-if="$about?.activeAbout.length" class="w-full md:w-1/2 flex flex-col justify-center items-center lg:space-y-2 md:space-y-10 gap-4 lg:gap-8 group box-border" data-aos="zoom-in" data-aos-delay="500" data-aos-duration="1000">
-                    <div 
-                        v-if="$about?.activeAbout[0]"
-                        @mousemove="switchToMousemoveTarget(3)"
-                        @mouseleave="isChoice = false"
-                        :class="isSwitchFirstText ? 'scale-100 shadow-xl shadow-black' : 'scale-85 blur-sm'"
-                        class="w-full text-center px-7 py-4 box-border  z-10 bg-prime-light dark:from-prime-dark dark:to-second-dark rounded-lg group-hover:blur-sm hover:!blur-none group-hover:scale-85 hover:!scale-100  duration-500"
-                    >
-                        <p>{{ $about?.activeAbout[0]?.description }}</p>
-                    </div>
-
-                    <div 
-                        v-if="$about?.activeAbout[1]"
-                        @mousemove="switchToMousemoveTarget(1)"
-                        @mouseleave="isChoice = false"
-                        :class="isSwitchSecondText ? 'scale-100 shadow-xl shadow-black z-20' : 'scale-85 blur-sm'"
-                        class="w-full text-center px-7 py-4 box-border text-bold z-10 bg-prime-light dark:from-prime-dark dark:to-second-dark  rounded-lg group-hover:blur-sm hover:!blur-none group-hover:scale-85 hover:!scale-100 duration-500"
-                    >
-                        <p>{{ $about?.activeAbout[1]?.description }}</p>
-
-                    </div>
-
-                    <div
-                        v-if="$about?.activeAbout[2]"
-                        @mousemove="switchToMousemoveTarget(2)"
-                        @mouseleave="isChoice = false"
-                        :class="isSwitchLastText ? 'scale-100 shadow-xl shadow-black' : 'scale-85 blur-sm'"    
-                        class="w-full text-center px-7 py-4 box-border text-bold z-10 bg-prime-light dark:from-prime-dark dark:to-second-dark rounded-lg group-hover:blur-sm hover:!blur-none group-hover:scale-85 hover:!scale-100  duration-500"
-                    >
-                        <p>{{ $about?.activeAbout[2]?.description }}</p>
-                    </div>
-                </div>
+                </template>
             </div>
+
         </div>
     </section>
 </template>
 
 <style lang="scss" scoped>
-.animated-1 {
-animation: animated-first 0.5s linear;
+.overlay-1 {
+    clip-path: circle(50% at 3% -44%);
 }
 
-.animated-2 {
-    
-animation: animated-second 0.5s linear;
+.overlay-2 {
+    clip-path: circle(50% at 103% 100%);
 }
 
-@keyframes animated-first {
-    0% {
-        transform: translateX(0px) scale(.9);
-    }
-
-    25% {
-        transform: translateX(75px) scale(1);
-    }
-
-    50% {
-        transform: translateX(150px) scale(1.1);
-
-    }
-
-    75% {
-        transform: translateX(75px) scale(1.05);
-    }
-
-    100% {
-        transform: translateX(0px) scale(1);
-
-    }
+.card {
+  perspective: 1000px;
 }
 
-@keyframes animated-second {
-    0% {
-        transform: translateX(0px) scale(.9);
-    }
+.card-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.999s;
+}
 
-    25% {
-        transform: translateX(-75px) scale(1);
-    }
+.card:hover .card-inner {
+  transform: rotateY(180deg);
+}
 
-    50% {
-        transform: translateX(-150px) scale(1.1);
+.card-front,
+.card-back {
+  backface-visibility: hidden;
+}
 
-    }
+.card-front {
+  transform: rotateY(0deg);
+}
 
-    75% {
-        transform: translateX(-75px) scale(1.05);
-    }
-
-    100% {
-        transform: translateX(0px) scale(1);
-
-    }
+.card-back {
+    transform: rotateY(180deg);
 }
 </style>

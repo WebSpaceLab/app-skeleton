@@ -5,11 +5,11 @@ export const useGeneralStore = defineStore('general', {
     state: () => ({
         data: {
             name: '',
-            logoUrl: '/favicon.ico',
+            logoUrl: '',
             description: '',
         },
 
-        isLoading: false,
+        isLoading: true,
         suggested: null,
         following: null,
         errors: null as object | null,

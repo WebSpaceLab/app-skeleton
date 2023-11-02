@@ -27,7 +27,7 @@ watch(() => props.selected, (e) => {
         </div>
 
         <div class="w-full h-full relative flex justify-center">
-            <img v-if="file.mimeType === 'image/jpeg' || file.mimeType === 'image/png'" :src="file.previewUrl" :alt="file.name" class="h-full object-cover" />
+            <img v-if="file.mimeType === 'image/jpeg' || file.mimeType === 'image/png' || file.mimeType === 'image/webp'" :src="file.previewUrl" :alt="file.name" class="h-full object-cover" />
 
             <video v-if="file.mimeType === 'video/mp4'" class="w-full aspect-video" controls>
                 <source :src="file.previewUrl" :type="file.mimeType" :title="file.name">

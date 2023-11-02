@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 import { useFlashStore } from './useFlashStore'
 
 export const useMetaTagsStore = defineStore('metaTags', {
@@ -105,7 +105,6 @@ export const useMetaTagsStore = defineStore('metaTags', {
         }
 
     },
-
     persist: true
 })
 

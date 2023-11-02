@@ -15,9 +15,9 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+#[Route('/api/inbox', name: 'app_inbox')]
 class InboxController extends AbstractAPIController
 {
-    #[Route('/api/inbox', name: 'app_inbox')]
     #[Route('/', name: ':create', methods: ['POST'])]
     public function create(Request $request, ValidatorInterface $validator, InboxRepository $inboxRepository): JsonResponse
     {

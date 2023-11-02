@@ -5,11 +5,19 @@
 </script>
 
 <template>
-    <div class="container">
-        <h1>Home</h1>
-       <!--
-        <section-about />
-    -->
-        <section-price-list />
+    <div class="w-screen -translate-y-20">
+        <section-hero />
+
+
+        <lazy-section-about />
+        
+        <lazy-section-features />
+        
+        <lazy-section-team />
+        
+        <lazy-section-price-list />
+        <!--
+            <section-movie />
+        -->
     </div>
 </template>

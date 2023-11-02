@@ -222,7 +222,7 @@ watch(() => query.value.orderDir, async () => {
                 </div>
 
 
-                <div class="w-full h-full flex">
+                <div v-if="about" class="w-full h-full flex">
                     <div class="transition-all duration-500 w-full" >
                         <div class="w-full h-full transition-all duration-500" >
                             <x-table

@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 import { useFlashStore } from './useFlashStore'
 
 export const useMediaStore = defineStore('media', {
@@ -116,6 +116,8 @@ export const useMediaStore = defineStore('media', {
 
         }
     },
-
-    persist: true
 })
+
+if(import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(useMediaStore, import.meta.hot))
+}

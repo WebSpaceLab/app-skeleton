@@ -110,6 +110,8 @@ class AboutController extends AbstractAPIController
                 ]
             ], Response::HTTP_BAD_REQUEST);
         }
+        
+        $this->flash('Treść została dodana');
 
         return $this->response([
             'data' => $about,

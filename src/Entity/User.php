@@ -94,6 +94,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: About::class)]
     private Collection $abouts;
 
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Team::class)]
+    private Collection $teams;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -103,6 +106,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->media = new ArrayCollection();
         $this->inboxes = new ArrayCollection();
         $this->abouts = new ArrayCollection();
+        $this->teams = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -514,6 +518,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($about->getAuthor() === $this) {
                 $about->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getTeams(): Collection
+    {
+        return $this->teams;
+    }
+
+    public function addTeam(Team $team): static
+    {
+        if (!$this->teams->contains($team)) {
+            $this->teams->add($team);
+            $team->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeam(Team $team): static
+    {
+        if ($this->teams->removeElement($team)) {
+            // set the owning side to null (unless already changed)
+            if ($team->getAuthor() === $this) {
+                $team->setAuthor(null);
             }
         }
 

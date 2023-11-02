@@ -15,7 +15,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <nav id="main-nav" class="w-screen h-20 box-border shadow-lg shadow-black" :class="$navbar.isScroll ? 'fixed top-0 left-0 bg-prime-light/90 dark:bg-prime-dark/80 backdrop-blur-sm' : 'relative lg:h-30'">
+    <nav id="main-nav" class="w-screen  box-border backdrop-blur h-20 shadow-lg shadow-black " :class="$navbar.isScroll ? 'fixed top-0 left-0 bg-background-light/40 dark:bg-background-dark/40' : 'relative lg:h-30 bg-background-light dark:bg-background-dark/60'">
         <div class="h-full w-full flex items-center justify-center lg:justify-between " :class="[container ? 'container mx-auto ' : '']">
             <div class="hidden lg:flex w-60 z-10">
                 <slot name="logo" />
@@ -38,7 +38,7 @@ onMounted(() => {
                     leave-from-class="transform -translate-y-0"
                     leave-to-class="transform -translate-y-100"
                 >
-                    <div class="relative w-full flex justify-around items-center" :class="isShowMenu || $navbar.isScroll ? 'show-content px-3' : 'hidden-content'">
+                    <div class="relative w-full flex justify-around items-center " :class="isShowMenu || $navbar.isScroll ? 'show-content px-3' : 'hidden-content'">
                         <div class="flex w-full h-20 justify-center items-center space-x-10">
                             <slot name="content" />
                         </div>
@@ -50,7 +50,7 @@ onMounted(() => {
                 </transition>
             </div>
 
-            <div class="absolute top-5 right-5 lg:hidden flex justify-center items-center mr-4">
+            <div class="absolute top-5 right-0 lg:hidden flex justify-center items-center box-border">
                 <slot name="action" />
             </div>
         </div>
@@ -64,9 +64,9 @@ onMounted(() => {
             leave-from-class="transform -translate-x-0"
             leave-to-class="transform -translate-x-100"
         >
-            <div v-if="$navbar.isShowSm" class="h-screen fixed top-0 left-0 lg:hidden z-60 bg-second-light dark:bg-second-dark">
-                <div class="w-full relative flex flex-col justify-start items-start p-8">
-                    <div class="h-10 absolute top-3 left-3 ">
+            <div v-if="$navbar.isShowSm" class="h-screen  fixed top-0 left-0 lg:hidden z-60 bg-background-light/90 dark:bg-background-dark/90">
+                <div class="w-full h-screen relative flex flex-col justify-start items-start ">
+                    <div class="h-10 absolute top-3 left-3">
                         <x-btn @click="$navbar.closeMenuSm" class="btn-danger-outline" strip ring icon>
                             <template #icon>
                                 <Icon name="ic:baseline-close" class="text-xl"/>
@@ -74,11 +74,15 @@ onMounted(() => {
                         </x-btn>
                     </div>
 
-                    <div class="-translate-y-15 w-60 h-30">
-                        <slot name="logo" />
-                    </div>
+                    <!--    
+                        <div class="relative w-60 -translate-x-10">
+                            <slot name="logo" />
+                        </div>
+                    -->
+                    <div class="mt-10 w-screen">
 
-                    <slot name="content" />
+                        <slot name="content" />
+                    </div>
                 </div>
             </div>
         </transition>

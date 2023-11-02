@@ -1,133 +1,19 @@
-import { defineStore } from 'pinia'
+import { defineStore, acceptHMRUpdate } from 'pinia'
 import { useFlashStore } from './useFlashStore'
 
 export const usePriceStore = defineStore('price', {
     state: () => ({
         all: [],
-        activeAll: [
-            {
-                id: 0,
-                title: 'Zajęcia plus wolne wejścia',
-                subtitle: 'Do pierwszego zakupu karnetu doliczamy 10 zł za kartkę klubowa.',
-                packages: [
-                    {
-                        id: 0,
-                        title: 'Karnet miesięczny na strefę siły',
-                        isHighlighted: false,
-                        price: '95 zł/m-c',
-                        actionUrl: '',
-                        information: [
-                            {info: 'Wejścia wolne'},
-                            {info: 'Ważny 30 dni'},
-                        ],
-                    },
-                    {
-                        id: 1,
-                        title: 'Karnet 4 wejścia na zajęcia w miesiącu',
-                        isHighlighted: false,
-                        price: '80 zł/m-c',
-                        information: [
-                            {info: '4 wejścia na zajęcia'},
-                            {info: 'Ważny 30 dni'},
-                        ],
-                        actionUrl: ''
-                    },
-                    {
-                        id: 2,
-                        title: 'Karnet miesięczny - zajęcia',
-                        isHighlighted: true,
-                        price: '160 zł/m-c',
-                        information: [
-                            {info: 'Wszyskie zajęcia', isHighlighted: true},
-                            {info: 'Wejścia wolne'},
-                            {info: 'Ważny 30 dni'},
-                        ],
-                        actionUrl: ''
-                    },
-                ]
-            },
-            {
-                id: 1,
-                title: 'Karnety jednorazowe',
-                subtitle: '',
-                packages: [
-                    {
-                        id: 3,
-                        title: 'Pojedyńcze wejscie wolne',
-                        isHighlighted: false,
-                        price: '19 zł',
-                        information: [
-                            {info: 'Wejścia wolne na strefę siły', isHighlighted: true},
-                            {info: 'Wejście pojedyńcze'},
-                
-                        ],
-                        actionUrl: ''
-                    },
-                    {
-                        id: 4,
-                        title: 'Pojedyńcze wejscie na zajęcia',
-                        isHighlighted: false,
-                        price: '30 zl',
-                        information: [
-                            {info: 'Wejście na dowolne zajecia'},
-                            {info: 'Wejście pojedyńcze'},
-                
-                        ],
-                        actionUrl: ''
-                    },
-                ]
-            },
-            {
-                id: 2,
-                title: 'Karnety personalne',
-                subtitle: '',
-                packages: [
-                    {
-                        id: 0,
-                        title: 'Trening personalny',
-                        isHighlighted: false,
-                        price: '80 zł/h',
-                        information: [
-                            {info: 'Trening pod okiem wykwalifikowanego trenera'},
-                            {info: 'Od zakupu do wykorzystania, ważny 3 miesiące.'},
-                        ],
-                        actionUrl: 'https://movementarenasuwalki.gymmanager.com.pl/Buypass/ChooseDate',
-                        nameBtn: 'Umów się na trening'
-                    },
-                    {
-                        id: 1,
-                        title: 'Karnet 5 treningów personalnych ',
-                        isHighlighted: false,
-                        price: '375 zł',
-                        information: [
-                            {info: 'Trening pod okiem wykwalifikowanego trenera'},
-                            {info: 'Od zakupu do wykorzystania, ważny 3 miesiące.'},
-                            {info: 'Do wykorzystania 5 treningów.'},
-                        ],
-                        actionUrl: ''
-                    },
-                    {
-                        id: 2,
-                        title: 'Karnet 10 treningów personalnych',
-                        isHighlighted: true,
-                        price: '700 zł',
-                        information: [
-                            {info: 'Trening pod okiem wykwalifikowanego trenera'},
-                            {info: 'Od zakupu do wykorzystania, ważny 3 miesiące.'},
-                            {info: 'Do wykorzystania 10 treningów.'},
-                        ],
-                        actionUrl: 'https://movementarenasuwalki.gymmanager.com.pl/Buypass/Passes',
-                        nameBtn: 'Kup karnet'
-                    },
-                ]
-            }
-        ],
+
+        activeAll: [],
+        
         pagination: {
             total: null,
             current_page: null,
             per_page: null,
             first_page: 1,
         },
+        
         months: [],
         queryParams: {},
         status: [],
@@ -388,6 +274,8 @@ export const usePriceStore = defineStore('price', {
             }
         },
     },
-
-    persist: true
 })
+
+if(import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(usePriceStore, import.meta.hot))
+}

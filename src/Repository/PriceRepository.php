@@ -25,10 +25,7 @@ class PriceRepository extends ServiceEntityRepository
     public function getWithSearchQueryBuilder(?string $term, ?string $orderBy = 'createdAt', ?string $orderDir = 'ASC', ?string $status = 'false', ?string $month): DoctrineQueryBuilder
     {
         $qb = $this->createQueryBuilder('price')
-            ->andWhere('price.isDelete = false')        
-            ->innerJoin('price.packages', 'package')
-            ->addSelect('package')
-            ->andWhere('package.isDelete = false');
+            ->andWhere('price.isDelete = false');
 
         if ($term) {
             $qb->andWhere('price.title LIKE :term')

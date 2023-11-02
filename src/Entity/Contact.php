@@ -35,7 +35,7 @@ class Contact
     private ?string $phone = null;
     
     #[Groups(['content:read'])]
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $map = null;
 
     public function getId(): ?int

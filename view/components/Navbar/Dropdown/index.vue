@@ -14,9 +14,9 @@
             v-if="$navbar.isNavbarDropdown"
             @mousemove="$navbar.activate()"
             @mouseleave="$navbar.close()"
-            class=" w-full absolute bottom-0 left-0 lg:flex justify-center  translate-x-[100%] lg:translate-x-0 lg:translate-y-[100%] bg-second-light/80 dark:bg-prime-dark/80 backdrop-blur-sm shadow-xl shadow-black border-solid-y border-slate-600 dark:border-slate-400 z-50"
+            class=" w-full absolute bottom-0 left-0 lg:flex justify-center  translate-x-[100%] lg:translate-x-0 lg:translate-y-[100%] bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-sm shadow-xl shadow-black border-solid-y border-slate-600 dark:border-slate-400 z-50"
         >
-            <div class="h-full w-full lg:container lg:mx-auto">
+            <div class="h-full w-full lg:container lg:mx-auto flex justify-center">
                 <slot />
             </div>
         </div>

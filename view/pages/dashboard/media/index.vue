@@ -326,7 +326,7 @@ function showFieldAction() {
                                  </x-table-body-cell>
          
                                  <x-table-body-cell justify="center">
-                                     <x-photo-card-preview v-if="file.mimeType === 'image/jpeg' || file.mimeType === 'image/png'" :file="file" />
+                                     <x-photo-card-preview v-if="file.mimeType === 'image/jpeg' || file.mimeType === 'image/png' || file.mimeType === 'image/webp'" :file="file" />
 
                                      <x-card-media v-else  :file="file" />
                                  </x-table-body-cell>
