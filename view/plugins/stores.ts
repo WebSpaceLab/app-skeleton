@@ -11,6 +11,9 @@ import { useMetaTagsStore } from "~~/view/stores/useMetaTagsStore";
 import { useMediaStore } from "~~/view/stores/useMediaStore";
 import { useInboxStore } from "~~/view/stores/useInboxStore";
 import { usePriceStore } from "~~/view/stores/usePriceStore";
+import { useFeatureStore } from "~~/view/stores/useFeatureStore";
+import { useHeroStore } from "~~/view/stores/useHeroStore";
+import { useTeamStore } from "~~/view/stores/useTeamStore";
 
 export default defineNuxtPlugin((nuxtApp) => {
     return {
@@ -28,6 +31,9 @@ export default defineNuxtPlugin((nuxtApp) => {
             media: useMediaStore(),
             inbox: useInboxStore(),
             price: usePriceStore(),
+            feature: useFeatureStore(),
+            hero: useHeroStore(),
+            team: useTeamStore(),
         }
     }
 })

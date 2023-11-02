@@ -59,7 +59,3 @@ export const useFlashStore = defineStore('flash', {
     }
   },
 })
-
-if(import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useFlashStore, import.meta.hot))
-}

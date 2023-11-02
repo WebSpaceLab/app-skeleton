@@ -38,16 +38,20 @@ export const useNavbarStore = defineStore('navbar', {
 
         scrollNavbar() {
             let navbar: any = document.getElementById('main-nav');
-    
-            window.addEventListener('scroll', () => {
-                if(window.scrollY > navbar.scrollTop){
-                    this.isScroll = true
-                    // isShowMenu.value = false
-                } else {
-                    this.isScroll = false
-                    // isShowMenu.value = true
-                }
-            })
+
+            if (navbar) {
+                window.addEventListener('scroll', () => {
+                    if(window.scrollY > navbar.scrollTop){
+                        this.isScroll = true
+                        // isShowMenu.value = false
+                    } else {
+                        this.isScroll = false
+                        // isShowMenu.value = true
+                    }
+                })
+            } else {
+                console.error("Element 'main-nav' nie został znaleziony");
+            }
         },
 
         switchLogin(event = false) {

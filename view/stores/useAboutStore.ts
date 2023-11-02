@@ -164,10 +164,4 @@ export const useAboutStore = defineStore('about', {
             }
         }
     },
-
-    persist: true
   })
-
-  if(import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useAboutStore, import.meta.hot))
-}

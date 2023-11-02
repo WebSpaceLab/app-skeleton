@@ -4,9 +4,9 @@
 <template>
     <!-- ====== Footer Section Start -->
     <div class="w-full box-border flex justify-center items-center py-10 px-6 lg:pt-20  lg:pb-20 relative z-10 text-black dark:text-white">
-        <img src="/images/footer.jpg" alt="footer images" class="absolute top-0 left-0 w-full h-full object-cover -z-2">
+        <img src="/images/footer.webp" alt="footer images" class="absolute top-0 left-0 w-full h-full object-cover -z-2">
 
-        <div class="absolute top-0 left-0 w-full h-full -z-1 bg-gradient-to-r from-prime-light/60 to-second-light/100 dark:from-prime-dark/60 dark:to-second-dark/100"></div>
+        <div class="absolute top-0 left-0 w-full h-full -z-1 bg-black/60"></div>
         
         <div class="container box-border bg-gradient-to-r from-second-light/30 to-prime-light/40 dark:from-second-dark/30 dark:to-prime-dark/40 backdrop-blur rounded-lg p-6">
             <div class="flex flex-wrap -mx-4">

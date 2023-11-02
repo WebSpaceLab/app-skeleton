@@ -43,15 +43,83 @@ export default defineConfig({
     ],
 
     theme: {
+        extend: {
+            animation: {
+                'spin-slow': 'spin 3s linear infinite',
+                blob: "blob 4s infinite",
+                snake1: "snake1 2s linear infinite",
+                snake2: "snake2 2s linear infinite",
+                snake3: "snake3 2s linear infinite",
+                snake4: "snake4 2s linear infinite",
+            },
+            keyframes: {
+                spin: {
+                    '0%': { transform: 'rotate(0deg)' },
+                    '100%': { transform: 'rotate(360deg)' },
+                },
+
+                blob: {
+                    "0%": {
+                      transform: "translate(0px, 0px) scale(1)",
+                    },
+                    "33%": {
+                      transform: "translate(30px, -50px) scale(1.2)",
+                    },
+                    "66%": {
+                      transform: "translate(-20px, 20px) scale(0.8)",
+                    },
+                    "100%": {
+                      transform: "translate(0px, 0px) scale(1)",
+                    },
+                  },
+                  snake1: {
+                    "0%": {
+                      transform: "translateX(-100%)",
+                    },
+                    "100%": {
+                      transform: "translateX(100%)",
+                    },
+                  },
+                  snake2: {
+                    "0%": {
+                      transform: "translateY(-100%)",
+                    },
+                    "100%": {
+                      transform: "translateY(100%)",
+                    },
+                  },
+                  snake3: {
+                    "0%": {
+                      transform: "translateX(100%)",
+                    },
+                    "100%": {
+                      transform: "translateX(-100%)",
+                    },
+                  },
+                  snake4: {
+                    "0%": {
+                      transform: "translateY(100%)",
+                    },
+                    "100%": {
+                      transform: "translateY(-100%)",
+                    },
+                  },
+            },
+            fontFamily: {
+                'sans': ['Golos Text', 'sans-serif'],
+                'serif': ['Golos Text', 'serif'],
+                'mono': ['DM Mono', 'monospace'],
+            },
+        },    
         colors: {
             'basic': {
-                'light' : '#557043',
-                'dark' : '#fff'
+                'light' : '#020617',
+                'dark' : '#f8fafc'
             },
 
             'muted':  {
-                'light' : '#134e4a',
-                'dark' : '#6366f1'
+                'light' : '#475569',
+                'dark' : '#94a3b8'
             },
             
             'prime': {
@@ -60,8 +128,8 @@ export default defineConfig({
             },
             
             'second': {
-                'light' : '#9aa982',
-                'dark' : '#4c1d95'
+                'light' : '#60a5fa',
+                'dark' : '#60a5fa'
             },
 
             'background': {

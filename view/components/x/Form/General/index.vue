@@ -32,7 +32,7 @@ async function  update () {
                     </label>
                                            
                     <x-btn
-                        v-if="!name || !description"
+                        v-if="!form.name || !form.description"
                         :tooltip="{text: 'create'}"
                         @click.prevent="create"
                         color="primary-outline"

@@ -2,11 +2,14 @@
 </script>
 
 <template>
-     <section v-if="$price.activeAll.length" id="price-list" class="snap-start min-h-screen w-full flex flex-col justify-center items-center scroll-mt-0 relative block m-auto w-full  py-20 px-5 box-border">
-        <h1 class="font-extrabold tracking-tight mb-0 text-3xl xl:text-5xl lg:text-4xl">Cennik</h1>
+     <section v-if="$price.activeAll.length" id="price-list" class="snap-start min-h-screen w-full flex flex-col justify-center items-center scroll-mt-0 relative block m-auto w-screen py-20 px-5 box-border">
+        <div class="overlay-4  block overflow-hidden h-screen w-screen absolute bottom-0 right-0 bg-gradient-to-bl from-blue via-blue bg-dark"/>
         
+        <h1 class="font-extrabold tracking-tight mb-0 text-3xl xl:text-5xl lg:text-4xl">Cennik</h1>
+
+
         <template v-for="(price, index) in $price.activeAll" :key="index">
-            <div class="w-auto mb-10">
+            <div class="w-auto h-auto mb-10">
                 <div class="mb-10">
                     <h2 v-if="price.title" class="text-3xl text-center text-bold light:text-muted-light dark:text-muted-dark mb-2">{{ price.title }}</h2>
                     <h3 v-if="price.subtitle" class="text-xl text-center text-bold light:text-gray-600 dark:text-gray-400 m-0">{{ price.subtitle }}</h3>
@@ -48,3 +51,9 @@
         </template>
      </section>
 </template>
+
+<style lang="scss" scoped>
+    .overlay-4 {
+        clip-path: circle(50% at 103% 100%);
+    }
+</style>

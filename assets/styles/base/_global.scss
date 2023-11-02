@@ -1,0 +1,60 @@
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: $light;
+  overflow-x: hidden;
+}
+
+// .container {
+//   min-width: 100%;
+//   position: relative;
+//   top: 0;
+//   left: 0;
+//   margin: 1px 0 0 0 !important;
+//   padding: 0 !important;
+// }
+
+.error {
+  color: $danger;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+hr {
+  border-color: $primary;
+}
+
+.left-50 {
+  left: 50%;
+}
+
+.right-50 {
+  right: 50%;
+}
+
+.top-50 {
+  top: 50%;
+}
+
+.nav-dot {
+  transition: background 200ms, border-color 200ms;
+
+  &:hover span {
+    opacity: 1;
+  }
+}

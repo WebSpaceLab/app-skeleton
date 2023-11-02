@@ -20,6 +20,7 @@
         >       
         <!-- Price card basic -->
             <div 
+                data-aos="zoom-in-up"
                 :class="pack.isHighlighted ? ' shadow-primary-600 bg-primary-800/20 hover:shadow-lg' : 'hover:shadow-lg bg-secondary-800/20 shadow-secondary-600 hover:shadow-secondary-200'"  
                 class="w-full h-full min-w-[240px] max-w-[320px] relative flex flex-col  shadow rounded-xl   transition duration-100 ease-in-out pt-4 px-8 box-border"
             >

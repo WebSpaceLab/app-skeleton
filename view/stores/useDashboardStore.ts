@@ -16,9 +16,12 @@ export const useDashboardStore = defineStore('dashboard', {
                 {  title: 'Media', icon: 'material-symbols:media-link', name: 'dashboard.media', path: '/dashboard/media', access: 'ROLE_USER', type: 'basic', children: [] },
 
                 {  title: 'About', icon: 'material-symbols:settings-account-box-outline', name: 'dashboard.about', path: '/dashboard/about', access: 'ROLE_ADMIN', type: 'settings', children: [] },
+                {  title: 'Feature', icon: 'gis:search-feature', name: 'dashboard.feature', path: '/dashboard/feature', access: 'ROLE_ADMIN', type: 'settings', children: [] },
+                {  title: 'Hero', icon: 'ic:baseline-add-home-work', name: 'dashboard.hero', path: '/dashboard/hero', access: 'ROLE_ADMIN', type: 'settings', children: [] },
                 {  title: 'Price list', icon: 'material-symbols:price-change-outline-rounded', name: 'dashboard.price', path: '/dashboard/price', access: 'ROLE_ADMIN', type: 'settings', children: [] },
                 {  title: 'Profile', icon: 'material-symbols:manage-accounts-rounded', name: 'dashboard.profile', path: '/dashboard/profile', access: 'ROLE_USER', type: 'settings', children: [] },
                 {  title: 'Settings', icon: 'material-symbols:settings-suggest-outline-sharp', name: 'dashboard.settings', access: 'ROLE_ADMIN', path: '/dashboard/settings', type: 'settings', children: [] },
+                {  title: 'Team', icon: 'ri:team-fill', name: 'dashboard.team', path: '/dashboard/team', access: 'ROLE_ADMIN', type: 'settings', children: [] },
             ]
         }
     }),

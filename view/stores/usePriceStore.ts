@@ -388,6 +388,4 @@ export const usePriceStore = defineStore('price', {
             }
         },
     },
-
-    persist: true
 })

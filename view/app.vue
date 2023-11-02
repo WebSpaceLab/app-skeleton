@@ -1,5 +1,5 @@
 <script setup>
-const {$general, $contact, $metaTags,  $social, $about, $price } = useNuxtApp()
+const {$general, $contact, $metaTags,  $social, $about, $price, $feature, $hero, $team } = useNuxtApp()
 
 const loading = ref(true);
 // const LoadProgress = ref(0)
@@ -12,6 +12,9 @@ onMounted(async () => {
     await $social.get()
     await $about.get()
     await $price.get()
+    await $feature.get()
+    await $hero.get()
+    await $team.get()
 
     // LoadProgress.value = Math.round(event.loaded * 100 / event.total);
     loading.value = false

@@ -95,10 +95,4 @@ export const useContactStore = defineStore('contact', {
             this.errors = null
         },
     },
-
-    persist: true
 })
-
-if(import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useContactStore, import.meta.hot))
-}

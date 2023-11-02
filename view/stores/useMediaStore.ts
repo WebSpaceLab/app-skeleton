@@ -116,6 +116,4 @@ export const useMediaStore = defineStore('media', {
 
         }
     },
-
-    persist: true
 })

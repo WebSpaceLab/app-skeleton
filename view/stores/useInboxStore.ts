@@ -106,6 +106,4 @@ export const useInboxStore = defineStore('inbox', {
             }
         }
     },
-
-    persist: true
 })

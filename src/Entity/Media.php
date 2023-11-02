@@ -20,15 +20,15 @@ class Media
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['media:read', 'admin:media:read', 'admin:about:read', 'about:read'])]
+    #[Groups(['media:read', 'admin:media:read', 'admin:about:read', 'about:read', 'admin:feature:read', 'feature:read', 'admin:hero:read', 'hero:read', 'admin:team:read', 'team:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['media:read','admin:media:read', 'admin:about:read', 'about:read'])] 
+    #[Groups(['media:read','admin:media:read', 'admin:about:read', 'about:read', 'admin:feature:read', 'feature:read', 'admin:hero:read', 'hero:read', 'admin:team:read', 'team:read'])] 
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['media:read', 'admin:media:read', 'admin:about:read'])] 
+    #[Groups(['media:read', 'admin:media:read', 'admin:about:read', 'admin:feature:read', 'feature:read', 'admin:hero:read', 'hero:read', 'admin:team:read', 'team:read'])] 
     private ?string $fileName = null; /* TODO: dodać unique */
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -65,10 +65,14 @@ class Media
     #[ORM\OneToMany(mappedBy: 'media', targetEntity: About::class)]
     private Collection $abouts;
 
+    #[ORM\OneToMany(mappedBy: 'media', targetEntity: Team::class)]
+    private Collection $teams;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->abouts = new ArrayCollection();
+        $this->teams = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -179,7 +183,7 @@ class Media
         return  $updatedAtAgo;
     }
 
-    #[Groups(['media:read', 'admin:media:read', 'admin:about:read', 'about:read'])]
+    #[Groups(['media:read', 'admin:media:read', 'admin:about:read', 'about:read', 'admin:feature:read', 'feature:read', 'admin:hero:read', 'hero:read', 'admin:team:read', 'team:read'])]
     public function getPreviewUrl(): ?string
     {
         return 'https://localhost:8000' . $this->filePath;
@@ -252,6 +256,36 @@ class Media
             // set the owning side to null (unless already changed)
             if ($about->getMedia() === $this) {
                 $about->setMedia(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getTeams(): Collection
+    {
+        return $this->teams;
+    }
+
+    public function addTeam(Team $team): static
+    {
+        if (!$this->teams->contains($team)) {
+            $this->teams->add($team);
+            $team->setMedia($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeam(Team $team): static
+    {
+        if ($this->teams->removeElement($team)) {
+            // set the owning side to null (unless already changed)
+            if ($team->getMedia() === $this) {
+                $team->setMedia(null);
             }
         }
 

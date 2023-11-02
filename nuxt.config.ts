@@ -40,6 +40,8 @@ export default defineNuxtConfig({
         layoutTransition: { name: 'layout', mode: 'out-in' },
         pageTransition: { name: 'page', mode: 'out-in' },
     },
+
+    plugins: [{ src: "@/plugins/aos", ssr: false, mode: "client" }],
     
     css: [
         '@/../assets/styles/app.css',

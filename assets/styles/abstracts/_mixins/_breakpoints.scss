@@ -1,0 +1,67 @@
+// $min: (
+//   "xs": 0,
+//   "sm": 480px,
+//   "md": 960px,
+//   "lg": 1200px,
+//   "xl": 1440px,
+// );
+// $max: (
+//   "xs": 480px,
+//   "sm": 960px,
+//   "md": 1200px,
+//   "lg": 1440px,
+//   "xl": 3000px,
+// );
+$breakPoints: (
+  "xs": 480px,
+  "sm": 720px,
+  "md": 960px,
+  "lg": 1200px,
+  "xl": 1440px,
+);
+
+// @mixin responsive($val, $width: "min-max") {
+//   @if $width == "max" {
+//     @media (max-width: map-get($map: $breakPoints, $key: $val)) {
+//       @content;
+//     }
+//   } @else if $width == "min" {
+//     @media (min-width: map-get($map: $breakPoints, $key: $val)) {
+//       @content;
+//     }
+//   } @else {
+//     @media (min-width: map-get($map: $min, $key: $val)) and (max-width: map-get($map: $max, $key: $val)) {
+//       @content;
+//     }
+//   }
+// }
+
+@mixin atSmaller {
+  @media (min-width: map-get($map: $breakPoints, $key: "xs")) {
+    @content;
+  }
+}
+
+@mixin atSmall {
+  @media (min-width: map-get($map: $breakPoints, $key: "sm")) {
+    @content;
+  }
+}
+
+@mixin atMedium {
+  @media (min-width: map-get($map: $breakPoints, $key: "md")) {
+    @content;
+  }
+}
+
+@mixin atLarge {
+  @media (min-width: map-get($map: $breakPoints, $key: "lg")) {
+    @content;
+  }
+}
+
+@mixin atExtraLarge {
+  @media (min-width: map-get($map: $breakPoints, $key: "xl")) {
+    @content;
+  }
+}

@@ -2,7 +2,6 @@
 namespace App\Service;
 
 use App\Repository\AboutRepository;
-use App\Repository\InboxRepository;
 use Symfony\Component\Asset\Packages;
 
 class AboutHelper

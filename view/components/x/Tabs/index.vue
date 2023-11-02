@@ -19,7 +19,6 @@ function switchTab(index) {
 
     
     active.value = index
-    console.log('buffer: ' + buffer.value, 'active: ' + active.value)
 }
 </script>
 

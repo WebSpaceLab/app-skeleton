@@ -5,11 +5,20 @@
 </script>
 
 <template>
-    <div class="container">
-        <h1>Home</h1>
-       <!--
+    <div class="w-screen -translate-y-20">
+        <section-hero />
+
         <section-about />
-    -->
+        
+        <section-features />
+        
+        <section-team />
+        
         <section-price-list />
+        
+        
+        <!--
+            <section-movie />
+        -->
     </div>
 </template>

@@ -105,10 +105,4 @@ export const useMetaTagsStore = defineStore('metaTags', {
         }
 
     },
-
-    persist: true
 })
-
-if(import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useMetaTagsStore, import.meta.hot))
-}
