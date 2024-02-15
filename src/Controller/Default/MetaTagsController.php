@@ -6,9 +6,7 @@ use App\Controller\AbstractAPIController;
 use App\Repository\MetaTagsRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use OpenApi\Attributes as OA;
 
-#[OA\Tag(name: 'Meta Tags')]
 #[Route('/api/meta-tags', name: 'app_meta_tags')]
 class MetaTagsController extends AbstractAPIController
 {

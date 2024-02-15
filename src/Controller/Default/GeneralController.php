@@ -5,7 +5,6 @@ namespace App\Controller\Default;
 use App\Controller\AbstractAPIController;
 use App\Repository\GeneralRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class GeneralController extends AbstractAPIController

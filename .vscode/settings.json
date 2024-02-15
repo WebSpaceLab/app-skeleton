@@ -1,5 +1,13 @@
 {
     "nuxt.isNuxtApp": false,
     "editor.fontSize": 14,
-    "window.zoomLevel": 1
+    "window.zoomLevel": 1,
+    "editor.tabSize": 4,
+    "files.associations": {
+        "*.css": "tailwindcss",
+        "*.scss": "tailwindcss"
+    },
+    "editor.quickSuggestions": {
+        "strings": true
+    }
 }

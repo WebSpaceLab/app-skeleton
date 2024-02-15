@@ -1,5 +1,5 @@
 <script setup>
-const {$general, $metaTags,  $social } = useNuxtApp()
+const {$general, $metaTags,  $social, $categories, $homepage } = useNuxtApp()
 
 onMounted(async () => {
     $general.isLoading = true
@@ -8,6 +8,8 @@ onMounted(async () => {
         await $general.get()
         await $metaTags.get()
         await $social.get()
+        await $categories.getActiveCategories()
+        await $homepage.get()
     } catch (error) {
         console.error(error)
     } finally {
@@ -43,7 +45,7 @@ onMounted(async () => {
 </template>
 
 <style>
-.page-enter-active,
+/* .page-enter-active,
 .page-leave-active {
     transition: all 0.3s;
 }
@@ -71,5 +73,5 @@ onMounted(async () => {
 .layout-leave-to {
     transform: translateX(100%);
     filter: blur(64px);
-}
+} */
 </style>

@@ -15,10 +15,10 @@ const form = ref({
 <template>
     <ClientOnly>
         <form v-if="!$auth.response" class="relative flex flex-col w-full h-full" @submit.prevent="$auth.register(form)">
-            <div class="w-full h-full lg:h-35 flex flex-col justify-center items-center">
+            <div class="w-full h-full lg:h-35 flex flex-col justify-center items-center text-basic-light dark:text-basic-dark">
                 <Icon name="bi:person-fill-add" class="w-20 h-20 lg:w-30 lg:h-30" />
                 
-                <p class="text-center text-2xl md:text-[28px] mb-4 font-bold">Rejestracja</p>
+                <p class="text-center text-2xl md:text-[28px] mb-4 font-bold ">Rejestracja</p>
             </div>
     
             <div class="pt-5 space-y-6">
@@ -113,6 +113,7 @@ const form = ref({
                         color="success-outline"
                         rounded
                         shadow
+                        :disabled="!form.isAgree || form.password !== form.password_confirmation || form.password.length < 8 || form.password_confirmation.length < 8 || form.username.length < 3 || form.email.length < 3 || form.username.length > 20 || form.email.length > 50"
                     /> 
                 </div>
             </div>        

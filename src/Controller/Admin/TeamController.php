@@ -13,11 +13,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+#[IsGranted('ROLE_ADMIN')]
 #[Route('/api/admin/team', name: 'app_admin_team')]
 class TeamController extends AbstractAPIController
 {
@@ -41,7 +43,7 @@ class TeamController extends AbstractAPIController
         return $this->response([
             'team' => $pagination['data'],
             'pagination' => $pagination['pagination'],
-            'queryParams' =>  $this->QueryHelper->params($request, ['term','status','month']),
+            'queryParams' =>  $this->QueryHelper->params($request, ['term', 'status','month']),
             'status' => $this->teamHelper->getActive(),
             'months' => $this->teamHelper->getMonths(),
         ], ['admin:team:read']);
@@ -54,10 +56,12 @@ class TeamController extends AbstractAPIController
 
         $constraints = new Assert\Collection([
             'name' => [
-                new NotBlank()
+                new NotBlank(),
+                new Length(['min' => 2, 'minMessage' => 'Nazwa musi składać się z przynajmniej 2 liter.']),
             ],
             'description' => [
                 new NotBlank(),
+                new Length(['min' => 20, 'minMessage' => 'Nazwa musi składać się z przynajmniej 20 liter.']),
             ],
             'isActive' => [],
             'mediaId' => [

@@ -1,9 +1,10 @@
 <script setup>
-    const {$feature } =  useNuxtApp()
-    
-    onMounted(async () => {
-        await $feature.get()
-    })
+const props = defineProps({
+    features : {
+        type: Array,
+        default: []
+    }   
+})
 </script>
 
 <template>
@@ -14,7 +15,7 @@
             </div>
 
             <div class="relative w-full h-full container mx-auto relative grid grid-flow-row auto-rows-max grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
-                <template v-for="(item, index) in $feature.activeFeature" :key="index">
+                <template v-for="(item, index) in features" :key="index">
                     <div 
                         :data-aos="index === 1 || index === 3 || index === 5 ? 'zoom-out-up' : 'flip-left'"
                         data-aos-easing="ease-out-cubic"

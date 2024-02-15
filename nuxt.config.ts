@@ -5,7 +5,9 @@ export default defineNuxtConfig({
 
       timeline: {
         enabled: true
-      }
+      },
+
+      vscode: {},
     },
 
     srcDir: 'view/',
@@ -28,7 +30,8 @@ export default defineNuxtConfig({
         'nuxt-icon',
         '@nuxtjs/color-mode',
         '@unocss/nuxt',
-        
+        // '@nuxtjs/tailwindcss',
+        // '@nuxt/ui'
     ],
 
     app: {
@@ -44,7 +47,7 @@ export default defineNuxtConfig({
     plugins: [{ src: "@/plugins/aos", ssr: false, mode: "client" }],
     
     css: [
-        '@/../assets/styles/app.css',
+        '@/../assets/styles/app.scss',
     ],
 
     runtimeConfig: {
@@ -93,5 +96,5 @@ export default defineNuxtConfig({
           crawlLinks: true,
           failOnError: false, 
         }
-    }
+    },
 })

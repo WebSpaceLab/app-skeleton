@@ -8,14 +8,14 @@ use App\Repository\GeneralRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use OpenApi\Attributes as OA;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[OA\Tag(name: 'General')]
+#[IsGranted('ROLE_ADMIN')]
 #[Route('/api/admin', name: 'app_admin_generals')]
 class GeneralController extends AbstractAPIController
 {
@@ -85,7 +85,6 @@ class GeneralController extends AbstractAPIController
     public function update(GeneralRepository $generalRepository, ValidatorInterface $validator, Request $request): JsonResponse
     {
         $data = $request->toArray();
-
 
         $constraints = new Assert\Collection([
             'name' => [

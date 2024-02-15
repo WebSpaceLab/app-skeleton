@@ -4,14 +4,14 @@ const props = defineProps({
 })
 const currentSectionIndex = ref(0);
 
-const isLastSection = computed(() => currentSectionIndex.value >= props.sectionIds.length - 1);
+const isLastSection = computed(() => currentSectionIndex.value >= props.sectionIds?.length - 1);
 let isBottom = ref(false)
 let isShow = ref(true)
 
 const checkCurrentSection = () => {
 const scrollPosition = window.scrollY + window.innerHeight / 2; // Sprawdzamy środek ekranu
 
-for (let i = 0; i < props.sectionIds.length; i++) {
+for (let i = 0; i < props.sectionIds?.length; i++) {
     const section = document.getElementById(props.sectionIds[i]);
     if(section) {
         isShow.value = true
@@ -30,11 +30,11 @@ const scrollToNextSection = () => {
     currentSectionIndex.value++
     isBottom.value = false
 
-    if (currentSectionIndex.value < props.sectionIds.length - 1) {
+    if (currentSectionIndex.value < props.sectionIds?.length - 1) {
         const nextSection = document.getElementById(props.sectionIds[currentSectionIndex.value]);
         window.scrollTo({ top: nextSection.offsetTop, behavior: 'smooth' });
 
-        if(currentSectionIndex.value === props.sectionIds.length - 2) {
+        if(currentSectionIndex.value === props.sectionIds?.length - 2) {
             isBottom.value = true
         }
     } else {

@@ -15,6 +15,7 @@ class Social
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['social:read'])]
     private ?int $id = null;
 
     #[Groups(['social:read'])]

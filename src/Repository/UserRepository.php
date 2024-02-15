@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use Carbon\Carbon;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -37,6 +39,40 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newHashedPassword);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
+    }
+
+    public function getWithSearchQueryBuilder(?string $term, ?string $orderBy = 'createdAt', ?string $orderDir = 'DESC', ?string $month): DoctrineQueryBuilder
+    {
+        $qb = $this->createQueryBuilder('user')
+            ->andWhere('user.isDelete = false');
+
+        if ($term) {
+            $qb->andWhere('user.title LIKE :term')
+                ->setParameter('term', '%' . $term . '%');
+        }
+
+        if($month) {
+            $from = Carbon::createFromFormat('d-m-Y', $month)->startOfMonth();
+            $to = Carbon::createFromFormat('d-m-Y', $month)->endOfMonth();
+    
+            $qb->andWhere('user.createdAt BETWEEN :from AND :to')
+                ->setParameter('from', $from)
+                ->setParameter('to', $to);
+        }
+
+        return $qb->orderBy('user.' . $orderBy , $orderDir);
+    }
+
+    public function getActiveMonths()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u.createdAt')
+            ->distinct(true)
+            ->from('App:User', 'user')
+            ->orderBy('u.createdAt', 'DESC')
+            ->where('u.isDelete = false')
+            ->getQuery()
+            ->getResult();
     }
 
     public function save(User $user, bool $flush = false): void

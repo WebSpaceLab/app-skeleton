@@ -36,7 +36,9 @@ const close = () => {
         @close="close"
         :title="title"
     >
-        <section-features />
+        <div class="w-full container mx-auto px-30">
+            <section-features :features="$homepage.data.features" />
+        </div>
 
        <template #footer>
             <div class="flex space-x-3">

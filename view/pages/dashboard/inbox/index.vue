@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia';
 
 const { $inbox, $auth } = useNuxtApp()
-const { mails , pagination, months, queryParams,  read } = storeToRefs($inbox)
+const { data , pagination, months, queryParams,  read, isLoading } = storeToRefs($inbox)
 
 definePageMeta({
     layout: "authorization",
@@ -50,7 +50,7 @@ const allReads = computed(() => {
 });
 
 async function  getMails () {
-    await $inbox.getMails(query.value, perPage.value, page.value)
+    await $inbox.get(query.value, perPage.value, page.value)
 }
 
 
@@ -70,13 +70,13 @@ function switchPerPage (event)  {
 }
 
 function toggleSelectAll(e) {
-    mails.value.forEach(item => item.selected = e.target.checked)
+    data.value.forEach(item => item.selected = e.target.checked)
     
     showFieldAction()
 }
 
-function mailHasBeenReed(mailId) {
-    $inbox.mailHasBeenReed(mailId)
+async function mailHasBeenReed(mailId) {
+    await $inbox.mailHasBeenReed(mailId)
 
     getMails()
 }
@@ -113,10 +113,10 @@ async function deletedMail(mail) {
 }
 
 async function executeAction(actionId) {
-    const mailIds = mails.value.filter(item => item.selected)
+    const mailIds = data.value.filter(item => item.selected)
         .map(item => item.id);
 
-    if (!actionId.length) return;
+    if (!actionId?.length) return;
 
     switch (actionId) {
         case 'delete':
@@ -142,9 +142,9 @@ async function executeAction(actionId) {
 }
 
 function showFieldAction() {
-    const isSelectedFile = mails.value.filter(item => item.selected)
+    const isSelectedFile = data.value.filter(item => item.selected)
 
-    if(isSelectedFile.length) {
+    if(isSelectedFile?.length) {
         isShowActions.value = true
 
     } else {
@@ -236,51 +236,49 @@ watch(() => query.value.orderDir, () => {
 
                 <div class="w-full h-full flex">
                     <div class="transition-all duration-500 " :class="isShowMailPreview ? 'w-1/2' : 'w-full'">
-                        <div v-if="$inbox.isLoading" class="w-full h-full flex justify-center items-center ">
-                            <Spinner :loading="$inbox.isLoading" />
-                        </div>
-    
-                        <div v-else class="w-full h-full transition-all duration-500 " >
+                        <div  class="w-full h-full transition-all duration-500 " >
                             <x-table
-                                    :head="['sender', 'subject', 'created', '' ]"
-                                    @select-all="toggleSelectAll"
-                                >
-                                
-                                    <x-table-body v-for="(mail, index) in mails" :key="mail.index = index" :class="mail.isRead == 0 ? 'bg-black/30' : ''">
-                                        <x-table-body-cell  justify="center">
-                                            <input v-model="mail.selected" @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light dark:bg-background-dark text-blue-600 rounded border-gray-300 lg:w-4 lg:h-4 focus:ring-blue-500">
-                                        </x-table-body-cell>
-                
-                                        <x-table-body-cell>
-                                            {{ mail.sender }}
-                                        </x-table-body-cell>
+                                :head="['sender', 'subject', 'created', '' ]"
+                                @select-all="toggleSelectAll"
+                                :loading="$about.isLoading"
+                            >
+                                <x-table-body v-for="(mail, index) in data" :key="mail.index = index" :class="mail.isRead == 0 ? 'bg-black/30' : ''">
+                                    <x-table-body-cell  justify="center">
+                                        <input v-model="mail.selected" @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light dark:bg-background-dark text-blue-600 rounded border-gray-300 lg:w-4 lg:h-4 focus:ring-blue-500">
+                                    </x-table-body-cell>
+            
+                                    <x-table-body-cell>
+                                        {{ mail.sender }}
+                                    </x-table-body-cell>
 
-                                        <x-table-body-cell justify="start">
-                                            {{ mail.subject }}
-                                        </x-table-body-cell>
-                
-                                        <x-table-body-cell>
-                                            {{ mail.createdAtAgo }}
-                                        </x-table-body-cell>
-                
-                                        <x-table-body-cell justify="center">
-                                            <div class="w-full justify-center items-center">
-                                                <x-btn  @click="openMailPreview(mail)" color="secondary" icon strip :tooltip="{text: 'Preview'}" rounded>
-                                                    <Icon name="mdi:eye"  class="text-2xl"/>
-                                                </x-btn>
-                
-                                                <x-btn  @click="deletedMail(mail)" color="danger" icon strip :tooltip="{text: 'Deleted nie działa!'}" rounded>
-                                                    <Icon name="material-symbols:restore-from-trash-outline-sharp"  class="text-2xl" />
-                                                </x-btn>
-    
-                                            </div>
-                                        </x-table-body-cell>
-                                    </x-table-body>
-                                </x-table>
-                
-                                <div v-if="mails">
-                                    <x-pagination :count="mails.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
-                                </div>
+                                    <x-table-body-cell justify="start">
+                                        {{ mail.subject }}
+                                    </x-table-body-cell>
+            
+                                    <x-table-body-cell>
+                                        {{ mail.createdAtAgo }}
+                                    </x-table-body-cell>
+            
+                                    <x-table-body-cell justify="center">
+                                        <div class="w-full justify-center items-center">
+                                            <x-btn  @click="openMailPreview(mail)" color="secondary" icon strip :tooltip="{text: 'Preview'}" rounded>
+                                                <Icon name="mdi:eye"  class="text-2xl"/>
+                                            </x-btn>
+            
+                                            <x-btn  @click="deletedMail(mail)" color="danger" icon strip :tooltip="{text: 'Deleted nie działa!'}" rounded>
+                                                <Icon name="material-symbols:restore-from-trash-outline-sharp"  class="text-2xl" />
+                                            </x-btn>
+
+                                        </div>
+                                    </x-table-body-cell>
+                                </x-table-body>
+
+                                <template #pagination>
+                                    <div v-if="data">
+                                        <x-pagination :count="data?.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
+                                    </div>
+                                </template>
+                            </x-table>
                         </div>
                     </div>
 

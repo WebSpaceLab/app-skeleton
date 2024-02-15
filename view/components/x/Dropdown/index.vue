@@ -1,6 +1,4 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
-
 const props = defineProps({
     alignX: {
         type: String,
@@ -16,7 +14,7 @@ const props = defineProps({
     },
     contentClasses: {
         type: Array,
-        default: () => ['bg-slate-300/60 dark:bg-slate-900/60'],
+        default: () => ['bg-background-light dark:bg-background-dark shadow shadow-xl  shadow-black'],
     },
 });
 

@@ -13,12 +13,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+#[IsGranted('ROLE_ADMIN')]
 #[Route('/api/admin/feature', name: 'app_admin_feature')]
 class FeatureController extends AbstractAPIController
 {
@@ -40,7 +41,7 @@ class FeatureController extends AbstractAPIController
         $pagination = $this->paginationHelper->paginate($queryBuilder, $query['page'], $query['per_page']);
 
         return $this->response([
-            'feature' => $pagination['data'],
+            'features' => $pagination['data'],
             'pagination' => $pagination['pagination'],
             'queryParams' =>  $this->QueryHelper->params($request, ['term','status','month']),
             'status' => $this->featureHelper->getActive(),
@@ -55,10 +56,12 @@ class FeatureController extends AbstractAPIController
 
         $constraints = new Assert\Collection([
             'name' => [
-                new NotBlank()
+                new NotBlank(),
+                new Length(['min' => 2, 'minMessage' => 'Nazwa musi składać się z przynajmniej 2 liter.']),
             ],
             'description' => [
                 new NotBlank(),
+                new Length(['min' => 20, 'minMessage' => 'Nazwa musi składać się z przynajmniej 20 liter.']),
             ],
             'isActive' => [],
             'mediaId' => [

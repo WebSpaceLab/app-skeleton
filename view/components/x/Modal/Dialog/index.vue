@@ -21,6 +21,10 @@ defineProps({
         type: Boolean,
         default: true,
     },
+    overflowHidden: {
+        type: Boolean,
+        default: true,
+    }
 });
 
 const close = () => {
@@ -37,6 +41,7 @@ const minimization = ref(false)
         :minimization="minimization"
         :max-width="maxWidth"
         :closeable="closeable"
+        :overflowHidden="overflowHidden"
         @close="close"
     >   
         <div class="bg-prime-light overflow-auto dark:bg-prime-dark max-h-[calc(100vh-40px)] z-10 flex flex-col">

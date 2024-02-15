@@ -1,60 +1,26 @@
 body {
   margin: 0 !important;
   padding: 0 !important;
-  background-color: $light;
+  box-sizing: border-box !important;
   overflow-x: hidden;
-}
-
-// .container {
-//   min-width: 100%;
-//   position: relative;
-//   top: 0;
-//   left: 0;
-//   margin: 1px 0 0 0 !important;
-//   padding: 0 !important;
-// }
-
-.error {
-  color: $danger;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  @apply bg-background-light dark:bg-background-dark;
 }
 
 html {
+  font-size: 16px;
+  box-sizing: border-box;
   scroll-behavior: smooth;
 }
 
-hr {
-  border-color: $primary;
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
-.left-50 {
-  left: 50%;
-}
-
-.right-50 {
-  right: 50%;
-}
-
-.top-50 {
-  top: 50%;
-}
-
-.nav-dot {
-  transition: background 200ms, border-color 200ms;
-
-  &:hover span {
-    opacity: 1;
-  }
+.scrollbar {
+  @apply scrollbar scrollbar-left scrollbar-blue-600 scrollbar-rounded scrollbar-w-2px scrollbar-radius-2 scrollbar-track-radius-2 scrollbar-thumb-radius-2;
 }

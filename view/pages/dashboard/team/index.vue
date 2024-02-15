@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia';
 
 const { $team, $auth } = useNuxtApp()
-const { team , pagination, months, queryParams,  status } = storeToRefs($team)
+const { data , pagination, months, queryParams,  status } = storeToRefs($team)
 
 definePageMeta({
     layout: "authorization",
@@ -52,15 +52,17 @@ const allStatus = computed(() => {
 });
 
 async function  getTeam() {
-     await $team.getTeam(query.value, perPage.value, page.value)
+     await $team.get(query.value, perPage.value, page.value)
 }
 
 
 async function addedToLibrary () {
-    await getTeam()
-    await $team.get()
-    isShowModalTeamCreate.value = false
-    isShowModalTeamEdit.value = false
+    try {
+        await getTeam()
+    } finally {
+        isShowModalTeamCreate.value = false
+        isShowModalTeamEdit.value = false
+    }
 }
 
 async function switchPage(event) {
@@ -75,13 +77,13 @@ async function switchPerPage (event)  {
 }
 
 function toggleSelectAll(e) {
-    team.value.forEach(item => item.selected = e.target.checked)
+    data.value.forEach(item => item.selected = e.target.checked)
     
     showFieldAction()
 }
 
 async function openModalTeamPreview() {
-    await $team.get()
+
     isShowModalTeamPreview.value = true
 }
 
@@ -93,20 +95,22 @@ async function destroy(item) {
 }
 
 async function executeAction(actionId) {
-    const teamIds = team.value.filter(item => item.selected)
+    const teamIds = data.value.filter(item => item.selected)
         .map(item => item.id);
 
-    if (!actionId.length) return;
+    if (!actionId?.length) return;
 
     switch (actionId) {
         case 'delete':
         if (confirm(`Czy jesteś pewny, że chcesz usunąć?`)) {
-            teamIds.forEach(async (teamId) => {                    
-                const deleted = await $team.destroy(teamId)
-     
-                isShowActions.value = false
-                selectAll.value = false
-                await getTeam()            
+            teamIds.forEach(async (teamId) => {
+                try {
+                    await $team.destroy(teamId)
+                } finally {
+                    await getTeam()
+                    isShowActions.value = false
+                    selectAll.value = false
+                }                       
             })
         }
         break;
@@ -120,9 +124,9 @@ function edit(item) {
 }
 
 function showFieldAction() {
-    const isSelected = team.value.filter(item => item.selected)
+    const isSelected = data.value.filter(item => item.selected)
 
-    if(isSelected.length) {
+    if(isSelected?.length) {
         isShowActions.value = true
 
     } else {
@@ -222,16 +226,17 @@ watch(() => query.value.orderDir, async () => {
                 </div>
 
 
-                <div v-if="team" class="w-full h-full flex">
+                <div class="w-full h-full flex">
                     <div class="transition-all duration-500 w-full" >
-                        <div class="w-full h-full transition-all duration-500" >
+                        <div v-if="Array.isArray(data)" class="w-full h-full transition-all duration-500" >
                             <x-table
                                     :head="['name', 'Image', 'description', 'status', 'created', 'updated', '' ]"
                                     @select-all="toggleSelectAll"
                                     justify="center"
+                                    :loading="$team.isLoading"
                                 >
                                 
-                                    <x-table-body v-for="(item, index) in team" :key="item.index = index" :class="item.status == 0 ? 'bg-black/30' : ''">
+                                    <x-table-body v-for="(item, index) in data" :key="item.index = index" :class="item.status == 0 ? 'bg-black/30' : ''">
                                         <x-table-body-cell  justify="center">
                                             <input v-model="item.selected" @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light dark:bg-background-dark text-blue-600 rounded border-gray-300 lg:w-4 lg:h-4 focus:ring-blue-500">
                                         </x-table-body-cell>
@@ -276,8 +281,8 @@ watch(() => query.value.orderDir, async () => {
                                     </x-table-body>
                                 </x-table>
                 
-                                <div v-if="team">
-                                    <x-pagination :count="team.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
+                                <div >
+                                    <x-pagination :count="data?.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
                                 </div>
                         </div>
                     </div>

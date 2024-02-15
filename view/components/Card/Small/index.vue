@@ -19,7 +19,7 @@ const { classTextColor } = useClassColor();
         class="relative w-full h-full rounded-lg z-10"
     >
         <div class="w-full h-full absolute top-0 left-0 rounded-lg overflow-hidden">
-            <img
+            <nuxt-img
                 :alt="item?.preview_image?.name"
                 :class="isHover ? 'scale-110 transition-all duration-200 ease-in' : 'scale-100 transition-all duration-200 ease-in'"
                 :src="item?.preview_image?.preview_url"

@@ -5,36 +5,13 @@ namespace App\Controller\Auth;
 use App\Controller\AbstractAPIController;
 use App\Entity\User;
 use App\Security\ApiTokenHandler;
-use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[OA\Tag(name: 'Auth')]
 class LoginController extends AbstractAPIController
 {
-    #[OA\RequestBody(
-        content: new OA\JsonContent(
-            type: 'object',
-            properties: [
-                new OA\Property('username', type: 'string'),
-                new OA\Property('password', type: 'string'),
-            ],
-        )
-    )]
-    
-    #[OA\Response(
-        response: 200,
-        description: 'Successful login',
-        content: new OA\JsonContent(
-            type: 'object',
-            properties: [new OA\Property('token', type: 'string')],
-        )
-    )]
-
     #[Route('/auth/login', name: 'app_auth_login', methods: ['POST'])]
     public function login(#[CurrentUser()] User $user = null, ApiTokenHandler $apiTokenHandler): JsonResponse
     {
@@ -44,6 +21,36 @@ class LoginController extends AbstractAPIController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
+        
+        if(!$user->getVerificationToken()) {
+            return $this->json([
+                'error' => 'The account is not verified. Please check your email.',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if(!$user->getVerificationToken()->isIsVerified()) {
+            return $this->json([
+                'error' => 'The account is not verified. Please check your email.',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if(!$user->isActiveAccount()) {
+            return $this->json([
+                'error' => 'The account is not active. ',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if(!$user->isIsAgree()) {
+            return $this->json([
+                'error' => 'The account is not agree.',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if($user->isIsDelete()) {
+            return $this->json([
+                'error' => 'The account is deleted. Please contact the administrator.',
+            ], Response::HTTP_UNAUTHORIZED);
+        }
 
         $apiToken = $apiTokenHandler->createForUser($user);
 
@@ -64,11 +71,8 @@ class LoginController extends AbstractAPIController
     #[Route('/auth/logout', name: 'app_auth_logout_redirected')]
     public function logoutRedirected(): JsonResponse
     {
-        return $this->response([
-            'flash' => [
-                'type' => 'success',
-                'message'=> 'Wylogowanie przebiegło pomyślnie.'
-            ]
-        ]);
+        $this->flash('Wylogowano pomyślnie.');
+
+        return $this->response([]);
     }
 }

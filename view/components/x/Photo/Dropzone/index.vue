@@ -50,7 +50,10 @@ function uploadFiles(files) {
                     media.progress = Math.round(event.loaded * 100 / event.total);
                 },
             })
-            .then(({data}) => {
+            .then(response => {
+                return response.data
+            })
+            .then(({data, flash}) => {
                 emitAddedToLibrary(data.media);
 
                 media.uploaded = true;
@@ -58,7 +61,7 @@ function uploadFiles(files) {
                 media.previewUrl = data.media.previewUrl;
                 media.mimeType = data.media.mimeType;
                 media.file = data.media
-                $flash.success(data.flash.message)
+                $flash.success(flash.message)
             })
             .catch(error => {
                 media.error = 'Uploaded Fail. Please try again later;';
@@ -170,7 +173,7 @@ function uploadCropImage(data) {
                 @drop.prevent="onDroppedFiles"
                 @dragover.prevent="dragging = true"
                 @dragleave.prevent="dragging = false"
-                :class="[dragging ? 'border-indigo-500' :'border-gray-400', 'flex flex-col items-center py-6 px-6 rounded-md border-2 border-dashed']"
+                :class="[dragging ? 'border-indigo-500' :'border-basic-light dark:border-basic-dark', 'flex flex-col items-center py-6 px-6 rounded-xl border-2 border-dashed']"
             >
                 <svg
                     class="w-12 h-12 text-gray-500"
@@ -189,7 +192,7 @@ function uploadCropImage(data) {
 
                 <p class="mb-2 text-gray-700">or</p>
 
-                <label class="bg-white px-4 h-9 inline-flex items-center rounded border border-gray-300 shadow-sm text-sm font-medium text-gray-700 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                <label class="bg-white px-4 h-9 inline-flex items-center rounded border border-gray-300 cursor-pointer hover:shadow-xl shadow-black shadow-sm text-sm font-medium text-gray-700 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                     Select files
 
                     <input
@@ -210,6 +213,7 @@ function uploadCropImage(data) {
                         name="files"
                         ref="files"
                         type="file"
+                        accept="image/png, image/jpeg, image/jpg, video/mp4"
                     >
                 </label>
 
@@ -225,7 +229,7 @@ function uploadCropImage(data) {
             -->
         </div>
  
-        <ul v-if="media.length"  class="relative w-full  overflow-y-scroll">
+        <ul v-if="media?.length"  class="relative w-full  overflow-y-scroll">
             <li
                 v-for="(item, index) in media" :key="index"
                 class="p-3 bg-prime-light dark:bg-prime-dark text-muted-light dark:text-muted-dark flex items-center space-x-2 my-2 rounded-lg"

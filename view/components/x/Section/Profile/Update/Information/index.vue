@@ -8,7 +8,6 @@ let isMouseover = ref(false)
 let file = ref(null)
 let cropper = ref(null)
 let uploadedImage = ref(null)
-let userImage = ref('')
 let userName = ref('')
 let firstName = ref('')
 let lastName = ref('')
@@ -34,7 +33,6 @@ const cropAndUpdateImage = async () => {
     await $account.updateUserImage(data).then(async (res) => {
         await $auth.getUser()
 
-        userImage.value = $account.avatar_url
         $flash.success(res.data.flash.message)
     }).catch((error) => {
         $flash.error( error.response.data.message)
@@ -95,7 +93,6 @@ onMounted(() => {
     firstName.value = $account.user.firstName
     lastName.value = $account.user.lastName
     userDescription.value = $account.user.bio
-    userImage.value = $account.user.avatarUrl
 })
 </script>
 
@@ -121,11 +118,11 @@ onMounted(() => {
                                 class="rounded-full" 
                                 width="95"
                                 height="95" 
-                                :src="userImage"
+                                :src="$account.user.avatarUrl"
                                 alt="userName"
                             >
 
-                            <div class="absolute  w-5 h-5 bottom-0 right-0 rounded-full bg-white shadow-xl border p-1 border-gray-300 inline-block w-[32px] shadow-xl shadow-black">
+                            <div class="absolute  w-6 h-6 flex justify-center items-center bottom-0 right-0  rounded-full bg-white  border  border-gray-300  shadow-xl shadow-black">
                                 <Icon name="ph:pencil-simple-line-bold" size="17" class="-mt-1 ml-0.5 text-gray-600"/>
                             </div>
                         </label>

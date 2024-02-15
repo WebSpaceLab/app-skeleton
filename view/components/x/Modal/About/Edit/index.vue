@@ -54,6 +54,10 @@ const resetForm = () => {
 const update = async () => {
     try {
         await $about.update(aboutPreview.value.id, form)
+        if($about.errors) {
+            return
+        }
+        
         emits('addedToLibrary', true)
         // close()
         

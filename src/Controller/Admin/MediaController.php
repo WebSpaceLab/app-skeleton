@@ -12,20 +12,13 @@ use App\Service\UploaderHelper;
 use App\Service\QueryHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use OpenApi\Attributes as OA;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Janwebdev\ImageBundle\Image;
-use Intervention\Image\ImageManagerStatic;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-// use Intervention\Image\ImageManagerStatic as Image;
 
-#[OA\Tag(name: 'Articles Comments')]
 #[Route('/api/admin/media', name: 'app_admin_media')]
 #[isGranted('ROLE_ADMIN')]
 class MediaController extends AbstractAPIController

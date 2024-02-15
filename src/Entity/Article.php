@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ArticleRepository;
 use App\Trait\Timestamps;
+use Carbon\Carbon;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -20,39 +21,58 @@ class Article
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-
+    #[Groups(['homepage:read', 'article:read', 'article:write', 'profile:read', 'admin:article:read', 'article:show',"gallery:read", "gallery:write", 'gallery:show'])]
     private ?int $id = null;
 
     #[Assert\NotBlank()]
-    #[ORM\Column(length: 255)]
-    #[Groups(['article:read', 'article:write', 'profile:read'])]
+    #[ORM\Column(length: 255, unique: true)]
+    #[Groups(['homepage:read', 'article:read', 'article:write', 'profile:read', 'admin:article:read', 'article:show', "gallery:read", "gallery:write", 'gallery:show'])]
     private ?string $title = null;
 
     #[Assert\NotBlank()]
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['article:read', 'article:write'])]
+    #[Groups(['homepage:read', 'article:write', 'admin:article:read', 'article:show'])]
     private ?string $content = null;
 
     #[Assert\NotBlank()]
-    #[ORM\Column(length: 255)]
-    #[Groups(['article:read'])]
+    #[ORM\Column(length: 255, unique: true)]
+    #[Groups(['homepage:read', 'admin:article:read', 'article:show', "gallery:read", "gallery:write", 'gallery:show'])]
     private ?string $slug = null;
 
     #[ORM\Column]
-    #[Groups(['article:read', 'article:write'])]
+    #[Groups(['article:write', 'admin:article:read'])]
     private ?bool $isPublished = false;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['article:read', 'article:write'])]
     private ?\DateTimeImmutable $publishedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comment::class, cascade: ['persist', 'remove'])]
-    #[Groups(['article:read'])]
+    #[Groups(['admin:article:read', 'article:show'])]
     private Collection $comments;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
-    #[Groups(['article:read'])]
-    private ?User $owner = null; /* TODO: Zmienić nazwe 'owner' na 'author' */
+    #[Groups(['article:read', 'admin:article:read', 'article:show'])]
+    private ?User $author = null;
+
+    #[ORM\Column]
+    private ?bool $isDelete = false;
+    
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[Groups(['homepage:read', 'article:write', 'admin:article:read', 'article:show'])]
+    private ?Category $category = null;
+    
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[Groups(['homepage:read', 'article:write', 'admin:article:read', 'article:show'])]
+    private ?Media $media = null;
+    
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['homepage:read', 'article:write', 'admin:article:read', 'article:show'])]
+    private ?string $description = null;
+    
+    #[ORM\OneToOne(inversedBy: 'article', cascade: ['persist', 'remove'])]
+    #[Groups(['homepage:read', 'article:write', 'admin:article:read', 'article:show'])]
+    private ?Gallery $gallery = null;
+
 
     public function __construct()
     {
@@ -128,7 +148,7 @@ class Article
     /**
      * @return Collection<int, Comment>
      */
-    #[Groups(['article:read'])]
+    #[Groups(['article:show', 'admin:article:read'])]
     public function getComments(): Collection
     {
         return $this->comments;
@@ -156,21 +176,99 @@ class Article
         return $this;
     }
 
-    public function getOwner(): ?User
+    public function getAuthor(): ?User
     {
-        return $this->owner;
+        return $this->author;
     }
 
-    public function setOwner(?User $owner): static
+    public function setAuthor(?User $author): static
     {
-        $this->owner = $owner;
+        $this->author = $author;
 
         return $this;
     }
 
-    #[Groups(['article:read', 'profile:read'])]
+    #[Groups(['homepage:read', 'article:show', 'profile:read', 'admin:article:read'])]
     public function getIri()
     {
         return '/api/articles/' . $this->getId();
+    }
+
+    public function isIsDelete(): ?bool
+    {
+        return $this->isDelete;
+    }
+
+    public function setIsDelete(bool $isDelete): static
+    {
+        $this->isDelete = $isDelete;
+
+        return $this;
+    }
+
+    #[Groups(['homepage:read', 'profile:read', 'admin:article:read', 'article:show'])]
+    public function getCreatedAtAgo(): ?string
+    {
+        return  Carbon::instance($this->createdAt)->diffForHumans();
+    }
+
+    #[Groups(['profile:read', 'admin:article:read'])]
+    public function getUpdatedAtAgo(): ?string
+    {
+        $updatedAtAgo = $this->updatedAt;
+
+        if ($updatedAtAgo) {
+            $updatedAtAgo = Carbon::instance($updatedAtAgo)->diffForHumans();
+        }
+
+        return  $updatedAtAgo;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getMedia(): ?Media
+    {
+        return $this->media;
+    }
+
+    public function setMedia(?Media $media): static
+    {
+        $this->media = $media;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getGallery(): ?Gallery
+    {
+        return $this->gallery;
+    }
+
+    public function setGallery(?Gallery $gallery): static
+    {
+        $this->gallery = $gallery;
+
+        return $this;
     }
 }

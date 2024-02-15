@@ -18,15 +18,15 @@ class About
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['admin:about:read', 'about:read'])]
+    #[Groups(['admin:about:read', 'homepage:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['admin:about:read', 'about:read'])]
+    #[Groups(['admin:about:read', 'homepage:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['admin:about:read', 'about:read'])]
+    #[Groups(['admin:about:read', 'homepage:read'])]
     private ?string $description = null;
 
     #[ORM\Column]
@@ -38,7 +38,7 @@ class About
     private ?User $author = null;
 
     #[ORM\ManyToOne(inversedBy: 'abouts')]
-    #[Groups(['admin:about:read', 'about:read'])]
+    #[Groups(['admin:about:read', 'homepage:read'])]
     private ?Media $media = null;
 
     #[ORM\Column]

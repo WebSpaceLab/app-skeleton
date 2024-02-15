@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
 import { useFlashStore } from './useFlashStore'
+import { t } from '@unocss/preset-mini/dist/shared/preset-mini.5daNC9yh'
 
 export const useInboxStore = defineStore('inbox', {
     state: () => ({
-        mails: [],
+        data: [],
         pagination: {
             total: null,
             current_page: null,
@@ -18,40 +19,39 @@ export const useInboxStore = defineStore('inbox', {
     }),
     
     actions: {
-        async getMails(query:any, perPage: number, page: number ) {
+        async get(query:any, perPage: number, page: number ) {
             this.isLoading = true
             
-            let {data, pending, status, error } = await useFetchApi(`/api/admin/inbox`, {
-                method: 'GET',
-                query: {
-                    term: query.term,
-                    read: query.read,
-                    month: query.month,
-                    orderBy: query.orderBy,
-                    orderDir: query.orderDir,
-                    per_page: perPage,
-                    page: page
-                }
-            }) as any
-
-            this.isLoading = pending.value
-
-            if(error.value) {
-                console.error(error.value)
-            } else {
-                if(data.value && status.value === 'success') {
-                    this.mails = data.value.inbox
+            try {
+                let { data } = await useFetchApi(`/api/admin/inbox`, {
+                    method: 'GET',
+                    query: {
+                        term: query.term,
+                        read: query.read,
+                        month: query.month,
+                        orderBy: query.orderBy,
+                        orderDir: query.orderDir,
+                        per_page: perPage,
+                        page: page
+                    }
+                }) as any
+                
+                if(data.value) {
+                    this.data = data.value.data.inbox
         
-                    this.pagination.total = data.value.pagination.total
-                    this.pagination.current_page = data.value.pagination.current_page
-                    this.pagination.per_page = data.value.pagination.per_page
+                    this.pagination.total = data.value.data.pagination.total
+                    this.pagination.current_page = data.value.data.pagination.current_page
+                    this.pagination.per_page = data.value.data.pagination.per_page
        
-                    this.read = data.value.read
-                    this.months = data.value.months
-                    this.queryParams = data.value.queryParams
+                    this.read = data.value.data.read
+                    this.months = data.value.data.months
+                    this.queryParams = data.value.data.queryParams
                 }
+            } catch (error) {
+                console.error(error)
+            } finally {
+                this.isLoading = false   
             }
-            
         },
 
         async send(form: any) {

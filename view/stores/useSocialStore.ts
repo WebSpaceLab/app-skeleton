@@ -14,7 +14,9 @@ export const useSocialStore = defineStore('social', {
 
     actions: {
         async get() {
-            const { data, error } = await useFetchApi('/api/socials', {
+            this.isLoading = true
+
+            const { data, error, pending} = await useFetchApi('/api/socials', {
                 method: 'GET',
             }) as any 
 
@@ -22,26 +24,33 @@ export const useSocialStore = defineStore('social', {
                 useFlashStore().error('Wystąpił błąd podczas ładowania ustawień strony.')
             } else {
                 if(data.value) {
-                    this.data = data.value.socials
+                    this.data = data.value.data.socials
                 }
 
                 return data.value
             }
+
+            this.isLoading = false
         },
 
         async getAll() {
-            const { data, error } = await useFetchApi('/api/admin/socials', {
-                method: 'GET',
-            }) as any 
+            this.isLoading = true
 
-            if(error.value) {
-                useFlashStore().error('Wystąpił błąd podczas ładowania ustawień strony.')
-            } else {
+            try {
+                const { data } = await useFetchApi('/api/admin/socials', {
+                    method: 'GET',
+                }) as any 
+
+    
                 if(data.value) {
-                    this.data = data.value.socials
+                    this.data = data.value.data.socials
                 }
-
-                return data.value
+                
+            } catch (error) { 
+                useFlashStore().error('Wystąpił błąd podczas ładowania ustawień strony.')
+                console.error(error)
+            } finally {
+                this.isLoading = false
             }
         },
 
@@ -121,7 +130,7 @@ export const useSocialStore = defineStore('social', {
             }
             this.isLoading = false
             this.buffer = null
-        }
+        },
     },
 
     persist: true

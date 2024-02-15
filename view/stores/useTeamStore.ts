@@ -5,7 +5,7 @@ import { useFlashStore } from './useFlashStore'
 export const useTeamStore = defineStore('team', {
     state: () => {
         return {
-            team : [],
+            data : [],
 
             activeTeam: [],
 
@@ -25,57 +25,38 @@ export const useTeamStore = defineStore('team', {
     },
 
     actions: {
-        async get() {
+        async get(query: any, perPage: number, page: number) {
             this.isLoading = true
 
-            let {data, pending, status, error } = await useFetchApi(`/api/team`, {
-                method: 'GET'
-            }) as any
-         
-            
-            this.isLoading = pending.value
-            
-            if(error.value) {
-                console.error(error.value)
-            } else {
+            try {
+                let { data,  status } = await useFetchApi(`/api/admin/team`, {
+                    method: 'GET',
+                    params: {
+                        term: query.term,
+                        status: query.status,
+                        month: query.month,
+                        orderBy: query.orderBy,
+                        orderDir: query.orderDir,
+                        per_page: perPage,
+                        page: page
+                    }
+                }) as any
+                
                 if(data.value && status.value === 'success') {
-                    this.$state.activeTeam = data.value.team
-                }
-            }
-        },
-
-        async getTeam(query: any, perPage: number, page: number) {
-            this.isLoading = true
-            
-            let {data, pending, status, error } = await useFetchApi(`/api/admin/team`, {
-                method: 'GET',
-                params: {
-                    term: query.term,
-                    status: query.status,
-                    month: query.month,
-                    orderBy: query.orderBy,
-                    orderDir: query.orderDir,
-                    per_page: perPage,
-                    page: page
-                }
-            }) as any
-         
-            this.isLoading = pending.value
-
-            if(error.value) {
-                console.error(error.value)
-            } else {
-                if(data.value && status.value === 'success') {
-                    this.team = data.value.team
+                    this.data = data.value.data.team
         
-                    this.pagination.total = data.value.pagination.total
-                    this.pagination.current_page = data.value.pagination.current_page
-                    this.pagination.per_page = data.value.pagination.per_page
+                    this.pagination.total = data.value.data.pagination.total
+                    this.pagination.current_page = data.value.data.pagination.current_page
+                    this.pagination.per_page = data.value.data.pagination.per_page
        
-                    this.status = data.value.status
-                    this.months = data.value.months
-                    this.queryParams = data.value.queryParams
+                    this.status = data.value.data.status
+                    this.months = data.value.data.months
+                    this.queryParams = data.value.data.queryParams
                 }
+            } catch (error) {
+                console.error(error)
+            } finally {
+                this.isLoading = false
             }
         },
 

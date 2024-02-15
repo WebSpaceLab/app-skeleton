@@ -12,7 +12,6 @@ use App\Service\UploaderHelper;
 use App\Service\QueryHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use OpenApi\Attributes as OA;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,9 +24,8 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 // use Intervention\Image\ImageManagerStatic as Image;
 
-#[OA\Tag(name: 'Articles Comments')]
-#[Route('/api/media', name: 'app_media')]
 #[isGranted('ROLE_USER')]
+#[Route('/api/media', name: 'app_media')]
 class MediaController extends AbstractAPIController
 {
     public function __construct(
@@ -76,7 +74,7 @@ class MediaController extends AbstractAPIController
             $media->setMimeType($file->getMimeType());
             $media->setSize($file->getSize());
 
-            $filename = $uploaderHelper->uploadImage($file, $this->getUploadsDir());
+            $filename = $uploaderHelper->uploadImage($file, $this->getUploadsDir('images', $user));
 
             if(!$filename) {
                 return $this->json([
@@ -87,7 +85,7 @@ class MediaController extends AbstractAPIController
                 ], Response::HTTP_BAD_REQUEST);
             }
 
-            $media->setFilePath('/uploads/' . $filename);
+            $media->setFilePath('/uploads/images/'.$user->getId(). '/'  . $filename);
             $media->setFileName($filename);
             $media->setAuthor($user);
 
@@ -148,7 +146,7 @@ class MediaController extends AbstractAPIController
         $media->setName($data['name']);
 
         if($data['movieUrl']) {
-            $media->setMovieUrl($data['movieUrl']);
+            $media->setPathUrl($data['movieUrl']);
         }
 
         $media->setAuthor($user);
@@ -176,7 +174,7 @@ class MediaController extends AbstractAPIController
     }
 
     #[Route('/{id}', name: ':update', methods: ['POST'])]
-    public function update(Media $media, Request $request,  UploaderHelper $uploaderHelper, MediaRepository $mediaRepository)
+    public function update(Media $media, Request $request,  UploaderHelper $uploaderHelper, MediaRepository $mediaRepository, #[CurrentUser()] User $user)
     {
         $file = $request->files->get('file');
 
@@ -196,17 +194,17 @@ class MediaController extends AbstractAPIController
             ], Response::HTTP_NOT_FOUND);
         }
         
-        if($file && $media->getAuthor() === $this->getUser()) {
+        if($file && $media->getAuthor() === $user) {
             $media->setName($file->getClientOriginalName());
 
-            if($media->getMovieUrl() && $file->getSize()) {
-                $media->setMovieUrl(null);
+            if($media->getPathUrl() && $file->getSize()) {
+                $media->setPathUrl(null);
             }
 
             $media->setMimeType($file->getMimeType());
             $media->setSize($file->getSize());
             
-            $filename = $uploaderHelper->uploadImage($file, $this->getUploadsDir());
+            $filename = $uploaderHelper->uploadImage($file, $this->getUploadsDir('images', $user));
             
             if(!$filename) {
                 return $this->json([
@@ -218,7 +216,7 @@ class MediaController extends AbstractAPIController
             }
 
             $media->setFileName($filename);
-            $media->setFilePath('/uploads/' .  $filename);
+            $media->setFilePath('/uploads/images/'. $user->getId() .'/'.  $filename);
             $mediaRepository->save($media, true);
 
             $this->flash('The file has been updated.');
@@ -284,7 +282,7 @@ class MediaController extends AbstractAPIController
             ], Response::HTTP_OK);
         }
 
-        if($media->getMovieUrl()) {
+        if($media->getPathUrl()) {
             $mediaRepository->remove($media, true);
 
             return $this->json([
@@ -299,7 +297,7 @@ class MediaController extends AbstractAPIController
 
         try {
             $filesystem->remove(
-                $this->getUploadsDir() . $media->getFileName()
+                $this->getUploadsDir('images', $this->getUser()) . $media->getFileName()
             );
         } catch (\Exception $e) {
             return $this->json([
@@ -329,9 +327,9 @@ class MediaController extends AbstractAPIController
         ], Response::HTTP_OK);
     }
 
-    private function getUploadsDir()
+    private function getUploadsDir(string $folder = 'images', User $user)
     {
-        return $this->getParameter('uploads_dir');
+        return $this->getParameter('uploads_dir') . '/' . $folder . '/'. $user->getId() . '/';
     }
 
     // TODO: add cropper
@@ -357,7 +355,7 @@ class MediaController extends AbstractAPIController
 
             $filename = $uploaderHelper->createdFileName($file);
             $image = new Image($imageManager, ['driver' => 'gd']);
-            $img = $image->create($this->getUploadsDir() . $filename);
+            $img = $image->create($this->getUploadsDir('images', $this->getUser()) . $filename);
 
             $croppedImage = $img->crop(
                 $request->request->get('width'),
@@ -366,7 +364,7 @@ class MediaController extends AbstractAPIController
                 $request->request->get('top'),
             );
 
-            $croppedImage->save($this->getUploadsDir() . $filename);
+            $croppedImage->save($this->getUploadsDir('images', $this->getUser()) . $filename);
             
             $media->setFileName($filename);
             $media->setFilePath('/uploads/' . $filename);

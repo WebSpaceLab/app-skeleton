@@ -72,11 +72,11 @@ const setColorTheme = (newTheme) => {
                             <x-dropdown-manage-account :user="$auth.user" >
                                 <template #links>
                                     <x-dropdown-link to="/dashboard" class="text-muted-light dark:text-muted-dark mb-2">
-                                        Dashboard
+                                        Panel główny
                                     </x-dropdown-link>
                     
                                     <x-dropdown-link to="/dashboard/profile" class="text-muted-light dark:text-muted-dark mb-2"  >
-                                        Profile
+                                        Profil
                                     </x-dropdown-link>
     
                                     <!-- Authentication -->

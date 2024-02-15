@@ -28,7 +28,7 @@ function openPreview(item) {
 
 function next(index) {
     right.value = false
-    if(index + 1 < props.photos.length) {
+    if(index + 1 < props.photos?.length) {
         index ++;
     } else {
         index = 0;
@@ -46,7 +46,7 @@ function previous(index) {
     if(index > 0) {
         index --;
     } else {
-        index = props.photos.length - 1;
+        index = props.photos?.length - 1;
     }
 
     props.photos.forEach(item => {
@@ -64,7 +64,7 @@ function close() {
 function allPhotos() {
     const photos = [];
 
-    if(props.photos.length >= numberOfPhotos.value) {
+    if(props.photos?.length >= numberOfPhotos.value) {
         props.photos.forEach((item , index) => {
             if(index >= prevImage.value && index <= nextImage.value) {
                 photos.push(item);
@@ -84,11 +84,11 @@ function prevImages() {
 
     } else {
         if(prevImage.value === 0) {
-            prevImage.value = props.photos.length-1;
+            prevImage.value = props.photos?.length-1;
         } else if(nextImage.value === 0) {
             prevImage.value --;
 
-            nextImage.value = props.photos.length
+            nextImage.value = props.photos?.length
         } else {
             prevImage.value --;
         }
@@ -100,17 +100,17 @@ function prevImages() {
 }
 
 function nextImages() {
-    if(nextImage.value <= props.photos.length-2 ) {
-        if(prevImage.value === props.photos.length -1) {
+    if(nextImage.value <= props.photos?.length-2 ) {
+        if(prevImage.value === props.photos?.length -1) {
             prevImage.value = 0;
         } else {
             prevImage.value++;
         }
         nextImage.value++;
     } else {
-        if( nextImage.value === props.photos.length -1) {
+        if( nextImage.value === props.photos?.length -1) {
             nextImage.value = 0;
-        }else if(prevImage.value === props.photos.length -1) {
+        }else if(prevImage.value === props.photos?.length -1) {
             prevImage.value = 1;
             nextImage.value++;
         } else {
@@ -179,14 +179,14 @@ function onTouchmove(touch) {
             
                 <header @mouseover="isShowHeader = true" @mouseleave="isShowHeader = false" class="h-20 w-screen px-8  box-border" :class="isFullScreen ? isShowHeader ? 'absolute top-0 left-0 z-50 bg-black/60' : 'hidden' : 'relative mb-6 bg-black'">
                     <div class="w-full h-full flex justify-between items-center px-5 box-border">
-                        <h2 v-if="viewPhotos.length > 1" class="flex text-lg text-blue-300 space-x-4">
+                        <h2 v-if="viewPhotos?.length > 1" class="flex text-lg text-blue-300 space-x-4">
                             <span class=" text-gray-600 flex uppercase truncate ">{{ preview.name }}</span>
                             
                             <div class="flex space-x-1">
                                 <span class="text-gray-600">[</span>
                                 <span class="text-gray-600">{{ preview.index + 1 }}</span> 
                                 <span class="text-gray-600"> / </span> 
-                                <span class="text-gray-600">{{ viewPhotos.length }} </span>
+                                <span class="text-gray-600">{{ viewPhotos?.length }} </span>
                                 <span class="text-gray-600">]</span>
                             </div>
                         </h2>
@@ -285,7 +285,7 @@ function onTouchmove(touch) {
                         </transition>
 
                         <div
-                            v-if="preview.index + 1  != viewPhotos.length"
+                            v-if="preview.index + 1  != viewPhotos?.length"
                             @click="next(preview.index)"
                             class="absolute right-0 top-0 z-20 w-10 h-full flex justify-center items-center cursor-pointer hover:bg-black/30 bg-gray-900/2 group duration-500"
                         >
@@ -307,8 +307,8 @@ function onTouchmove(touch) {
                     leave-from-class="transform translate-y-0"
                     leave-to-class="transform translate-y-[100%]"
                 >
-                    <div v-if="isShowAllImages && viewPhotos.length > 1" class="absolute bottom-0 -translate-y-4 p-6 mx-auto h-40 hidden lg:flex flex-row justify-center items-center space-x-3 bg-black/30 rounded-xl">
-                        <div v-if="viewPhotos.length > 6" @click="prevImages()" class="h-full p-3 flex justify-center items-center cursor-pointer bg-black/30 hover:bg-hover-600/30 rounded-l-xl">
+                    <div v-if="isShowAllImages && viewPhotos?.length > 1" class="absolute bottom-0 -translate-y-4 p-6 mx-auto h-40 hidden lg:flex flex-row justify-center items-center space-x-3 bg-black/30 rounded-xl">
+                        <div v-if="viewPhotos?.length > 6" @click="prevImages()" class="h-full p-3 flex justify-center items-center cursor-pointer bg-black/30 hover:bg-hover-600/30 rounded-l-xl">
                             <Icon name="material-symbols:arrow-back-ios-new" class="text-3xl text-white"></Icon>
                         </div>
         
@@ -341,7 +341,7 @@ function onTouchmove(touch) {
                             ></iframe>
                         </div>
         
-                        <div v-if="viewPhotos.length > 6" @click="nextImages()" class="h-full p-3 flex justify-center items-center cursor-pointer bg-black/30 hover:bg-hover-600/30 rounded-r-xl">
+                        <div v-if="viewPhotos?.length > 6" @click="nextImages()" class="h-full p-3 flex justify-center items-center cursor-pointer bg-black/30 hover:bg-hover-600/30 rounded-r-xl">
                             <Icon name="material-symbols:arrow-forward-ios" class="text-3xl text-white"></Icon>
                         </div>
                     </div>

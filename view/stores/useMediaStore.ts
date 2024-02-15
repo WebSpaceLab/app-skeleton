@@ -20,36 +20,37 @@ export const useMediaStore = defineStore('media', {
     actions: {
         async get(page = 2, per_page = 8, fileType: string, month: string, term: string, orderBy: string, orderDir: string, path = `/api/media`) {
             this.isLoading = true
-            
-            let {data, pending, status, error } = await useFetchApi(path, {
-                method: 'GET',
-                query: {
-                    per_page: per_page,
-                    page: page,
-                    fileType: fileType,
-                    month: month,
-                    term: term,
-                    orderBy: orderBy,
-                    orderDir: orderDir
-                }
-            }) as any
 
-            this.isLoading = pending.value
-
-            if(error.value) {
-                console.error(error.value)
-            } else {
-                if(data.value && status.value === 'success') {
-                    this.data = data.value.media
+            try {
+                let { data } = await useFetchApi(path, {
+                    method: 'GET',
+                    query: {
+                        per_page: per_page,
+                        page: page,
+                        fileType: fileType,
+                        month: month,
+                        term: term,
+                        orderBy: orderBy,
+                        orderDir: orderDir
+                    }
+                }) as any
+                
+                if(data.value) {
+                    this.data = data.value.data.media
         
-                    this.pagination.total = data.value.pagination.total
-                    this.pagination.current_page = data.value.pagination.current_page
-                    this.pagination.per_page = data.value.pagination.per_page
+                    this.pagination.total = data.value.data.pagination.total
+                    this.pagination.current_page = data.value.data.pagination.current_page
+                    this.pagination.per_page = data.value.data.pagination.per_page
        
-                    this.fileTypes = data.value.fileTypes
-                    this.months = data.value.months
-                    this.queryParams = data.value.queryParams
+                    this.fileTypes = data.value.data.fileTypes
+                    this.months = data.value.data.months
+                    this.queryParams = data.value.data.queryParams
                 }
+            } catch (error) {
+                console.error(error)
+                
+            } finally {
+                this.isLoading = false
             }
         },
         
@@ -110,7 +111,7 @@ export const useMediaStore = defineStore('media', {
             } else {
                 if(data.value) {
                     useFlashStore().success(data.value.flash.message)
-                    return data.value
+                    return data.value.data
                 }
             }
 

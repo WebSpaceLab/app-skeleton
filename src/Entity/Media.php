@@ -20,30 +20,30 @@ class Media
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['media:read', 'admin:media:read', 'admin:about:read', 'about:read', 'admin:feature:read', 'feature:read', 'admin:hero:read', 'hero:read', 'admin:team:read', 'team:read'])]
+    #[Groups(['media:read', 'homepage:read', 'admin:media:read', 'admin:about:read',  'admin:feature:read', 'admin:hero:read', 'admin:team:read',  'admin:article:read', 'article:show',"gallery:read", "gallery:write", 'gallery:show'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['media:read','admin:media:read', 'admin:about:read', 'about:read', 'admin:feature:read', 'feature:read', 'admin:hero:read', 'hero:read', 'admin:team:read', 'team:read'])] 
+    #[Groups(['media:read', 'homepage:read', 'admin:media:read', 'admin:about:read',  'admin:feature:read', 'admin:hero:read', 'admin:team:read', 'admin:article:read', 'article:show', "gallery:read", "gallery:write", 'gallery:show'])] 
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['media:read', 'admin:media:read', 'admin:about:read', 'admin:feature:read', 'feature:read', 'admin:hero:read', 'hero:read', 'admin:team:read', 'team:read'])] 
-    private ?string $fileName = null; /* TODO: dodać unique */
+    #[Groups(['media:read', 'admin:media:read', 'admin:about:read', 'admin:feature:read', 'feature:read', 'admin:hero:read','admin:team:read', "gallery:read", "gallery:write", 'gallery:show'])] 
+    private ?string $fileName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['media:read', 'admin:media:read'])]
+    #[Groups(['media:read', 'admin:media:read', "gallery:read", "gallery:write", 'gallery:show'])]
     private ?string $mimeType = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $filePath = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    #[Groups(['media:read', 'admin:media:read'])]
+    #[Groups(['media:read', 'admin:media:read', "gallery:read", "gallery:write"])]
     private ?int $size = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['media:read', 'admin:media:read'])]
+    #[Groups(['media:read', 'admin:media:read', "gallery:read", "gallery:write", 'gallery:show'])]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
@@ -53,10 +53,6 @@ class Media
     #[ORM\Column(nullable: true)]
     #[Groups(['admin:media:read'])]
     private ?bool $isDelete = false;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['media:read', 'admin:media:read'])]
-    private ?string $movieUrl = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['admin:media:read'])]
@@ -68,11 +64,20 @@ class Media
     #[ORM\OneToMany(mappedBy: 'media', targetEntity: Team::class)]
     private Collection $teams;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['media:read', 'admin:media:read'])]
+    private ?string $pathUrl = null;
+
+    #[ORM\ManyToMany(targetEntity: Gallery::class, mappedBy: 'media')]
+    #[ORM\JoinTable(name: 'gallery_media')]
+    private Collection $galleries;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->abouts = new ArrayCollection();
         $this->teams = new ArrayCollection();
+        $this->galleries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -183,7 +188,7 @@ class Media
         return  $updatedAtAgo;
     }
 
-    #[Groups(['media:read', 'admin:media:read', 'admin:about:read', 'about:read', 'admin:feature:read', 'feature:read', 'admin:hero:read', 'hero:read', 'admin:team:read', 'team:read'])]
+    #[Groups(['homepage:read', 'article:show', 'media:read', 'admin:media:read', 'admin:article:read', 'admin:about:read', 'admin:feature:read', 'feature:read', 'admin:hero:read','admin:team:read', "gallery:read", "gallery:write", 'gallery:show'])]
     public function getPreviewUrl(): ?string
     {
         return 'https://localhost:8000' . $this->filePath;
@@ -204,18 +209,6 @@ class Media
     public function setIsDelete(?bool $isDelete): static
     {
         $this->isDelete = $isDelete;
-
-        return $this;
-    }
-
-    public function getMovieUrl(): ?string
-    {
-        return $this->movieUrl;
-    }
-
-    public function setMovieUrl(?string $movieUrl): static
-    {
-        $this->movieUrl = $movieUrl;
 
         return $this;
     }
@@ -290,5 +283,51 @@ class Media
         }
 
         return $this;
+    }
+
+    public function getPathUrl(): ?string
+    {
+        return $this->pathUrl;
+    }
+
+    public function setPathUrl(?string $pathUrl): static
+    {
+        $this->pathUrl = $pathUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Gallery>
+     */
+    public function getGalleries(): Collection
+    {
+        return $this->galleries;
+    }
+
+    public function addGallery(Gallery $gallery): static
+    {
+        if (!$this->galleries->contains($gallery)) {
+            $this->galleries->add($gallery);
+            $gallery->addMedium($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGallery(Gallery $gallery): static
+    {
+        if ($this->galleries->removeElement($gallery)) {
+            $gallery->removeMedium($this);
+        }
+
+        return $this;
+    }
+
+    
+    public function __toString()
+    {
+        // zwraca unikalny identyfikator lub inną właściwość encji
+        return $this->name;
     }
 }

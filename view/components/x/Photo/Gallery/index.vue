@@ -12,41 +12,103 @@ const props = defineProps({
        type: Boolean,
        defaultL: true
     },
-    photos: Object
+    photos: Object,
+    isPhotosName: {
+        type: Boolean,
+        default: false
+    },
+    isDate: {
+        type: Boolean,
+        default: false
+    },
+    action: {
+        type: Boolean,
+        default: false
+    },
+    container: {
+        type: Boolean,
+        default: true
+    }
 })
 
+const emits = defineEmits(['remove', 'addedToLibrary'])
+
 let isShowPreviewImage = ref(false)
-const previewImage = ref()
+let isShowModalPhotoDetails = ref(false)
+
+const previewImage = ref({})
+const photoEdit = ref(null)
+
 
 function getPreviewImage(photo) {
     previewImage.value = photo
     isShowPreviewImage.value = true
 }
+
+function openEditImage(photo) {
+    photoEdit.value = photo
+    isShowModalPhotoDetails.value = true
+}
+
+function removePhoto(id) {
+    if (confirm(`Czy jesteś pewny, że chcesz usunąć?`)) {
+
+        emits('remove', id)
+    }
+}
+
+function addedToLibrary(event) {
+    isShowModalPhotoDetails.value = false
+    photoEdit.value = null
+    isShowPreviewImage.value = false
+    isShowModalPhotoDetails.value = false
+    emits('addedToLibrary', event)
+}
 </script>
 
 <template>
-    <div  class="w-full container mx-auto relative">
-        <div class=" lg:columns-4 gap-x-8 pt-2">
-            <figure data-aos="fade-left" class="rounded-xl [break-inside:avoid]" v-for="photo in photos" :key="photo.id">
-                <img 
-                    @click="getPreviewImage(photo)"
-                    class="w-full rounded-lg cursor-pointer duration-300 hover:shadow-lg hover:shadow-black"
-                    :src="photo.previewUrl"
-                    :alt="photo.name"
-                />
+    <div  
+        class="w-full relative"
+        :class="container ? 'container mx-auto' : ''"
+    >
+        <div class="w-full columns-1 sm:columns-2 lg:columns-4 gap-6">       
+            <x-photo-gallery-card 
+                v-for="(photo, index) in photos" 
+                :key="index" 
+                :photo="photo" 
+                :action="action" 
+                :isDate="isDate" 
+                :isPhotosName="isPhotosName"
+                @preview="event => getPreviewImage(event)"
+            >
+                <template #action>
+                    <x-btn  @click="getPreviewImage(photo)" color="secondary" icon  :tooltip="{text: 'Podgląd'}" rounded>
+                        <Icon name="mdi:eye"  class="text-2xl"/>
+                    </x-btn>
 
-                <!--
-                    <figcaption class="mt-2">{{ photo.name }}</figcaption>
-                -->
+                    <x-btn
+                        @click="openEditImage(photo)"
+                        class="h-9 w-9"
+                        :tooltip="{text: 'Edycja'}"
+                        color="secondary"
+                        rounded
+                        icon
+                    >
+                        <Icon name="material-symbols:edit" class="text-xl" />
+                    </x-btn>
 
-
-                <p class="text-sm text-gray-500 line-clamp-2">{{ photo.description }}</p>
-            </figure>
-
-        </div>
-
-        <div class="w-full flex justify-center items-center">
-            <Spinner class="w-10 h-10 "  :loading="false"/>
+                    <x-btn
+                        :tooltip="{text: 'Usuń'}"
+                        class="h-9 w-9"
+                        @click="removePhoto(photo.id)"
+                        color="danger"
+                        icon
+                        rounded
+                    >
+                        <Icon name="material-symbols:restore-from-trash-outline-sharp"  class="text-2xl" />
+                    </x-btn>
+                </template>
+            </x-photo-gallery-card>
         </div>
 
         <x-photo-preview
@@ -55,6 +117,14 @@ function getPreviewImage(photo) {
             :preview="previewImage"
             @close="(event) => isShowPreviewImage = event"
             @preview="event => previewImage = event"
-        />    
+        />
+        
+        <x-modal-photo-details
+            :show="isShowModalPhotoDetails"
+            :file="photoEdit"
+            @close="event => isShowModalPhotoDetails = false"
+            @addedToLibrary="event => addedToLibrary(event)"
+            title="Photo details"
+        />
     </div>
 </template>

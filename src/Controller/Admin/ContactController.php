@@ -9,13 +9,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use OpenApi\Attributes as OA;
 
-#[OA\Tag(name: 'Contact')]
+#[IsGranted('ROLE_ADMIN')]
 #[Route('/api/admin', name: 'app_admin_contact')]
 class ContactController extends AbstractController
 {

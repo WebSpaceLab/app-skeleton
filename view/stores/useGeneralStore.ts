@@ -17,15 +17,13 @@ export const useGeneralStore = defineStore('general', {
 
     actions: {
         async get() {
-            const { data, error } = await useFetchApi('/api/generals', {
-                method: 'GET',
-            }) as any 
-
-            if(error.value) {
-                useFlashStore().error('Wystąpił błąd podczas ładowania ustawień strony.')
-            } else {
+            try {
+                const { data } = await useFetchApi('/api/generals', {
+                    method: 'GET',
+                }) as any 
+                
                 if(data.value) {
-                    if(data.value.general.length) {
+                    if(data.value.general?.length) {
                         this.$state.data.name = data.value.general[0].name
                         this.$state.data.description = data.value.general[0].description
                         this.$state.data.logoUrl = data.value.general[0].logoUrl
@@ -35,8 +33,11 @@ export const useGeneralStore = defineStore('general', {
                         this.$state.data.logoUrl = '/favicon.ico'
                     }
                 }
-    
-                return data.value
+            } catch (error) {
+                useFlashStore().error('Wystąpił błąd podczas ładowania ustawień strony.')
+                console.error(error)
+            } finally {
+                this.isLoading = false
             }
         },
 

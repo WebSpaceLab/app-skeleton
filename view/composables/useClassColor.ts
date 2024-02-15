@@ -34,7 +34,7 @@ export function  useClassColor() {
             'red' : 'text-red-500',
             'green' : 'text-green-500',
             'orange' : 'text-orange-500',
-            'yellow' : 'text-yellow-500',
+            'yellow' : 'text-yellow-600',
             'lime' : 'text-lime-500',
             'indigo' : 'text-indigo-500',
             'violet' : 'text-violet-500',

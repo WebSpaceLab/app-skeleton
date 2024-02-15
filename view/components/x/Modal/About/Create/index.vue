@@ -59,6 +59,11 @@ const resetForm = () => {
 
 const create = async () => {
     await $about.create(form)
+
+    if($about.errors) {
+        return
+    }
+        
     close()
     emits('addedToLibrary', true)
 }

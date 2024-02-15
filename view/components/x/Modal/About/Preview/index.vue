@@ -31,12 +31,14 @@ const close = () => {
 <template>
     <x-modal-dialog
         :show="show"
-        max-width="7xl"
+        max-width="max"
         :closeable="closeable"
         @close="close"
         :title="title"
-    >
-        <section-about />
+    >   
+        <div class="w-full container mx-auto px-30">
+            <section-about :about="$homepage.data.about" />
+        </div>
 
        <template #footer>
             <div class="flex space-x-3">

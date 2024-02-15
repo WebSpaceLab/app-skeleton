@@ -34,7 +34,7 @@
 
                 <p class="text-center font-bold light:text-basic-light dark:text-basic-dark text-3xl mb-4">{{ pack.price }}</p>
 
-                <div v-if="pack.information.length" class="flex flex-col justify-center items-center text-lg text-dark mb-16 px-6">
+                <div v-if="pack?.information?.length" class="flex flex-col justify-center items-center text-lg text-dark mb-16 px-6">
                     <h3 class="text-muted-light dark:text-muted-dark text-center">Pakiet składa się </h3>
                     <slot name="information"></slot>
                 </div>

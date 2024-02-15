@@ -21,6 +21,10 @@ const props = defineProps({
     currentImages: {
         type: Array,
         default: () => []
+    },
+    show: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -34,10 +38,10 @@ const query = ref({
 
 const gridCols = computed(() => {
     return {
-        '6' : 'grid-cols-6',
-        '4' : 'grid-cols-4',
-        '3' : 'grid-cols-3',
-        '2' : 'grid-cols-2',
+        '6' : 'grid-cols-1 md::grid-cols-2 lg:grid-cols-4 xl:grid-cols-6',
+        '4' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+        '3' : 'grid-cols-1 md:grid-cols-3',
+        '2' : 'grid-cols-1 md:grid-cols-2',
         '1' : 'grid-cols-1',
     } [props.grid]
 })
@@ -60,14 +64,14 @@ const actions =  ref([])
 const allMonths = computed(() => {
     return [
         {value: null, label: 'Any date'},
-        ...months.value,
+        // ...months.value,
     ];
 }) 
 
 async function  getMedia () {
     await $media.get(page.value, perPage.value, props.fileType, query.value.month, query.value.term, orderBy.value, orderDir.value, '/api/admin/media' )
  
-    if(props.currentImages.length) {
+    if(props.currentImages?.length) {
         getSelectedImages()
     }
 }
@@ -129,7 +133,7 @@ async function executeAction(actionId) {
     const fileIds = data.value.filter(file => file.selected)
         .map(file => file.id);
 
-    if (!actionId.length) return;
+    if (!actionId?.length) return;
 
     switch (actionId) {
         case 'delete':
@@ -160,8 +164,17 @@ async function executeAction(actionId) {
         break;
 
         case 'add photos':
-                addedToLibrary(fileIds)
-                close()
+            const photos = ref([])
+            fileIds.forEach((fileId) => {
+                const photo = data.value.filter(item=> 
+                    item.id === fileId
+                )
+
+                photos.value.push(photo[0])
+            })
+
+            addedToLibrary(photos.value)
+            close()
         break;
     }
 }
@@ -169,7 +182,7 @@ async function executeAction(actionId) {
 function showFieldAction() {
     const isSelectedFile = data.value.filter(file => file.selected)
 
-    if(isSelectedFile.length) {
+    if(isSelectedFile?.length) {
         isShowActions.value = true
     } else {
         isShowActions.value = false
@@ -246,15 +259,19 @@ watch(() => orderDir.value, () => {
     getMedia()
 })
 
+watch(() => props.show , () => {
+    getMedia()
+})
+
 </script>
 
 <template>
     <div class="w-full p-6 lg:p-10 box-border dark:bg-gray-800/20 transition-all duration-500 rounded-xl">
-        <div class="w-full flex flex justify-between mb-8 space-y-3">
+        <div class="w-full flex flex-col lg:flex-row justify-between mb-8 space-y-3">
             <div class="flex justify-center items-center space-x-3 ">
-                <div class="flex justify-center items-center space-x-3">
+                <div class="flex flex-col lg:flex-row justify-center items-center bg-black/30 p-3 rounded-xl space-y-3 lg:space-y-0 lg:space-x-3">
                     <div v-if="multiple">
-                        <div class="w-6 text-center bg-black/30 p-3 rounded-xl">
+                        <div class="w-6 text-center  ">
                             <input v-model="selectAll" type="checkbox" @change="toggleSelectAll" class="w-6 h-6 bg-background-light dark:bg-background-dark text-muted-light dark:text-muted-dark rounded border-solid border-muted-light dark:border-muted-dark lg:w-4 lg:h-4 focus:ring-blue-500">
                         </div>
                     </div>
@@ -269,12 +286,13 @@ watch(() => orderDir.value, () => {
                         <option value="desc">Sort by descending</option>
                         <option value="asc">Sort by ascending</option>
                     </select>
+                    <!--
+                        <select v-model="query.month"  aria-label="Media date" id="date" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
+                            <option v-for="month in allMonths" :key="month.value" :value="month.value">{{ month.label }}</option>
+                        </select>
+                    -->
 
-                    <select v-model="query.month"  aria-label="Media date" id="date" class="w-60 bg-background-light dark:bg-background-dark rounded-lg text-muted-light dark:text-muted-dark  dark:border-muted-dark shadow-sm lg:text-sm focus:outline-none focus:ring-focus focus:border-focus">
-                        <option v-for="month in allMonths" :key="month.value" :value="month.value">{{ month.label }}</option>
-                    </select>
-
-                    <div class="w-full">
+                    <div class="w-auto">
                         <x-select-action :actions="actions" :isShowActions="isShowActions" @execute="executeAction" />
                     </div>
                 </div>
@@ -285,14 +303,13 @@ watch(() => orderDir.value, () => {
             </div>
         </div>
 
-
         <div class="w-full">
             <div v-if="$media.isLoading" class="w-full h-100 flex justify-center ">
                 <Spinner :loading="$media.isLoading" />
             </div>
 
             <div v-else class="w-full">
-                <div v-if="data" class="grid gap-6" :class="gridCols">
+                <div v-if="data" class="grid  gap-6" :class="gridCols">
                     <template
                         v-for="(file, index) in data"
                         :key="file.index = index"
@@ -341,7 +358,7 @@ watch(() => orderDir.value, () => {
             </div>
 
             <div v-if="data">
-                <x-pagination :count="data.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
+                <x-pagination :count="data?.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
             </div>
 
         </div>

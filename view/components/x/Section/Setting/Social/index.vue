@@ -17,7 +17,7 @@ function activePanel(itemId) {
 }
 
 function addSocialMedia() {
-    if($social.data.length > 5) {
+    if($social.data?.length > 5) {
         isAlert.value = true;
 
         setTimeout(() => {
@@ -42,7 +42,9 @@ function edit(item) {
     }
 }
 
-
+onMounted(() => {
+    $social.getAll();
+})
 </script>
 
 <template>
@@ -60,12 +62,16 @@ function edit(item) {
             </button>
         </div>
 
-        <div class="w-full grid sm:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4 justify-center items-center gap-4 md:gap-6">
+        <div v-if="$social.isLoading">
+            <spinner :loading="$social.isLoading" class="w-20 h-20 text-primary" />
+        </div>
+
+        <div v-else class="w-full  grid sm:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4 justify-center items-center gap-4 md:gap-6">
             <template v-for="item in $social.data" :key="item.id">
                 <div
                     @mouseleave="closePanel(item.id)"
                     @mouseover="activePanel(item.id)"
-                    class="relative w-72 h-40 flex flex-col justify-center items-center bg-secondary dark:bg-secondary-dark rounded-lg px-3 py-4 "
+                    class="relative cursor-pointer w-72 h-40 flex flex-col justify-center items-center bg-secondary dark:bg-secondary-dark rounded-lg px-3 py-4 "
                     :class="isActivePanel && buffer === item.id ? 'shadow-xl shadow-black' : 'shadow-sm shadow-slate-600'"
                 > 
                     <div v-if="isActivePanel && buffer === item.id"  class="absolute left-0 top-0 w-full h-10 flex justify-end items-center px-2  bg-black/20 box-border rounded-t-xl">
@@ -95,7 +101,7 @@ function edit(item) {
                 </div>
             </template>
 
-            <div v-if="!$social.data.length"  class="w-96 h-40 flex flex-col justify-center items-center bg-secondary dark:bg-secondary-dark rounded-lg px-3 py-4 shadow-sm shadow-slate-600">
+            <div v-if="!$social?.data?.length"  class="w-96 h-40 flex flex-col justify-center items-center bg-secondary dark:bg-secondary-dark rounded-lg px-3 py-4 shadow-sm shadow-slate-600">
                 <div class=" flex justify-start items-center space-x-2">
                     <div class="">
                         <Icon name="pajamas:thumbtack-solid" class="text-base-color dark:text-base-dark"  />

@@ -115,7 +115,7 @@ watch(() => props.isClose, (close) => {
                     rounded
                     shadow
                 >
-                    Created price list
+                    Save
                 </x-btn>
             </div>
         </form>

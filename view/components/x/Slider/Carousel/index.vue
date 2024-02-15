@@ -10,7 +10,7 @@
     })
 
     const slides = ref([])
-    const slidesLength = computed(() => props.items.length)
+    const slidesLength = computed(() => props.items?.length)
     
     let index = ref(0)
     let buffer = ref(null)

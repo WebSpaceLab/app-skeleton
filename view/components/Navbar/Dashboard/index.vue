@@ -25,7 +25,7 @@
                         <slot name="content" />
                     </div>
 
-                    <div class="w-70 flex  justify-end pr-6 box-border ">
+                    <div class="w-70 flex justify-end items-center pr-6 box-border ">
                         <slot name="action" />
                     </div>
                 </div>

@@ -44,20 +44,20 @@ function x1(current) {
 
 function creatingNameLinks() {
 
-    if(splitLink.length == 4) {
+    if(splitLink?.length == 4) {
         firstNamePath.value = splitLink[0] 
         secondNamePath.value = splitLink[0] + '.' + splitLink[1]
         thirdNamePath.value = splitLink[0] + '.' + splitLink[1] + '.' + splitLink[2]
         lastNamePath.value = splitLink[0] + '.' + splitLink[1] + '.' + splitLink[2]+ '.' + splitLink[3]
 
         x4(firstNamePath.value, secondNamePath.value, thirdNamePath.value, lastNamePath.value)
-    }  else if (splitLink.length == 3 ) {
+    }  else if (splitLink?.length == 3 ) {
         firstNamePath.value = splitLink[0] 
         secondNamePath.value = splitLink[0] + '.' + splitLink[1]
         lastNamePath.value = splitLink[0] + '.' + splitLink[1] + '.' + splitLink[2]
 
         x3(firstNamePath.value, secondNamePath.value, lastNamePath.value)
-    }   else if (splitLink.length == 2 ) {
+    }   else if (splitLink?.length == 2 ) {
         firstNamePath.value = splitLink[0] 
         lastNamePath.value = splitLink[0] + '.' + splitLink[1]
 

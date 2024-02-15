@@ -23,7 +23,7 @@ class InboxHelper
         }
     
         // Usuwanie duplikatów
-        $months = array_unique($months, SORT_REGULAR);
+        $months = array_values(array_unique($months, SORT_REGULAR));
     
         return $months;
     }

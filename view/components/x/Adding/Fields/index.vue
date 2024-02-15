@@ -20,7 +20,7 @@ let loading = ref(false)
 function addingField () {
     loading.value = true
     const item = {}
-    if(items.value.length < 1) {
+    if(items?.value?.length < 1) {
 
         items.value.push(item)
     }
@@ -58,8 +58,8 @@ function cancel(index) {
             </div>
         </div>
 
-        <div v-if="items.length < 1" class="w-full transition-all duration-500">
-            <x-btn @click="addingField()" class="w-full bg-slate-600/50 border-slate-600/50 text-background-dark " :disabled="items.length < 1 ? false : true" rounded icon-left :icon-right="loading">
+        <div v-if="item?.length < 1" class="w-full transition-all duration-500">
+            <x-btn @click="addingField()" class="w-full bg-slate-600/50 border-slate-600/50 text-background-dark " :disabled="items?.length < 1 ? false : true" rounded icon-left :icon-right="loading">
                 <template #icon-left>
                     <Icon name="material-symbols:add-circle" class="text-2xl text-background-dark"/>
                 </template>

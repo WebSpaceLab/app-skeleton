@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia';
 
 const { $hero, $auth } = useNuxtApp()
-const { hero , activeHero, pagination, months, queryParams,  status } = storeToRefs($hero)
+const { data , pagination, months, queryParams,  status } = storeToRefs($hero)
 
 definePageMeta({
     layout: "authorization",
@@ -52,16 +52,17 @@ const allStatus = computed(() => {
 });
 
 async function  getHero() {
-     await $hero.getHero(query.value, perPage.value, page.value)
+     await $hero.get(query.value, perPage.value, page.value)
 }
 
 
 async function addedToLibrary () {
-    await getHero()
-    await $hero.get()
-
-    isShowModalHeroCreate.value = false
-    isShowModalHeroEdit.value = false
+    try {
+        await getHero()
+    } finally {
+        isShowModalHeroCreate.value = false
+        isShowModalHeroEdit.value = false
+    }
 }
 
 async function switchPage(event) {
@@ -76,14 +77,17 @@ async function switchPerPage (event)  {
 }
 
 function toggleSelectAll(e) {
-    hero.value.forEach(item => item.selected = e.target.checked)
+    data.value.forEach(item => item.selected = e.target.checked)
     
     showFieldAction()
 }
 
 async function openModalHeroPreview() {
-    await $hero.get()
-    isShowModalHeroPreview.value = true
+    try {
+        await $homepage.get()
+    } finally {
+        isShowModalHeroPreview.value = true
+    }
 }
 
 async function destroy(item) {
@@ -94,20 +98,24 @@ async function destroy(item) {
 }
 
 async function executeAction(actionId) {
-    const heroIds = hero.value.filter(item => item.selected)
+    const heroIds = data.value.filter(item => item.selected)
         .map(item => item.id);
 
-    if (!actionId.length) return;
+    if (!actionId?.length) return;
 
     switch (actionId) {
         case 'delete':
         if (confirm(`Czy jesteś pewny, że chcesz usunąć?`)) {
-            heroIds.forEach(async (heroId) => {                    
-                const deleted = await $hero.destroy(heroId)
-     
-                isShowActions.value = false
-                selectAll.value = false
-                await getHero()            
+            heroIds.forEach(async (heroId) => {
+                try {
+                    await $hero.destroy(heroId)
+                } catch (error) {
+                    console.log(error)
+                } finally {
+                    await getHero()
+                    isShowActions.value = false
+                    selectAll.value = false
+                }                         
             })
         }
         break;
@@ -121,9 +129,9 @@ function edit(item) {
 }
 
 function showFieldAction() {
-    const isSelected = hero.value.filter(item => item.selected)
+    const isSelected = data.value.filter(item => item.selected)
 
-    if(isSelected.length) {
+    if(isSelected?.length) {
         isShowActions.value = true
 
     } else {
@@ -223,63 +231,64 @@ watch(() => query.value.orderDir, async () => {
                 </div>
 
 
-                <div v-if="hero" class="w-full h-full flex">
+                <div class="w-full h-full flex">
                     <div class="transition-all duration-500 w-full" >
                         <div class="w-full h-full transition-all duration-500" >
                             <x-table
-                                    :head="['name', 'Image', 'description', 'status', 'created', 'updated', '' ]"
-                                    @select-all="toggleSelectAll"
-                                    justify="center"
-                                >
-                                
-                                    <x-table-body v-for="(item, index) in hero" :key="item.index = index" :class="item.status == 0 ? 'bg-black/30' : ''">
-                                        <x-table-body-cell  justify="center">
-                                            <input v-model="item.selected" @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light dark:bg-background-dark text-blue-600 rounded border-gray-300 lg:w-4 lg:h-4 focus:ring-blue-500">
-                                        </x-table-body-cell>
-                
-                                        <x-table-body-cell justify="center">
-                                            {{ item.name }}
-                                        </x-table-body-cell>
-                                        
-                                        <x-table-body-cell justify="center">
-                                            <x-photo-card-preview :file="item.media" />
-                                        </x-table-body-cell>
+                                :head="['name', 'Image', 'description', 'status', 'created', 'updated', '' ]"
+                                @select-all="toggleSelectAll"
+                                justify="center"
+                                :loading="$hero.isLoading"
+                            >
+                            
+                                <x-table-body v-for="(item, index) in data" :key="item.index = index" :class="item.status == 0 ? 'bg-black/30' : ''">
+                                    <x-table-body-cell  justify="center">
+                                        <input v-model="item.selected" @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light dark:bg-background-dark text-blue-600 rounded border-gray-300 lg:w-4 lg:h-4 focus:ring-blue-500">
+                                    </x-table-body-cell>
+            
+                                    <x-table-body-cell justify="center">
+                                        {{ item.name }}
+                                    </x-table-body-cell>
+                                    
+                                    <x-table-body-cell justify="center">
+                                        <x-photo-card-preview :file="item.media" />
+                                    </x-table-body-cell>
 
-                                        <x-table-body-cell justify="start">
-                                            {{ item.description }}
-                                        </x-table-body-cell>
+                                    <x-table-body-cell justify="start">
+                                        {{ item.description }}
+                                    </x-table-body-cell>
 
-                                        <x-table-body-cell justify="center">
-                                            <div :class="[item.isActive ? 'text-success-600' : 'text-danger-600']">
-                                                {{ item.isActive ? 'active' : 'not active' }}
-                                            </div>
-                                        </x-table-body-cell>
+                                    <x-table-body-cell justify="center">
+                                        <div :class="[item.isActive ? 'text-success-600' : 'text-danger-600']">
+                                            {{ item.isActive ? 'active' : 'not active' }}
+                                        </div>
+                                    </x-table-body-cell>
 
-                                        <x-table-body-cell justify="center">
-                                            {{ item.createdAtAgo }}
-                                        </x-table-body-cell>
+                                    <x-table-body-cell justify="center">
+                                        {{ item.createdAtAgo }}
+                                    </x-table-body-cell>
 
-                                        <x-table-body-cell justify="center">
-                                            {{ item.updatedAtAgo }}
-                                        </x-table-body-cell>
-                
-                                        <x-table-body-cell justify="center">
-                                            <div class="w-full justify-center items-center">
-                                                <x-btn  @click="edit(item)" color="secondary" icon strip :tooltip="{text: 'Edit'}" rounded>
-                                                    <Icon name="ic:baseline-mode-edit"  class="text-2xl" />
-                                                </x-btn>
+                                    <x-table-body-cell justify="center">
+                                        {{ item.updatedAtAgo }}
+                                    </x-table-body-cell>
+            
+                                    <x-table-body-cell justify="center">
+                                        <div class="w-full justify-center items-center">
+                                            <x-btn  @click="edit(item)" color="secondary" icon strip :tooltip="{text: 'Edit'}" rounded>
+                                                <Icon name="ic:baseline-mode-edit"  class="text-2xl" />
+                                            </x-btn>
 
-                                                <x-btn  @click="destroy(item)" color="danger" icon strip :tooltip="{text: 'Deleted'}" rounded>
-                                                    <Icon name="material-symbols:restore-from-trash-outline-sharp"  class="text-2xl" />
-                                                </x-btn>
-                                            </div>
-                                        </x-table-body-cell>
-                                    </x-table-body>
-                                </x-table>
-                
-                                <div v-if="hero">
-                                    <x-pagination :count="hero.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
-                                </div>
+                                            <x-btn  @click="destroy(item)" color="danger" icon strip :tooltip="{text: 'Deleted'}" rounded>
+                                                <Icon name="material-symbols:restore-from-trash-outline-sharp"  class="text-2xl" />
+                                            </x-btn>
+                                        </div>
+                                    </x-table-body-cell>
+                                </x-table-body>
+
+                                <template #pagination>
+                                    <x-pagination :count="data?.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
+                                </template>
+                            </x-table>
                         </div>
                     </div>
                 </div>

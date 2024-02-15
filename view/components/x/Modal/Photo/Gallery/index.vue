@@ -1,5 +1,5 @@
 <script setup>
-const emits = defineEmits(['close', 'addedToLibrary']);
+const emits = defineEmits(['close', 'addedToLibrary'])
 
 defineProps({
     show: {
@@ -55,12 +55,12 @@ const addedToLibraryDropzone = (event) => {
         <x-tabs :tabs="['library', 'add from assets']">
             
             <template #tab-0>
-                <x-section-gallery  @addedToLibrary="addedToLibraryGallery" @close="close" :multiple="multiple" :currentImages="currentImages" />
+                <x-section-gallery :show="show"  @addedToLibrary="addedToLibraryGallery" @close="close" :multiple="multiple" :currentImages="currentImages" />
             </template>
             
             <template #tab-1>
-                <div class="py-6">
-                    <x-photo-dropzone @addedToLibrary="addedToLibraryDropzone" :multiple="multiple"/>
+                <div class="w-150 py-6">
+                    <x-photo-dropzone :show="show" @addedToLibrary="addedToLibraryDropzone" :multiple="multiple"/>
                 </div>
             </template>
         </x-tabs>

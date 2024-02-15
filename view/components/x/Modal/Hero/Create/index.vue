@@ -59,6 +59,11 @@ const resetForm = () => {
 
 const create = async () => {
     await $hero.create(form)
+
+    if($hero.errors) {
+        return
+    }
+
     close()
     emits('addedToLibrary', true)
 }

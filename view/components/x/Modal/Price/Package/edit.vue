@@ -19,7 +19,7 @@ const props = defineProps({
 
     title: {
         type: String,
-        default: 'Price package create'
+        default: 'Price package - edit'
     },
     
     pricePackage: {

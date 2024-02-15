@@ -6,7 +6,6 @@ use App\Controller\AbstractAPIController;
 use App\Entity\Article;
 use App\Entity\Comment;
 use App\Entity\User;
-use OpenApi\Attributes as OA;
 use App\Repository\CommentRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,8 +17,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[OA\Tag(name: 'Articles Comments')]
-#[Route('/api/user', name: 'app_user_article_comment', methods: ["GET"])]
+#[Route('/api/user', name: 'app_user_article_comment')]
 class ArticleCommentController extends AbstractAPIController
 {
     #[IsGranted('ROLE_USER')]

@@ -24,7 +24,7 @@ async function update(id, content) {
 
 <template>
     <section class="p-6">
-        <div v-if="!$metaTags.data.length" class="flex flex-col space-y-6 bg-prime-light dark:bg-prime-dark hover:shadow-xl hover:shadow-black transition-all duration-300 p-4 mb-6 rounded-b-xl">
+        <div v-if="!$metaTags?.data?.length" class="flex flex-col space-y-6 bg-prime-light dark:bg-prime-dark hover:shadow-xl hover:shadow-black transition-all duration-300 p-4 mb-6 rounded-b-xl">
             <span class="m-0">
                 <h3 class="p-0 m-0 ml-3"> Site keywords </h3>
                 <x-border color="gray" yt="0" yb="0" class="w-full" />

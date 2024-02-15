@@ -14,6 +14,12 @@ import { usePriceStore } from "~~/view/stores/usePriceStore";
 import { useFeatureStore } from "~~/view/stores/useFeatureStore";
 import { useHeroStore } from "~~/view/stores/useHeroStore";
 import { useTeamStore } from "~~/view/stores/useTeamStore";
+import { useArticleStore } from "~~/view/stores/useArticleStore";
+import { useCategoriesStore } from "~~/view/stores/useCategoriesStore";
+import { useUsersStore } from "~~/view/stores/useUsersStore";
+import { useAdvertisementStore } from "~~/view/stores/useAdvertisementStore";
+import { useHomepageStore } from "~~/view/stores/useHomepageStore";
+import { useGalleriesStore } from "~~/view/stores/useGalleriesStore";
 
 export default defineNuxtPlugin((nuxtApp) => {
     return {
@@ -34,6 +40,12 @@ export default defineNuxtPlugin((nuxtApp) => {
             feature: useFeatureStore(),
             hero: useHeroStore(),
             team: useTeamStore(),
+            article: useArticleStore(),
+            categories: useCategoriesStore(),
+            users: useUsersStore(),
+            advertisement: useAdvertisementStore(),
+            homepage: useHomepageStore(),
+            galleries: useGalleriesStore(),
         }
     }
 })

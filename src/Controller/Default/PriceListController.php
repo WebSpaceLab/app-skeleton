@@ -4,7 +4,6 @@ namespace App\Controller\Default;
 
 use App\Controller\AbstractAPIController;
 use App\Repository\PriceRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 

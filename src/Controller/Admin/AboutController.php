@@ -14,11 +14,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 #[Route('/api/admin/about', name: 'app_admin_about')]
 class AboutController extends AbstractAPIController
 {
@@ -55,10 +56,12 @@ class AboutController extends AbstractAPIController
 
         $constraints = new Assert\Collection([
             'name' => [
-                new NotBlank()
+                new NotBlank(),
+                new Length(['min' => 2, 'minMessage' => 'Nazwa musi składać się z przynajmniej 2 liter.']),
             ],
             'description' => [
                 new NotBlank(),
+                new Length(['min' => 20, 'minMessage' => 'Nazwa musi składać się z przynajmniej 20 liter.']),
             ],
             'isActive' => [],
             'mediaId' => [
@@ -114,7 +117,7 @@ class AboutController extends AbstractAPIController
         $this->flash('Treść została dodana');
 
         return $this->response([
-            'data' => $about,
+            'about' => $about,
         ], ['admin:about:read']);
     }
 

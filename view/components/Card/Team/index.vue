@@ -11,7 +11,7 @@ let isShowModalTeamPersonal = ref(false);
 
 <template>
  <div  class="flex tilt-card w-full justify-center items-center rounded-lg hover:bg-dark hover:border-2 hover:border-blue md:px-4 md:py-14 snap-center hover:shadow-xl box-border" :class="`tilt-card-${index}`">
-    <img :src="personal.media.previewUrl" :alt="personal.media.name" class="tilt-card__image2 absolute inset-0 opacity-0 h-full w-full object-cover object-bottom"/>
+    <nuxt-img :src="personal.media.previewUrl" :alt="personal.media.name" class="tilt-card__image2 absolute inset-0 opacity-0 h-full w-full object-cover object-bottom"/>
     
     <h2 class="tilt-card__title text-gray text-center text-xl font-medium uppercase transition-all duration-500 opacity-0 z-10 absolute top-0 left-0 w-full">
         {{ personal.name }}

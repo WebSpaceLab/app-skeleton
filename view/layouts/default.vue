@@ -22,42 +22,36 @@
     <x-layout >
         <template #header>
             <div class="relative w-full ">
-                <Navbar container>
+                <Navbar >
                     <template #logo>
                         <div class="flex justify-center items-center transition-all duration-500 linear" :class="[ $navbar.isScroll ? 'lg:w-20 lg:h-20' : 'lg:w-30 lg:h-30']">
-                            <div class=" w-full h-full transition-all duration-500 linear" :class="[$navbar.isScroll ? 'relative scale-30 lg:scale-60' : 'relative scale-30 lg:scale-100 lg:pl-6 ']">
-                                <NuxtLink href="https://movementarena.pl/suwalki/" stress  class="w-full h-full flex items-center transition-all duration-500 linear lg:cursor-pointer" >
-                                    <logo  />
-                                </NuxtLink>
+                            <div class=" w-40 h-40 transition-all duration-500 linear left-7" :class="[$navbar.isScroll ? 'relative scale-30 lg:scale-60 ' : 'relative scale-30 lg:scale-100 lg:pl-6 ']">
+                                <div  class="w-full h-full flex items-center transition-all duration-500 linear lg:cursor-pointer" >
+                                    <logo class="w-40 h-40 absolute -bottom-8" />
+                                </div>
                             </div>
                         </div>
                     </template>
 
                     <template  #content>
-                        <ul class="flex  flex-col lg:flex-row justify-start lg:justify-center items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-5 ">
+                        <ul class="flex flex-col lg:flex-row justify-start lg:justify-center items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-5 ">
                             <!--
                             -->
                             <li class="list-none ">
-                                <x-link @click="$navbar.closeMenuSm" href="https://movementarena.pl/suwalki/" stress  @mousemove="activateDropdown(true)">Movement</x-link>
+                                <x-link @click="$navbar.closeMenuSm" :color="$navbar.isScroll ? 'basic' : 'white'"  :to="{path: '/'}"  text="Strona główna"  stress  @mousemove="activateDropdown(null)"></x-link>
                             </li>
 
                             <li class="list-none ">
-                                <x-link-hash @click="$navbar.closeMenuSm"  :to="{path: '/', hash: '#about'}"  text="Informacja"  stress hash="#about" @mousemove="activateDropdown(null)"></x-link-hash>
+                                <x-link @click="$navbar.closeMenuSm" :color="$navbar.isScroll ? 'basic' : 'white'" :to="{path: '/article'}" stress  @mousemove="activateDropdown(true)" text="Wiadomości"></x-link>
                             </li>
+
+                            <li  class="list-none">
+                                <x-link @click="$navbar.closeMenuSm" :color="$navbar.isScroll ? 'basic' : 'white'" :to="{path: '/galleries'}"  text="Galerie"  stress hash="#team" @mousemove="activateDropdown(null)"></x-link>
+                            </li> 
 
                             <li  class="list-none ">
-                                <x-link-hash @click="$navbar.closeMenuSm"  :to="{path: '/', hash: '#features'}"  text="Zajęcia"  stress hash="#features" @mousemove="activateDropdown(null)"></x-link-hash>
+                                <x-link-hash @click="$navbar.closeMenuSm" :color="$navbar.isScroll ? 'basic' : 'white'" :to="{path: '/', hash: '#o-nas'}"  text="O Nas"  stress hash="#o-nas" @mousemove="activateDropdown(null)"></x-link-hash>
                             </li>
-
-                            
-                            <li  class="list-none">
-                                <x-link-hash @click="$navbar.closeMenuSm"  :to="{path: '/', hash: '#team'}"  text="Trenerzy"  stress hash="#team" @mousemove="activateDropdown(null)"></x-link-hash>
-                            </li> 
-
-                            
-                            <li  class="list-none">
-                                <x-link-hash @click="$navbar.closeMenuSm"  :to="{path: '/', hash: '#price-list'}"  text="Cennik"  stress hash="#price-list" @mousemove="activateDropdown(null)"></x-link-hash>
-                            </li> 
                             <!--
                                 <li  class="list-none ">
                                     <x-link-hash @click="$navbar.closeMenuSm"  :to="{path: '/', hash: '#movie'}"  text="Filmy"  stress hash="#movie" @mousemove="activateDropdown(null)"></x-link-hash>
@@ -68,13 +62,13 @@
                                 </li> 
                             -->
                             <li class="list-none ">
-                                <x-link @click="$navbar.closeMenuSm" to="/kontakt" text="Kontakt" stress @mousemove="activateDropdown(null)"></x-link>
+                                <x-link @click="$navbar.closeMenuSm" to="/kontakt" :color="$navbar.isScroll ? 'basic' : 'white'" text="Kontakt" stress @mousemove="activateDropdown(null)"></x-link>
                             </li>
                         </ul>
                     </template>
 
                     <template #action>
-                        <div class="flex ">
+                        <div class="flex justify-center items-center">
                             <x-btn @click="setColorTheme($colorMode.preference == 'dark' ? 'light' : 'dark')" color="secondary" :tooltip="{text: `Zmień motyw na ${$colorMode.value == 'dark' ? 'jasny' : 'ciemny'}`}" ring strip icon class="mr-3">
                                 <template #icon>
                                     <div>
@@ -113,11 +107,11 @@
                                 <x-dropdown-manage-account :user="$auth.user" >
                                     <template #links>
                                         <x-dropdown-link to="/dashboard" class="text-muted-light dark:text-muted-dark mb-2">
-                                            Dashboard
+                                            Panel główny
                                         </x-dropdown-link>
                         
                                         <x-dropdown-link to="/dashboard/profile" class="text-muted-light dark:text-muted-dark mb-2"  >
-                                            Profile
+                                            Profil
                                         </x-dropdown-link>
     
                                         <!-- Authentication -->
@@ -131,35 +125,33 @@
                     </template>
 
                     <template #dropdown-field>
-                       <navbar-dropdown >
-                            <div class="w-auto py-4 flex justify-between items-start space-x-15">
-                                <div class="flex flex-col items-between space-y-2">
-                                    <x-link @click="$navbar.closeMenuSm" href="https://movementarena.pl/suwalki/strefa-skokow/" uppercase stress>Strefa skoków</x-link>
-                                    <x-link @click="$navbar.closeMenuSm" href="https://movementarena.pl/suwalki/strefa-dziecka/" uppercase stress>Strefa dziecka</x-link>
-                                    <x-link @click="$navbar.closeMenuSm" href="https://movementarena.pl/suwalki/squash-3/" uppercase stress>Squash</x-link>
-                                    <x-link @click="$navbar.closeMenuSm" href="https://movementarena.pl/suwalki/cennik-wejscia/" uppercase stress>Cennik</x-link>
-                                    <x-link @click="$navbar.closeMenuSm" :to="{path: '/'}" uppercase stress>Strefa siły</x-link>
+                        <navbar-dropdown >
+                            <div class="w-auto py-4 flex justify-between items-center space-x-20">
+                                <div class="w-full grid grid-cols-2 gap-6">
+                                    <div v-for="category in $categories.activeCategories" :key="category.id" class="">
+                                        <li class="list-none ">
+                                            <x-link
+                                                @click="$navbar.closeMenuSm"
+                                                :to="`/categories/${category.slug}`" 
+                                                :text="category.name" 
+                                                stress 
+                                                :style="{
+                                                    'color': category.color,
+                                                }"
+                                            />
+                                        </li>
+                                    </div>
                                 </div>
-
-                                <div class="flex flex-col items-between space-y-2">
-                                    <x-link @click="$navbar.closeMenuSm" href="https://movementarena.pl/suwalki/urodziny-dla-dziecka-suwalki/" uppercase stress>Urodziny</x-link>
-                                    <x-link @click="$navbar.closeMenuSm" href="https://movementarena.pl/suwalki/wycieczki/" uppercase stress>Wycieczki grupy</x-link>
-                                    <x-link @click="$navbar.closeMenuSm" href="https://movementarena.pl/suwalki/oferta/imprezy-integracyjne/" uppercase stress>Imprezy integracyjne</x-link>
-                                    <x-link @click="$navbar.closeMenuSm" href="https://movementarena.pl/suwalki/karta-podarunkowa-suwalki/" uppercase stress>Karta podarunkowa</x-link>
-                                </div>
-
-                                <div class="flex flex-col items-between space-y-2">
-                                    <x-link @click="$navbar.closeMenuSm" uppercase href="https://movementarena.pl/suwalki/zajecia-zorganizowane-pozalekcyjne/" stress>Zajęcia</x-link>
-                                    <x-link @click="$navbar.closeMenuSm" uppercase href="https://movementarena.pl/suwalki/info/pierwszawizyta/" stress>Pierwsza wizyta</x-link>
-                                    <x-link @click="$navbar.closeMenuSm" href="https://movementarena.pl/suwalki/movement-arena-suwalki-jusu-veiklos-ir-pramogu-centras/" uppercase stress>LIETUVIŲ 🇱🇹</x-link>
-                                </div>
-
-                                <div class="f-full flex flex-col  items-between space-y-4">
-                                    <x-btn to="https://movementarenasuwalki.gymmanager.com.pl/ZoneReservation/Date" link color="secondary-outline" target="_blank" rounded>Kup bilet</x-btn>
-                                    <x-btn to="https://movementarenasuwalki.gymmanager.com.pl/user/login?returnUrl=/Dashboard/Index" target="_blank" link color="secondary-outline" rounded>Zaloguj się</x-btn>
-                                </div>
+        
+                                <a href="#" class="w-full p-8 text-left bg-local bg-gray-500 bg-center bg-no-repeat bg-cover rounded-lg bg-blend-multiply hover:bg-blend-soft-light dark:hover:bg-blend-darken" style="background-image: url(/storage/images/miasto.suwalki.jpg)">
+                                    <p class="mb-5 max-w-xl font-extrabold tracking-tight leading-tight text-white">Tu może być logo lub następna reklama.</p>
+                                    <button type="button" class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-center text-white border border-white rounded-lg hover:bg-white hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-700">
+                                        Get started
+                                        <svg class="ml-1 -mr-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                    </button>
+                                </a>
+    
                             </div>
-
                        </navbar-dropdown>
                     </template>
                 </Navbar>
@@ -167,11 +159,6 @@
         </template>
 
         <template #main>
-            <div class="fixed bottom-5 right-10 z-50 flex justify-center items-center space-x-5">
-                <x-btn to="https://movementarenasuwalki.gymmanager.com.pl/Buypass/Passes" link color="secondary" target="_blank" rounded>Kup bilet online</x-btn>
-
-                <x-btn-scroll-page :sectionIds="['hero', 'about', 'features', 'team', 'price-list', '']" />
-            </div>
             <slot  />
         </template>
 

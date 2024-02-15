@@ -21,6 +21,7 @@ const props = defineProps({
         type: String,
         default: 'default'
     },
+    href: String,
     rel: String,
     stress: Boolean,
     target: String
@@ -92,11 +93,11 @@ onMounted(() => {
         @apply content-[''] bg-active-800 dark:bg-active-400 h-[3px] w-[100%] left-0 -bottom-[5px] rounded-xl absolute duration-300;
     }
 }
-// .link-hash-active {
-//     @apply text-active-400 hover:text-active-400 font-medium;
+.link-hash-active {
+    @apply text-active-400 hover:text-active-400 font-medium;
     
-//     &::after {
-//         @apply content-[''] bg-active-800 dark:bg-active-400 h-[3px] w-[100%] left-0 -bottom-[5px] rounded-xl absolute duration-300;
-//     }
-// }
+    &::after {
+        @apply content-[''] bg-active-800 dark:bg-active-400 h-[3px] w-[100%] left-0 -bottom-[5px] rounded-xl absolute duration-300;
+    }
+}
 </style>

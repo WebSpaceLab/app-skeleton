@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia';
 
 const { $price, $auth } = useNuxtApp()
-const { pagination, months, queryParams,  status } = storeToRefs($price)
+const { data, pagination, months, queryParams,  status } = storeToRefs($price)
 
 definePageMeta({
     layout: "authorization",
@@ -43,7 +43,7 @@ const allStatus = computed(() => {
 let isShowModalPriceCreate = ref(false)
 
 async function getPriceList() {
-    await $price.getAll(query.value, perPage.value, page.value)
+    await $price.get(query.value, perPage.value, page.value)
 }
 
 
@@ -142,8 +142,8 @@ watch(() => query.value.orderDir, async () => {
 
         <template #main>
             <div class=" h-full box-border dark:bg-gray-800/20 transition-all duration-500 rounded-xl" >
-                <section v-if="$price.all.length" id="price-list" class="snap-start h-full w-full flex flex-col justify-center items-center scroll-mt-0 relative block m-auto w-full  py-20 px-5 box-border">
-                    <template v-for="price in $price.all" :key="price.id">
+                <section v-if="data.length" id="price-list" class="container mx-auto snap-start h-full w-full flex flex-col justify-center items-center scroll-mt-0 relative  m-auto   py-20 px-5 box-border">
+                    <template v-for="price in data" :key="price.id">
                         <x-card-price-list 
                             :price="price" 
                             @addedToLibrary="addedToLibrary" 
@@ -154,8 +154,8 @@ watch(() => query.value.orderDir, async () => {
                 <div class="w-full h-full flex">
                     <div class="transition-all duration-500 w-full" >
                         <div class="w-full h-full transition-all duration-500" >                
-                            <div v-if="all">
-                                <x-pagination :count="all.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
+                            <div v-if="data">
+                                <x-pagination :count="data.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
                             </div>
                         </div>
                     </div>

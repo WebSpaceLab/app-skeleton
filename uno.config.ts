@@ -12,9 +12,12 @@ import {
 
 import { presetScrollbar } from 'unocss-preset-scrollbar'
 import { presetForms } from '@julr/unocss-preset-forms'
+import presetMini from '@unocss/preset-mini'
+
 
 export default defineConfig({
     presets: [
+        presetMini(),
         presetUno(),
         presetAttributify(),
         presetIcons({
@@ -146,7 +149,7 @@ export default defineConfig({
             'secondary': {
                 '200' : '#bae6fd',
                 '400' : '#60a5fa',
-                '600' : '#2563eb',
+                '600' : '#0284c7',
                 '800' : '#1e40af'
             },
             'success': {
@@ -194,6 +197,12 @@ export default defineConfig({
                 '400' : '#c084fc',
                 '600' : '#c084fc',
                 '800' : '#6b21a8',
+            },
+            'yellow': {
+                '200' : '#fef08a',
+                '400' : '#facc15',
+                '600' : '#ca8a04',
+                '800' : '#854d0e',
             },
         }
     },

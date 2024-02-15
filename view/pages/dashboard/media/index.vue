@@ -1,7 +1,7 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 const { $media, $auth } = useNuxtApp()
-const { pagination, fileTypes, months, queryParams  } = storeToRefs($media)
+const { data, isLoading, pagination, fileTypes, months, queryParams  } = storeToRefs($media)
 
 definePageMeta({
     layout: "authorization",
@@ -19,6 +19,14 @@ const query = ref({
 const perPage = ref()
 const orderBy = ref('createdAt')
 const orderDir = ref('DESC')
+
+const tabs = computed(() => {
+    return [
+        data.value.filter(file => file.mimeType === 'image/jpeg' || file.mimeType === 'image/png' || file.mimeType === 'image/webp'),
+        data.value.filter(file => file.mimeType === 'video/mp4'),
+        data.value.filter(file => file.mimeType === 'video/youTube'),
+    ]
+})
 
 let isShowModalDialog = ref(false)
 let isShowPreviewImage = ref(false)
@@ -105,7 +113,7 @@ function switchPerPage (event)  {
 }
 
 function toggleSelectAll(e) {
-    $media.data.forEach(file => file.selected = e.target.checked)
+    data.value.forEach(file => file.selected = e.target.checked)
     
     showFieldAction()
 }
@@ -137,10 +145,10 @@ async function deletedFile(mediaId) {
 }
 
 async function executeAction(actionId) {
-    const fileIds = $media.data.filter(file => file.selected)
+    const fileIds = data.value.filter(file => file.selected)
         .map(file => file.id);
 
-    if (!actionId.length) return;
+    if (!actionId?.length) return;
 
     switch (actionId) {
         case 'delete':
@@ -166,15 +174,19 @@ async function executeAction(actionId) {
 }
 
 function showFieldAction() {
-    const isSelectedFile = $media.data.filter(file => file.selected)
+    const isSelectedFile = data.value.filter(file => file.selected)
 
-    if(isSelectedFile.length) {
+    if(isSelectedFile?.length) {
         isShowActions.value = true
 
     } else {
         isShowActions.value = false
     }
 }
+
+// function switchBetweenTablesPerTabs( ) {
+
+// }
 </script>
 
 <template>
@@ -222,9 +234,9 @@ function showFieldAction() {
                 </template>
 
                 <template #answer>
-                    <div v-if="$media.data" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 xl:gap-4 px-6">
+                    <div v-if="data" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 xl:gap-4 px-6">
                         <x-card-media
-                            v-for="(file, index) in $media.data"
+                            v-for="(file, index) in data"
                             :key="file.index = index"
                             :file="file"
                             @showFieldAction="showFieldAction"
@@ -235,15 +247,20 @@ function showFieldAction() {
                             </template>
 
                             <template #action>
-                                <x-btn  @click="getPreviewImage(file)" color="secondary-outline" icon  :tooltip="{text: 'Preview'}" rounded>
+                               <!--
+                                    <x-btn  @click="getPreviewImage(file)" color="secondary" icon  :tooltip="{text: 'Udostępnij'}" rounded>
+                                        <Icon name="mdi:share-variant"  class="text-2xl"/>
+                                    </x-btn>
+                                -->
+                                <x-btn  @click="getPreviewImage(file)" color="secondary" icon  :tooltip="{text: 'Podgląd'}" rounded>
                                     <Icon name="mdi:eye"  class="text-2xl"/>
                                 </x-btn>
 
                                 <x-btn
                                     @click="openEditFile(file)"
                                     class="h-9 w-9"
-                                    :tooltip="{text: 'Edit'}"
-                                    color="secondary-outline"
+                                    :tooltip="{text: 'Edycja'}"
+                                    color="secondary"
                                     rounded
                                     icon
                                 >
@@ -252,10 +269,10 @@ function showFieldAction() {
 
                                 
                                 <x-btn
-                                    :tooltip="{text: 'Deleted'}"
+                                    :tooltip="{text: 'Usuń'}"
                                     class="h-9 w-9"
                                     @click="deletedFile(file.id)"
-                                    color="danger-outline"
+                                    color="danger"
                                     icon
                                     rounded
                                 >
@@ -296,9 +313,9 @@ function showFieldAction() {
         <template #main>
             <div class="w-full h-full p-6 lg:p-10 box-border dark:bg-gray-800/20 transition-all duration-500 rounded-xl">
                 <div class="w-full h-full">
-                    <div class="flex justify-start items-center py-1">
-                        <div v-if="!IsShowTable" class="flex justify-center items-center mr-4">
-                            <div class="w-6 text-center  bg-black/30 p-3 rounded-xl mr-2">
+                    <div v-if="data?.length != 0" class="flex   justify-start items-center py-1">
+                        <div v-if="!IsShowTable" class="flex bg-black/30 pr-2 justify-center items-center mr-4 space-x-2 rounded-xl">
+                            <div class="w-6 text-center  p-3 rounded-xl mr-2">
                                 <input v-model="selectAll" type="checkbox" @change="toggleSelectAll" class="w-3 h-3 bg-background-light dark:bg-background-dark text-muted-light dark:text-muted-dark rounded border-solid border-muted-light dark:border-muted-dark lg:w-4 lg:h-4 focus:ring-blue-500">
                             </div>
 
@@ -314,13 +331,14 @@ function showFieldAction() {
 
                     <div class="w-full h-full">
                         <x-table
-                             v-if="IsShowTable"
-                             :head="['preview', 'name', 'size', 'deleted', 'Used', 'created', 'last update', '' ]"
-                             @select-all="toggleSelectAll"
-                             :loading="$media.isLoading"
+                            v-if="IsShowTable"
+                            :head="['preview', 'name', 'size', 'deleted', 'Used', 'created', 'last update', '' ]"
+                            @select-all="toggleSelectAll"
+                            :loading="isLoading"
+                            :count="data?.length"
                          >
                          
-                             <x-table-body v-for="(file, index) in $media.data" :key="file.index = index">
+                             <x-table-body v-for="(file, index) in data" :key="file.index = index">
                                  <x-table-body-cell  justify="center">
                                      <input v-model="file.selected" @change="showFieldAction" type="checkbox" class="hidden md:block w-6 h-6 bg-background-light dark:bg-background-dark text-blue-600 rounded border-gray-300 lg:w-4 lg:h-4 focus:ring-blue-500">
                                  </x-table-body-cell>
@@ -383,55 +401,76 @@ function showFieldAction() {
                                      </div>
                                  </x-table-body-cell>
                              </x-table-body>
-                         </x-table>
 
-                         <div v-else >                    
-                            <div v-if="$media.data" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 xl:gap-6">
-                                <x-card-media
-                                    v-for="(file, index) in $media.data"
-                                    :key="file.index = index"
-                                    :file="file"
-                                    @showFieldAction="showFieldAction"
-                                    class="h-60"
-                                >
-                                    <template #selected>
-                                        <input v-model="file.selected"  @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light/50 dark:bg-background-dark/50 text-muted-light dark:text-muted-dark rounded border-solid border-muted-light dark:border-muted-dark lg:w-4 lg:h-4 focus:ring-blue-500">
-                                    </template>
-        
-                                    <template #action>
-                                        <x-btn  @click="getPreviewImage(file)" color="secondary-outline" icon  :tooltip="{text: 'Preview'}" rounded>
-                                            <Icon name="mdi:eye"  class="text-2xl"/>
-                                        </x-btn>
-        
-                                        <x-btn
-                                            @click="openEditFile(file)"
-                                            class="h-9 w-9"
-                                            :tooltip="{text: 'Edit'}"
-                                            color="secondary-outline"
-                                            rounded
-                                            icon
-                                        >
-                                            <Icon name="material-symbols:edit" class="text-xl" />
-                                        </x-btn>
-        
-                                        
-                                        <x-btn
-                                            :tooltip="{text: 'Deleted'}"
-                                            class="h-9 w-9"
-                                            @click="deletedFile(file.id)"
-                                            color="danger-outline"
-                                            icon
-                                            rounded
-                                        >
-                                            <Icon name="material-symbols:restore-from-trash-outline-sharp"  class="text-2xl" />
-                                        </x-btn>
-                                    </template>
-                                </x-card-media>
-                            </div>
-                        </div>
+                            <template #pagination>
+                                <x-pagination :count="data?.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
+                            </template>
+                        </x-table>
 
-                        <div v-if="$media.data">
-                            <x-pagination :count="$media.data.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
+                         <div v-else class="w-full h-200">                    
+                             <x-tabs :tabs="['Zdjęcia', 'filmy', 'Url']" :uppercase="true">
+                                <template v-for="(tab, index) in tabs" :key="index" #[`tab-${index}`] >
+                                    <div v-if="tab" class="w-full h-full">
+                                        <div v-if="tab.length == 0" class="w-full h-full lg:h-150 flex justify-center items-center">
+                                            <p class="text-2xl font-bold">
+                                                Brak danych do wyświetlenia
+                                            </p>   
+                                        </div>
+        
+                                        <div class="w-full h-full p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 xl:gap-6" v-else>
+                                            <x-card-media
+                                                v-for="(file, index) in tab"
+                                                :key="file.index = index"
+                                                :file="file"
+                                                @showFieldAction="showFieldAction"
+                                                class="h-60 w-full"
+                                            >
+                                                <template #selected>
+                                                    <input v-model="file.selected"  @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light/50 dark:bg-background-dark/50 text-muted-light dark:text-muted-dark rounded border-solid border-muted-light dark:border-muted-dark lg:w-4 lg:h-4 focus:ring-blue-500">
+                                                </template>
+                        
+                                                <template #action>
+                                                    <!--
+                                                        <x-btn  @click="getPreviewImage(file)" color="secondary" icon  :tooltip="{text: 'Udostępnij'}" rounded>
+                                                            <Icon name="mdi:share-variant"  class="text-2xl"/>
+                                                        </x-btn>
+                                                    -->
+                                                    <x-btn  @click="getPreviewImage(file)" color="secondary" icon  :tooltip="{text: 'Podgląd'}" rounded>
+                                                        <Icon name="mdi:eye"  class="text-2xl"/>
+                                                    </x-btn>
+                        
+                                                    <x-btn
+                                                        @click="openEditFile(file)"
+                                                        class="h-9 w-9"
+                                                        :tooltip="{text: 'Edycja'}"
+                                                        color="secondary"
+                                                        rounded
+                                                        icon
+                                                    >
+                                                        <Icon name="material-symbols:edit" class="text-xl" />
+                                                    </x-btn>
+                        
+                                                    
+                                                    <x-btn
+                                                        :tooltip="{text: 'Usuń'}"
+                                                        class="h-9 w-9"
+                                                        @click="deletedFile(file.id)"
+                                                        color="danger"
+                                                        icon
+                                                        rounded
+                                                    >
+                                                        <Icon name="material-symbols:restore-from-trash-outline-sharp"  class="text-2xl" />
+                                                    </x-btn>
+                                                </template>
+                                            </x-card-media>                   
+                                        </div>
+                                    </div>
+                                </template>
+                            </x-tabs>
+                                                                        
+                            <div >
+                                <x-pagination :count="data?.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
+                            </div> 
                         </div>
                     </div>
 

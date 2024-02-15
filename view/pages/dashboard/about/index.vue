@@ -1,8 +1,8 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 
-const { $about, $auth } = useNuxtApp()
-const { about , activeAbout, pagination, months, queryParams,  status } = storeToRefs($about)
+const { $about, $auth, $homepage } = useNuxtApp()
+const { data , pagination, months, queryParams,  status } = storeToRefs($about)
 
 definePageMeta({
     layout: "authorization",
@@ -52,15 +52,17 @@ const allStatus = computed(() => {
 });
 
 async function  getAbout() {
-     await $about.getAbout(query.value, perPage.value, page.value)
+    await $about.get(query.value, perPage.value, page.value)
 }
 
 
 async function addedToLibrary () {
-    await getAbout()
-    await $about.get()
-    isShowModalAboutCreate.value = false
-    isShowModalAboutEdit.value = false
+    try {
+        await getAbout()
+    } finally {
+        isShowModalAboutCreate.value = false
+        isShowModalAboutEdit.value = false
+    }
 }
 
 async function switchPage(event) {
@@ -75,38 +77,48 @@ async function switchPerPage (event)  {
 }
 
 function toggleSelectAll(e) {
-    about.value.forEach(item => item.selected = e.target.checked)
+    data.value.forEach(item => item.selected = e.target.checked)
     
     showFieldAction()
 }
 
 async function openModalAboutPreview() {
-    await $about.get()
-    isShowModalAboutPreview.value = true
+    try{
+        $homepage.get()
+    } finally {
+        isShowModalAboutPreview.value = true
+    }
 }
 
 async function destroy(item) {
-    if (confirm(`Czy na pewno chcesz usunąć ten plik?`)) {     
-        await $about.destroy(item.id)
-        await getAbout()
+    if (confirm(`Czy na pewno chcesz usunąć ten plik?`)) {
+        try {
+            await $about.destroy(item.id)
+        } finally {
+            isShowActions.value = false
+            selectAll.value = false
+            await getAbout()
+        }
     }
 }
 
 async function executeAction(actionId) {
-    const aboutIds = about.value.filter(item => item.selected)
+    const aboutIds = data.value.filter(item => item.selected)
         .map(item => item.id);
 
-    if (!actionId.length) return;
+    if (!actionId?.length) return;
 
     switch (actionId) {
         case 'delete':
         if (confirm(`Czy jesteś pewny, że chcesz usunąć?`)) {
-            aboutIds.forEach(async (aboutId) => {                    
-                const deleted = await $about.destroy(aboutId)
-     
-                isShowActions.value = false
-                selectAll.value = false
-                await getAbout()            
+            aboutIds.forEach(async (aboutId) => {
+                try {
+                    await $about.destroy(aboutId)
+                } finally {
+                    isShowActions.value = false
+                    selectAll.value = false
+                    await getAbout()
+                }                           
             })
         }
         break;
@@ -120,9 +132,9 @@ function edit(item) {
 }
 
 function showFieldAction() {
-    const isSelected = about.value.filter(item => item.selected)
+    const isSelected = data.value.filter(item => item.selected)
 
-    if(isSelected.length) {
+    if(isSelected?.length) {
         isShowActions.value = true
 
     } else {
@@ -222,63 +234,66 @@ watch(() => query.value.orderDir, async () => {
                 </div>
 
 
-                <div v-if="about" class="w-full h-full flex">
+                <div class="w-full h-full flex">
                     <div class="transition-all duration-500 w-full" >
-                        <div class="w-full h-full transition-all duration-500" >
+                        <div v-if="Array.isArray(data)" class="w-full h-full transition-all duration-500" >
                             <x-table
-                                    :head="['name', 'Image', 'description', 'status', 'created', 'updated', '' ]"
-                                    @select-all="toggleSelectAll"
-                                    justify="center"
-                                >
-                                
-                                    <x-table-body v-for="(item, index) in about" :key="item.index = index" :class="item.status == 0 ? 'bg-black/30' : ''">
-                                        <x-table-body-cell  justify="center">
-                                            <input v-model="item.selected" @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light dark:bg-background-dark text-blue-600 rounded border-gray-300 lg:w-4 lg:h-4 focus:ring-blue-500">
-                                        </x-table-body-cell>
-                
-                                        <x-table-body-cell justify="center">
-                                            {{ item.name }}
-                                        </x-table-body-cell>
-                                        
-                                        <x-table-body-cell justify="center">
-                                            <x-photo-card-preview :file="item.media" />
-                                        </x-table-body-cell>
+                                :head="['name', 'Image', 'description', 'status', 'created', 'updated', '' ]"
+                                @select-all="toggleSelectAll"
+                                justify="center"
+                                :loading="$about.isLoading"
+                                :count="data.length"
+                            >
+                            
+                                <x-table-body v-for="(item, index) in data" :key="item.index = index" :class="item.status == 0 ? 'bg-black/30' : ''">
+                                    <x-table-body-cell  justify="center">
+                                        <input v-model="item.selected" @change="showFieldAction" type="checkbox" class="w-6 h-6 bg-background-light dark:bg-background-dark text-blue-600 rounded border-gray-300 lg:w-4 lg:h-4 focus:ring-blue-500">
+                                    </x-table-body-cell>
+            
+                                    <x-table-body-cell justify="center">
+                                        {{ item.name }}
+                                    </x-table-body-cell>
+                                    
+                                    <x-table-body-cell justify="center">
+                                        <x-photo-card-preview :file="item.media" />
+                                    </x-table-body-cell>
 
-                                        <x-table-body-cell justify="start">
-                                            {{ item.description }}
-                                        </x-table-body-cell>
+                                    <x-table-body-cell justify="start">
+                                        {{ item.description }}
+                                    </x-table-body-cell>
 
-                                        <x-table-body-cell justify="center">
-                                            <div :class="[item.isActive ? 'text-success-600' : 'text-danger-600']">
-                                                {{ item.isActive ? 'active' : 'not active' }}
-                                            </div>
-                                        </x-table-body-cell>
+                                    <x-table-body-cell justify="center">
+                                        <div :class="[item.isActive ? 'text-success-600' : 'text-danger-600']">
+                                            {{ item.isActive ? 'active' : 'not active' }}
+                                        </div>
+                                    </x-table-body-cell>
 
-                                        <x-table-body-cell justify="center">
-                                            {{ item.createdAtAgo }}
-                                        </x-table-body-cell>
+                                    <x-table-body-cell justify="center">
+                                        {{ item.createdAtAgo }}
+                                    </x-table-body-cell>
 
-                                        <x-table-body-cell justify="center">
-                                            {{ item.updatedAtAgo }}
-                                        </x-table-body-cell>
-                
-                                        <x-table-body-cell justify="center">
-                                            <div class="w-full justify-center items-center">
-                                                <x-btn  @click="edit(item)" color="secondary" icon strip :tooltip="{text: 'Edit'}" rounded>
-                                                    <Icon name="ic:baseline-mode-edit"  class="text-2xl" />
-                                                </x-btn>
+                                    <x-table-body-cell justify="center">
+                                        {{ item.updatedAtAgo }}
+                                    </x-table-body-cell>
+            
+                                    <x-table-body-cell justify="center">
+                                        <div class="w-full justify-center items-center">
+                                            <x-btn  @click="edit(item)" color="secondary" icon strip :tooltip="{text: 'Edit'}" rounded>
+                                                <Icon name="ic:baseline-mode-edit"  class="text-2xl" />
+                                            </x-btn>
 
-                                                <x-btn  @click="destroy(item)" color="danger" icon strip :tooltip="{text: 'Deleted'}" rounded>
-                                                    <Icon name="material-symbols:restore-from-trash-outline-sharp"  class="text-2xl" />
-                                                </x-btn>
-                                            </div>
-                                        </x-table-body-cell>
-                                    </x-table-body>
-                                </x-table>
-                
-                                <div v-if="about">
-                                    <x-pagination :count="about.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
-                                </div>
+                                            <x-btn  @click="destroy(item)" color="danger" icon strip :tooltip="{text: 'Deleted'}" rounded>
+                                                <Icon name="material-symbols:restore-from-trash-outline-sharp"  class="text-2xl" />
+                                            </x-btn>
+                                        </div>
+                                    </x-table-body-cell>
+                                </x-table-body>
+
+                                <template #pagination>
+                                    <x-pagination :count="data.length" :pagination="pagination"  @page="switchPage" @per_page="switchPerPage" />
+                                </template>
+                            </x-table>
+            
                         </div>
                     </div>
                 </div>

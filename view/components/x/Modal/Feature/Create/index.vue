@@ -59,6 +59,10 @@ const resetForm = () => {
 
 const create = async () => {
     await $feature.create(form)
+    if($feature.errors) {
+        return
+    }
+        
     close()
     emits('addedToLibrary', true)
 }

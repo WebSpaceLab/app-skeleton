@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 
@@ -28,11 +29,14 @@ abstract class AbstractAPIController extends AbstractController
         ];
 
         if($this->flashBag) {
-            $data['flash'] = $this->flashBag;
+            $flash = $this->flashBag;
         }
 
         return $this->json(
-            $data,
+            [
+                'data' => $data,
+                'flash' => $flash ?? null
+            ],
             $status,
             $headers,
             $context
@@ -90,6 +94,17 @@ abstract class AbstractAPIController extends AbstractController
         }
 
         return;
+    }
+
+    public function formatValidationErrors(ConstraintViolationListInterface $violations): array
+    {
+        $errors = [];
+        foreach ($violations as $violation) {
+            $propertyPath = trim($violation->getPropertyPath(), '[\]');
+            $errors[$propertyPath] = $violation->getMessage();
+        }
+
+        return $errors;
     }
 
     

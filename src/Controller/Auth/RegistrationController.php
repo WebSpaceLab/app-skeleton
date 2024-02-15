@@ -16,15 +16,12 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\EqualTo;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
-use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
 
 class RegistrationController extends AbstractAPIController
 {
@@ -87,7 +84,7 @@ class RegistrationController extends AbstractAPIController
         $user = $userRepository->findOneBy(['email' => $data['email']]);
 
         if($user) {
-            if(!$user->getVerificationToken()) {
+            if(!$user->getVerificationToken()->isIsVerified()) {
                 return $this->json(['errors' => [
                     'email' => 'Użytkownik o podanym emilu już istnieje.Jak dotąd rejstarcja, nie została potwierdzona. Sprawdź maila.'
                 ]], Response::HTTP_BAD_REQUEST);
@@ -103,6 +100,7 @@ class RegistrationController extends AbstractAPIController
         $user->setEmail($data['email']);
         $user->setPassword($passwordHasher->hashPassword($user, $data['password']));
         $user->setIsActiveAccount(false);
+        $user->setIsAgree($data['isAgree']);
 
         $userRepository->save($user, true);
 

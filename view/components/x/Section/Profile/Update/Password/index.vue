@@ -41,7 +41,7 @@ const updatePassword = async () => {
 
 
 watch(() => form.value.password, (value) => {
-    if(value.length >= 8) {
+    if(value?.length >= 8) {
         isCorrectPassword.value = true
     } else {
         isCorrectPassword.value = false
@@ -49,7 +49,7 @@ watch(() => form.value.password, (value) => {
 })
 
 watch(() => form.value.password_confirmation, (value) => {
-    if(value.length >= 8) {
+    if(value?.length >= 8) {
         if(form.value.password === value) {
             isCorrectConfirmPassword.value = true
             isUpdated.value = true

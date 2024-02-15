@@ -20,7 +20,7 @@
         difference.value += indexSelected.value - index;
         indexSelected.value = index;
 
-        if(indexSelected.value < props.items.length - 1 ) {
+        if(indexSelected.value < props.items?.length - 1 ) {
             next.value = true;
         } else {
             next.value = false;
@@ -56,7 +56,7 @@
     function nextSlide () {
         const index = indexSelected.value +1;
         // difference.value += indexSelected.value - index;
-        if(props.items.length - 1 >= index) {
+        if(props.items?.length - 1 >= index) {
             selectSlide(index);
             positionNoSelectedSlide(index);
         }

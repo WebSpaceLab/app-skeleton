@@ -1,0 +1,49 @@
+.badge-disabled {
+  @apply bg-gray-600 text-white border-none hover:bg-gray-600  shadow-gray-600/50 dark:hover:shadow-gray-600/50 hover:shadow-grey-600/50 cursor-none;
+}
+.badge-primary {
+  @apply bg-primary-600 text-white border-none hover:bg-primary-800 hover:text-primary-200 shadow-primary-600/50 dark:hover:shadow-primary-400/50 hover:shadow-primary-800/50;
+}
+
+.badge-secondary {
+  @apply bg-secondary-600 text-white border-none hover:bg-secondary-800 hover:text-secondary-200 shadow-secondary-600/50 dark:hover:shadow-secondary-400/50 hover:shadow-secondary-800/50;
+}
+
+.badge-success {
+  @apply bg-success-600 text-white border-none hover:bg-success-900 hover:text-success-300 shadow-success-600/50 hover:shadow-success-300/50 dark:hover:shadow-success-300/50 hover:shadow-success-900/50;
+}
+.badge-info {
+  @apply bg-info-600 text-white border-none hover:bg-info-900 hover:text-info-300 shadow-info-600/50 dark:hover:shadow-info-300/50 hover:shadow-info-900/50;
+}
+
+.badge-warning {
+  @apply bg-warning-600 text-white border-none hover:bg-warning-900 hover:text-warning-300 shadow-warning-600/50 dark:hover:shadow-warning-300/50 hover:shadow-warning-900/50;
+}
+
+.badge-danger {
+  @apply bg-danger-600 text-white border-danger-600 hover:bg-danger-900 hover:text-danger-300 shadow-danger-600/50 dark:hover:shadow-danger-300/50 hover:shadow-danger-900/50;
+}
+
+.badge-primary-outline {
+  @apply bg-primary-800/80 hover:bg-primary-800/80 dark:bg-primary-800/20 text-primary-400 border-primary-400  hover:border-primary-200 hover:text-primary-200 shadow-primary-600/50 dark:hover:shadow-primary-400/50 hover:shadow-primary-800/50;
+}
+
+.badge-secondary-outline {
+  @apply bg-secondary-800/80 hover:bg-secondary-800/80 dark:bg-secondary-800/20 text-secondary-400 border-secondary-400  hover:border-secondary-200 hover:text-secondary-200 shadow-secondary-600/50 dark:hover:shadow-secondary-400/50 hover:shadow-secondary-800/50;
+}
+
+.badge-success-outline {
+  @apply bg-success-900/80 hover:bg-success-900/60 dark:bg-success-900/20 text-success-600 border-success-600  hover:border-success-300 hover:text-success-300 shadow-success-600/50 dark:hover:shadow-success-300/50 hover:shadow-success-900/50;
+}
+
+.badge-info-outline {
+  @apply bg-info-900/40 hover:bg-info-900/60 dark:bg-info-900/20 text-info-600 border-info-600 hover:border-info-300 hover:text-info-300 shadow-info-600/50 dark:hover:shadow-info-300/50 hover:shadow-info-900/50;
+}
+
+.badge-warning-outline {
+  @apply bg-warning-900/40 hover:bg-warning-900/60 dark:bg-warning-900/20 text-warning-600 border-warning-600  hover:border-warning-300 hover:text-warning-300 shadow-warning-600/50 dark:hover:shadow-warning-300/50 hover:shadow-warning-900/50;
+}
+
+.badge-danger-outline {
+  @apply bg-danger-900/40 hover:bg-danger-900/60 dark:bg-danger-900/20 text-danger-600 border-danger-600  hover:border-danger-300 hover:text-danger-300 shadow-danger-600/50 dark:hover:shadow-danger-300/50 hover:shadow-danger-900/50;
+}

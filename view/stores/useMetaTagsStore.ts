@@ -19,10 +19,8 @@ export const useMetaTagsStore = defineStore('metaTags', {
                 useFlashStore().error('Wystąpił błąd podczas ładowania ustawień strony.')
             } else {
                 if(data.value) {
-                    this.data = data.value.metaTags
+                    this.data = data.value.data.metaTags
                 }
-    
-                return data.value
             }
         },
 

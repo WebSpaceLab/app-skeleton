@@ -1,22 +1,12 @@
 <template>
-    <!-- LOGO 
-        <div class="logo w-60 p-4">
-            <div class="flex items-center justify-center space-x-3 text-sm lg:text-xl font-bold text-basic-light dark:text-basic-dark ">
-                <span>
-                    Miasto
-                </span>
-    
-                <NuxtLink to="/" class="decoration-none text-md lg:text-3xl font-semibold mx-1 px-5 py-2 text-[#c8d1ba] dark:text-[#FFEDD5]-dark bg-green-800 border-solid border-4 border-[#c8d1ba]  rounded-lg hover:bg-green-900">
-                    Suwałki
-                </NuxtLink>
-            </div>
+    <nuxt-link to="/" class="w-full h-full relative flex hover:scale-105 transition duration-300">
+        <div class="w-full h-full  flex flex-col items-center justify-center space-x-3 text-sm lg:text-xl font-bold text-basic-light dark:text-basic-dark ">
+            <nuxt-img src="/images/Logo MIASTO SUWALKI.png" class="w-full h-full" />
         </div>
-    -->
-    <img src="/images/logo.webp" alt="logo" class="h-8 md:h-10 m-0 p-0 box-border">
+    </nuxt-link>
 </template>
 
-<style scoped>
-/* .logo {
+<style scoped> .logo {
     font-family: 'Lexend Exa', sans-serif;
-} */
+} 
 </style>

@@ -23,12 +23,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['profile:read', 'user:all',"gallery:read", "gallery:write", 'admin:article:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank()]
     #[Assert\Email()]
-    #[Groups(['profile:read', 'user:all', 'article:read'])]
+    #[Groups(['profile:read', 'user:all', 'article:read', "gallery:read", "gallery:write"])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -42,7 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['profile:read', 'user:all', 'article:read', 'profile:write', 'admin:media:read'])]
+    #[Groups(['profile:read', 'user:all', 'article:read', 'profile:write', 'admin:media:read', 'article:show', "gallery:read", "gallery:write", 'admin:article:read'])]
     private ?string $username = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -50,7 +51,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $bio = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['profile:read', 'user:all', 'article:read', 'profile:write'])]
+    #[Groups(['profile:read', 'user:all', 'article:read', 'profile:write', 'article:show', 'admin:article:read'])]
     private ?string $avatarUrl = null;
 
     #[ORM\Column]
@@ -58,14 +59,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $isActiveAccount = false;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['profile:read', 'profile:write', 'admin:media:read'])]
+    #[Groups(['profile:read', 'profile:write', 'admin:media:read', 'article:show', 'admin:article:read'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['profile:read', 'profile:write', 'admin:media:read'])]
+    #[Groups(['profile:read', 'profile:write', 'admin:media:read', 'article:show', 'admin:article:read'])]
     private ?string $lastName = null;
 
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Article::class)]
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Article::class)]
     #[Groups(['profile:read'])]
     private Collection $articles;
 
@@ -83,7 +84,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $resetPasswordTokens;
 
     #[ORM\Column]
-    private ?bool $isAgree = null;
+    #[Groups(['user:all'])]
+    private ?bool $isAgree = false;
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Media::class)]
     private Collection $media;
@@ -97,6 +99,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Team::class)]
     private Collection $teams;
 
+    #[ORM\Column]
+    private ?bool $isDelete = false;
+
+    #[ORM\OneToMany(mappedBy: 'adding', targetEntity: Advertisement::class)]
+    private Collection $advertisements;
+
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Gallery::class)]
+    private Collection $galleries;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -107,6 +118,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->inboxes = new ArrayCollection();
         $this->abouts = new ArrayCollection();
         $this->teams = new ArrayCollection();
+        $this->advertisements = new ArrayCollection();
+        $this->galleries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -208,7 +221,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $avatarUrl = $this->avatarUrl;
 
         if($avatarUrl) {
-            return $this->avatarUrl;
+            return 'https://localhost:8000' . $this->avatarUrl;
         }
 
         return 'https://localhost:8000/user-placeholder.png';
@@ -269,7 +282,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->articles->contains($article)) {
             $this->articles->add($article);
-            $article->setOwner($this);
+            $article->setAuthor($this);
         }
 
         return $this;
@@ -279,8 +292,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->articles->removeElement($article)) {
             // set the owning side to null (unless already changed)
-            if ($article->getOwner() === $this) {
-                $article->setOwner(null);
+            if ($article->getAuthor() === $this) {
+                $article->setAuthor(null);
             }
         }
 
@@ -352,13 +365,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
-    #[Groups(['profile:read'])]
+    #[Groups(['profile:read', 'user:all'])]
     public function getCreatedAtAgo(): ?string
     {
         return  Carbon::instance($this->createdAt)->diffForHumans();
     }
 
-    #[Groups(['profile:read'])]
+    #[Groups(['profile:read', 'user:all'])]
     public function getUpdatedAtAgo(): ?string
     {
         $updatedAtAgo = $this->updatedAt;
@@ -552,5 +565,83 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function isIsDelete(): ?bool
+    {
+        return $this->isDelete;
+    }
+
+    public function setIsDelete(bool $isDelete): static
+    {
+        $this->isDelete = $isDelete;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Advertisement>
+     */
+    public function getAdvertisements(): Collection
+    {
+        return $this->advertisements;
+    }
+
+    public function addAdvertisement(Advertisement $advertisement): static
+    {
+        if (!$this->advertisements->contains($advertisement)) {
+            $this->advertisements->add($advertisement);
+            $advertisement->setAdding($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdvertisement(Advertisement $advertisement): static
+    {
+        if ($this->advertisements->removeElement($advertisement)) {
+            // set the owning side to null (unless already changed)
+            if ($advertisement->getAdding() === $this) {
+                $advertisement->setAdding(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Gallery>
+     */
+    public function getGalleries(): Collection
+    {
+        return $this->galleries;
+    }
+
+    public function addGallery(Gallery $gallery): static
+    {
+        if (!$this->galleries->contains($gallery)) {
+            $this->galleries->add($gallery);
+            $gallery->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGallery(Gallery $gallery): static
+    {
+        if ($this->galleries->removeElement($gallery)) {
+            // set the owning side to null (unless already changed)
+            if ($gallery->getAuthor() === $this) {
+                $gallery->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        // zwraca unikalny identyfikator lub inną właściwość encji
+        return $this->username;
     }
 }

@@ -4,9 +4,9 @@
 <template>
     <!-- ====== Footer Section Start -->
     <div class="w-full box-border flex justify-center items-center py-10 px-6 lg:pt-20  lg:pb-20 relative z-10 text-black dark:text-white">
-        <img src="/images/footer.webp" alt="footer images" class="absolute top-0 left-0 w-full h-full object-cover -z-2">
+        <img src="/images/suwalki.jpg" alt="footer images" class="absolute top-0 left-0 w-full h-full object-cover -z-2">
 
-        <div class="absolute top-0 left-0 w-full h-full -z-1 bg-black/60"></div>
+        <div class="absolute top-0 left-0 w-full h-full -z-1 bg-green-700/20"></div>
         
         <div class="container box-border bg-gradient-to-r from-second-light/30 to-prime-light/40 dark:from-second-dark/30 dark:to-prime-dark/40 backdrop-blur rounded-lg p-6">
             <div class="flex flex-wrap -mx-4">
@@ -71,7 +71,7 @@
                                     <x-link-hash :to="{path: '/', hash: '#offer'}"  text="Oferta"  stress hash="#offer"></x-link-hash>
                                 </li>
             
-                                <li v-if="$about.activeAbout?.length != 0" class="list-none ">
+                                <li v-if="$about?.activeAbout?.length != 0" class="list-none ">
                                     <x-link-hash :to="{path: '/', hash: '#o-nas'}"  text="O nas"  stress hash="#o-nas"></x-link-hash>
                                 </li>
             
@@ -84,7 +84,7 @@
                 </div>
 
                 <div class="w-full lg:w-2/12 px-4">                   
-                    <div v-if="$social.data?.length !== 0" class="w-full flex flex-col justify-center items-center">
+                    <div v-if="$social?.data?.length !== 0" class="w-full flex flex-col justify-center items-center">
                         <div>
                             <h4 class="text-lg font-semibold mb-4">Śledź nas na:</h4>
             

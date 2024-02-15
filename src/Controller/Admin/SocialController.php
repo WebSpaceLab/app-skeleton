@@ -10,12 +10,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[OA\Tag(name: 'Socials')]
+#[IsGranted('ROLE_ADMIN')]
 #[Route('/api/admin', name: 'app_admin_socials')]
 class SocialController extends AbstractAPIController
 {
@@ -23,7 +23,7 @@ class SocialController extends AbstractAPIController
     public function index(SocialRepository $socialRepository): JsonResponse
     {
         $socials = $socialRepository->findAll();
-        return $this->response(['socials' => $socials]);
+        return $this->response(['socials' => $socials], ['social:read']);
     }
 
     #[Route('/socials', name: ':create', methods: ['POST'])]

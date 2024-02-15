@@ -5,9 +5,7 @@ import { useFlashStore } from './useFlashStore'
 export const useHeroStore = defineStore('hero', {
     state: () => {
         return {
-            hero : [],
-
-            activeHero: [],
+            data : [],
 
             pagination: {
                 total: null,
@@ -25,56 +23,37 @@ export const useHeroStore = defineStore('hero', {
     },
 
     actions: {
-        async get() {
-            this.isLoading = true
+        async get(query: any, perPage: number, page: number) {
+            try {
+                let { data } = await useFetchApi(`/api/admin/hero`, {
+                    method: 'GET',
+                    params: {
+                        term: query.term,
+                        status: query.status,
+                        month: query.month,
+                        orderBy: query.orderBy,
+                        orderDir: query.orderDir,
+                        per_page: perPage,
+                        page: page
+                    }
+                }) as any
 
-            let {data, pending, status, error } = await useFetchApi(`/api/hero`, {
-                method: 'GET'
-            }) as any
-         
-            this.isLoading = pending.value
-            
-            if(error.value) {
-                console.error(error.value)
-            } else {
-                if(data.value && status.value === 'success') {
-                    this.activeHero = data.value.hero
+                if(data.value) {
+                    this.data = data.value.data.hero
+                    
+                    this.pagination.total = data.value.data.pagination.total
+                    this.pagination.current_page = data.value.data.pagination.current_page
+                    this.pagination.per_page = data.value.data.pagination.per_page
+                    
+                    this.status = data.value.data.status
+                    this.months = data.value.data.months
+                    this.queryParams = data.value.data.queryParams
                 }
-            }
-        },
-
-        async getHero(query: any, perPage: number, page: number) {
-            this.isLoading = true
-            
-            let {data, pending, status, error } = await useFetchApi(`/api/admin/hero`, {
-                method: 'GET',
-                params: {
-                    term: query.term,
-                    status: query.status,
-                    month: query.month,
-                    orderBy: query.orderBy,
-                    orderDir: query.orderDir,
-                    per_page: perPage,
-                    page: page
-                }
-            }) as any
-         
-            this.isLoading = pending.value
-
-            if(error.value) {
-                console.error(error.value)
-            } else {
-                if(data.value && status.value === 'success') {
-                    this.hero = data.value.hero
-        
-                    this.pagination.total = data.value.pagination.total
-                    this.pagination.current_page = data.value.pagination.current_page
-                    this.pagination.per_page = data.value.pagination.per_page
-       
-                    this.status = data.value.status
-                    this.months = data.value.months
-                    this.queryParams = data.value.queryParams
-                }
+                
+            } catch (error) {
+                console.error(error)
+            } finally {
+                this.isLoading = false
             }
         },
 
@@ -82,85 +61,86 @@ export const useHeroStore = defineStore('hero', {
             this.isLoading = true
             this.errors = null
 
-            let {data, pending, status, error } = await useFetchApi(`/api/admin/hero`, {
+            let {data,  status, error } = await useFetchApi(`/api/admin/hero`, {
                 method: 'POST',
                 body: form
             }) as any
 
-            this.isLoading = pending.value
-
+            
             if(error.value) {
-                if (error.value.data.errors) {
-                    this.errors = error.value.data.errors
+                if(error.value.data) {
+                    if (error.value.data.errors) {
+                        this.errors = error.value.data.errors
+                    }
+                    
+                    if(error.value.data.flash) {
+                        useFlashStore().error(error.value.data.flash.message)
+                    }
                 }
-
-                if(error.value.data.flash) {
-                    useFlashStore().error(error.value.data.flash.message)
-                }
-                return error.value
+                console.error(error.value)
             } else {
                 if(data.value && status.value === 'success') {
                     useFlashStore().success(data.value.flash.message)
-
-                    return data.value
                 }
             }
+
+            this.isLoading = false
         },
         
         async update(heroId: number, form: object) {
             this.isLoading = true
             this.errors = null
             
-            let {data, pending, status, error } = await useFetchApi(`/api/admin/hero/${heroId}`, {
+            let {data, status, error } = await useFetchApi(`/api/admin/hero/${heroId}`, {
                 method: 'PATCH',
                 body: form
             }) as any
 
-            this.isLoading = pending.value
-
+            
             if(error.value) {
-                if (error.value.data.errors) {
-                    this.errors = error.value.data.errors
+                if(error.value.data) {
+                    if (error.value.data.errors) {
+                        this.errors = error.value.data.errors
+                    }
+                    
+                    if(error.value.data.flash) {
+                        useFlashStore().error(error.value.data.flash.message)
+                    }
                 }
-
-                if(error.value.data.flash) {
-                    useFlashStore().error(error.value.data.flash.message)
-                }
-
-                return error.value
+                console.error(error.value)
             } else {
                 if(data.value && status.value === 'success') {
                     useFlashStore().success(data.value.flash.message)
-
-                    return data.value
                 }
             }
+
+            this.isLoading = false
         },
 
         async destroy(heroId: number) {
             this.isLoading = true
             this.errors = null
 
-            let {data, pending, status, error } = await useFetchApi(`/api/admin/hero/${heroId}`, {
+            let {data, status, error } = await useFetchApi(`/api/admin/hero/${heroId}`, {
                 method: 'DELETE'
             }) as any
 
-            this.isLoading = pending.value
-
             if(error.value) {
-                console.error(error.value)
-                if (error?.value.data.response.status === 422) {
-                    this.errors = error.value.data.response.file[0]
+                if(error.value.data) {
+                    if (error?.value.data.response.status === 422) {
+                        this.errors = error.value.data.response.file[0]
+                    }
+                    
+                    useFlashStore().error(error.value.data.flash.message)
                 }
-                
-                useFlashStore().error(error.value.data.flash.message)
+                console.error(error.value)
             } else {
                 if(data.value && status.value === 'success') {
                     useFlashStore().success(data.value.flash.message)
-
-                    return data.value
                 }
             }
+
+            this.isLoading = false
         }
     },
 })

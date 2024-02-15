@@ -52,6 +52,11 @@ const resetForm = () => {
 const update = async () => {
     try {
         await $feature.update(featurePreview.value.id, form)
+
+        if($feature.errors) {
+            return
+        }
+        
         emits('addedToLibrary', true)
         // close()
         

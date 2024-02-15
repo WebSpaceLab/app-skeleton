@@ -39,7 +39,7 @@ const ybClass = computed(() => {
 <template>
     <div class="">
         <div :class="[ybClass, ytClass]">
-            <div class="border" :class="classBorderColor(color)" />
+            <div class="border" />
         </div>
     </div>
 </template>

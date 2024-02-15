@@ -3,14 +3,18 @@
 namespace App\Controller\User;
 
 use App\Controller\AbstractAPIController;
+use App\Entity\Media;
 use App\Entity\User;
+use App\Repository\MediaRepository;
 use App\Repository\UserRepository;
-use OpenApi\Attributes as OA;
+use App\Service\UploaderHelper;
+use Intervention\Image\File;
+use Intervention\Image\ImageManagerStatic;
+use Janwebdev\ImageBundle\Image;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -19,11 +23,8 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\EqualTo;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
-use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[OA\Tag(name: 'Account')]
 #[Route('/api/user', name: 'app_user_account', methods: ["GET"])]
 class AccountController extends AbstractAPIController
 {
@@ -108,7 +109,65 @@ class AccountController extends AbstractAPIController
         $userRepository->save($user, true);
         
         return $this->json([
-            'massage' => 'Zmiana hasła powiodła się'
+            'flash' => [
+                'type' => 'success',
+                'massage' => 'Zmiana hasła powiodła się'
+            ],
         ]);
+    }
+
+    #[Route('/{id}/avatar-update', name: ':avatar-update', methods: ['POST'])]
+    public function avatarUrlUpdate(#[CurrentUser()] User $user, Request $request, UserRepository $userRepository, UploaderHelper $uploaderHelper): JsonResponse
+    {
+        $file = $request->files->get('image');
+        $this->validate([
+            'image' => [
+                new NotBlank(),
+            ],
+        ], $file);
+        
+        
+
+        if($file) {
+            $filename = $uploaderHelper->createdFileName($file);
+            $uploadDir = $this->getParameter('uploads_dir') .'/profile/'. $user->getId();
+            
+            // $image = new Image($imageManager, ['driver' => 'imagick']);
+            // $img = $image->create($uploadDir);
+            
+            // $croppedImage = $img->crop(
+            //     $request->request->get('width'),
+            //     $request->request->get('height'),
+            //     $request->request->get('left'),
+            //     $request->request->get('top'),
+            // );
+            
+            // $croppedImage->save($uploadDir);
+
+            $filename = $uploaderHelper->uploadImage($file, $uploadDir);
+            
+            if(!$filename) {
+                return $this->json([
+                    'flash' => [
+                        'message' => 'Coś poszło nie tak. Plik nie został przesłany.',
+                        'type' => 'error'
+                    ],
+                ], Response::HTTP_BAD_REQUEST);
+            }
+            
+            $user->setAvatarUrl('/uploads/profile/'. $user->getId(). '/' . $filename);
+            $userRepository->save($user, true);
+
+            $this->flash('Zdjęcie profilowe zostało zaktualizowane.');
+
+            return $this->response(['user' => $user], ['user:read']);
+        }
+
+        return $this->json([
+            'flash' => [
+                'message' => 'Coś poszło nie tak. Plik nie został przesłany.',
+                'type' => 'error'
+            ],
+        ], Response::HTTP_BAD_REQUEST);
     }
 }

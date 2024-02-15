@@ -87,15 +87,15 @@ export const useAuthStore = defineStore('auth', {
                     // token.value =  data.value.apiToken
                     // iri.value = data.value.iri
 
-                    if(data.value.apiToken && data.value.iri) {
-                        this.token = data.value.apiToken
-                        this.iri = data.value.iri
+                    if(data.value.data.apiToken && data.value.data.iri) {
+                        this.token = data.value.data.apiToken
+                        this.iri = data.value.data.iri
                         this.getUser()
                         this.checkIsLoggedIn()
                         useAccountStore().init(this.user as IUser | any)
                         
                         navigateTo('/dashboard')
-                        useFlashStore().success(data.value.flash.message)
+                        useFlashStore().success(data.value.flash?.message)
                         useNavbarStore().switchLogin(false)
                     }
                 }
@@ -115,21 +115,21 @@ export const useAuthStore = defineStore('auth', {
                     this.logout()
                 } else {
                     if(data.value && status.value == 'success') {
-                        this.user['@id'] = data.value.iriFromResource
-                        this.user.roles = data.value.roles
-                        this.roles = data.value.roles
-                        this.user.email = data.value.email
-                        this.user.username = data.value.username
-                        this.user.firstName = data.value.firstName
-                        this.user.lastName = data.value.lastName
+                        this.user['@id'] = data.value.data.iriFromResource
+                        this.user.roles = data.value.data.roles
+                        this.roles = data.value.data.roles
+                        this.user.email = data.value.data.email
+                        this.user.username = data.value.data.username
+                        this.user.firstName = data.value.data.firstName
+                        this.user.lastName = data.value.data.lastName
 
-                        this.user.avatarUrl = data.value.avatarUrl
-                        this.user.bio = data.value.bio
-                        this.user.articles = data.value.articles
-                        this.user.comments = data.value.comments
-                        this.user.createdAtAgo = data.value.createdAtAgo
-                        this.user.updatedAtAgo = data.value.updatedAtAgo
-                        this.tokenExpiresAt = data.value.apiTokenExpiresAt
+                        this.user.avatarUrl = data.value.data.avatarUrl
+                        this.user.bio = data.value.data.bio
+                        this.user.articles = data.value.data.articles
+                        this.user.comments = data.value.data.comments
+                        this.user.createdAtAgo = data.value.data.createdAtAgo
+                        this.user.updatedAtAgo = data.value.data.updatedAtAgo
+                        this.tokenExpiresAt = data.value.data.apiTokenExpiresAt
 
                         this.giveAccess(true)
                         this.checkIsLoggedIn()

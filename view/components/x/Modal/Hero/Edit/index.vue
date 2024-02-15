@@ -54,6 +54,10 @@ const resetForm = () => {
 const update = async () => {
     try {
         await $hero.update(heroPreview.value.id, form)
+        if($hero.errors) {
+            return
+        }
+        
         emits('addedToLibrary', true)
         // close()
         

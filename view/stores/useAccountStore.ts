@@ -1,6 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import axios from '../plugins/axios'
 import { useFlashStore } from './useFlashStore'
+import { useAuthStore } from './useAuthStore'
 import { IUser } from '../types/IUser'
 
 const $axios = axios().provide.axios
@@ -32,7 +33,10 @@ export const useAccountStore = defineStore('account', {
 
         async updateUserImage(form: any) {
             if(this.user) {
-                return await $axios.post(`${this.user['@id']}/update-image`, form, {
+                return await $axios.post(`${this.user['@id']}/avatar-update`, form, {
+                    headers: {
+                        "Authorization": 'Bearer ' + useAuthStore().token,
+                    },
                     onUploadProgress: (event: any) => {
                         this.progressImage = Math.round(event.loaded * 100 / event.total)
                     },

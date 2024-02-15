@@ -36,12 +36,12 @@ const form = reactive({
 
 async function onSubmit() {
     $contact.errors = null
-    $contact.loading = true
+    $contact.isLoading = true
 
     try {
         await $contact.update(form)
     } finally {
-        $contact.loading = false
+        $contact.isLoading = false
         close()
     }
 }

@@ -11,11 +11,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[OA\Tag(name: 'Meta Tags')]
+#[IsGranted('ROLE_ADMIN')]
 #[Route('/api/admin', name: 'app_admin_meta_tags')]
 class MetaTagsController extends AbstractAPIController
 {

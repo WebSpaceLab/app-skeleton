@@ -22,7 +22,7 @@ function openPreview(item) {
 
 function next(index) {
 
-    if(index + 1 < props.photos.length) {
+    if(index + 1 < props.photos?.length) {
         index ++;
     } else {
         index = 0;
@@ -41,7 +41,7 @@ function previous(index) {
     if(index > 0) {
         index --;
     } else {
-        index = props.photos.length - 1;
+        index = props.photos?.length - 1;
     }
 
     props.photos.forEach(item => {
@@ -61,7 +61,7 @@ function close() {
 function allPhotos() {
     const photos = [];
 
-    if(props.photos.length >= numberOfPhotos.value) {
+    if(props.photos?.length >= numberOfPhotos.value) {
         props.photos.forEach((item , index) => {
             if(index >= prevImage.value && index <= nextImage.value) {
                 photos.push(item);
@@ -81,11 +81,11 @@ function prevImages() {
 
     } else {
         if(prevImage.value === 0) {
-            prevImage.value = props.photos.length-1;
+            prevImage.value = props.photos?.length-1;
         } else if(nextImage.value === 0) {
             prevImage.value --;
 
-            nextImage.value = props.photos.length
+            nextImage.value = props.photos?.length
         } else {
             prevImage.value --;
         }
@@ -98,17 +98,17 @@ function prevImages() {
 }
 
 function nextImages() {
-    if(nextImage.value <= props.photos.length-2 ) {
-        if(prevImage.value === props.photos.length -1) {
+    if(nextImage.value <= props.photos?.length-2 ) {
+        if(prevImage.value === props.photos?.length -1) {
             prevImage.value = 0;
         } else {
             prevImage.value++;
         }
         nextImage.value++;
     } else {
-        if( nextImage.value === props.photos.length -1) {
+        if( nextImage.value === props.photos?.length -1) {
             nextImage.value = 0;
-        }else if(prevImage.value === props.photos.length -1) {
+        }else if(prevImage.value === props.photos?.length -1) {
             prevImage.value = 1;
             nextImage.value++;
         } else {
@@ -146,7 +146,7 @@ onMounted(() =>  {
 
             <!--
             
-                <div v-if="preview.index + 1 <= photos.length"  @click="next(preview.index)" class="w-10 h-full flex justify-center items-center cursor-pointer hover:bg-slate-600/30">
+                <div v-if="preview.index + 1 <= photos?.length"  @click="next(preview.index)" class="w-10 h-full flex justify-center items-center cursor-pointer hover:bg-slate-600/30">
                     <Icon name="material-symbols:arrow-forward-ios" class="text-3xl text-white"></Icon>
                 </div>
             -->
@@ -176,12 +176,12 @@ onMounted(() =>  {
             </div>
 
             <!--
-                <div v-if="viewPhotos.length > 3" @click="nextImages()" class="h-full p-3 flex justify-center items-center cursor-pointer hover:bg-slate-600/30">
+                <div v-if="viewPhotos?.length > 3" @click="nextImages()" class="h-full p-3 flex justify-center items-center cursor-pointer hover:bg-slate-600/30">
                     <Icon name="material-symbols:arrow-forward-ios" class="text-3xl text-white"></Icon>
                 </div>
             -->
             <!--
-                <div v-if="viewPhotos.length > 3" @click="prevImages()" class="h-full p-3 flex justify-center items-center cursor-pointer hover:bg-slate-600/30">
+                <div v-if="viewPhotos?.length > 3" @click="prevImages()" class="h-full p-3 flex justify-center items-center cursor-pointer hover:bg-slate-600/30">
                     <Icon name="material-symbols:arrow-back-ios-new" class="text-3xl"></Icon>
                 </div>
             -->

@@ -17,7 +17,7 @@ watch(() => $dashboard.sidebar.isRail, (event) => {
 <template>
     <li class="w-full mt-4 ease-in list-none">
         <NuxtLink
-            v-if="!link.children.length"
+            v-if="!link?.children?.length"
             :class="$dashboard.sidebar.isRail ? '' : 'overflow-hidden'"
             :to="{path: link.path }"
             class="h-10 w-full flex decoration-none text-muted-light  dark:text-muted-dark hover:text-hover-800  dark:hover:text-hover-200 rounded"
@@ -32,39 +32,41 @@ watch(() => $dashboard.sidebar.isRail, (event) => {
             </span>
 
         </NuxtLink>
-
-       <NuxtLink
-            v-else
-            :to="{ path: link.path }"
-            :class="[
-                $dashboard.sidebar.isRail ? '' : 'overflow-hidden',
-                open ? 'font-semibold text-blue-600' : 'font-medium hover:bg-hover-200'
-            ]"
-            class="flex justify-between items-center cursor-pointer decoration-none h-10 w-full rounded  dark:text-muted-dark hover:text-hover-800  dark:hover:text-hover-200"
-            activeClass="link-active"
-        >
-           <div v-if="!$dashboard.sidebar.isRail" class="flex items-start transition-all duration-500">
-               <div v-if="!open" class="flex justify-start w-10 items-center">
-                   <Icon class="text-2xl" :name="link.icon"></Icon>
-               </div>
-
-               <span class="ml-3" >{{ link.title }}</span>
-           </div>
-
-            <span
-                v-if="link.children.length"
-            >
-                <Icon v-if="$dashboard.sidebar.isRail && !open" class="text-2xl transition-all duration-500" :name="link.icon"/>
-
-                <Icon
-                  v-else
-                  @click="open = !open"
-                  :class="open ? 'rotate-90 text-blue-600' : 'fa-rotate-0 text-muted-light dark:text-muted-dark'"
-                  class="text-2xl transition-all duration-200 ease-in"
-                  name="material-symbols:play-arrow-outline"
-                />
-            </span>
-        </NuxtLink>
+        
+        <div v-else class="w-full h-full flex flex-between items-center">
+            <NuxtLink
+                 :to="{ path: link.path }"
+                 :class="[
+                     $dashboard.sidebar.isRail ? '' : 'overflow-hidden',
+                     open ? 'font-semibold text-blue-600' : 'font-medium hover:text-hover-200'
+                 ]"
+                 class="flex justify-between items-center cursor-pointer decoration-none h-10 w-full rounded  dark:text-muted-dark hover:text-hover-800  dark:hover:text-hover-200"
+                 activeClass="link-active"
+             >
+                <div v-if="!$dashboard.sidebar.isRail" class="flex items-start transition-all duration-500">
+                    <div  class="flex justify-start w-10 items-center">
+                        <Icon class="text-2xl" :name="link.icon"></Icon>
+                    </div>
+     
+                    <span class="ml-3" >{{ link.title }}</span>
+                </div>
+             </NuxtLink>
+     
+             <span
+                 class="flex justify-center  items-center w-10 transition-all duration-500  h-full cursor-pointer"
+                 v-if="link?.children?.length"
+             >
+                 <Icon v-if="$dashboard.sidebar.isRail && !open" class="text-2xl  transition-all duration-500 hover:text-hover-200" :name="link.icon"/>
+     
+                 <Icon
+                     v-else
+                     @click="open = !open"
+                     :class="open ? 'rotate-90 text-blue-600' : 'fa-rotate-0 text-muted-light dark:text-muted-dark hover:text-hover-200'"
+                     class="text-2xl transition-all duration-200 ease-in"
+                     name="material-symbols:play-arrow-outline"
+                 />
+             </span>
+        </div>
 
         <transition
             enter-active-class="transition ease-out duration-300"
@@ -74,7 +76,7 @@ watch(() => $dashboard.sidebar.isRail, (event) => {
             leave-from-class="transform opacity-100 translate-x-0"
             leave-to-class="transform opacity-0 -translate-x-64"
         >
-            <ul v-if="link.children.length && open" :class="[$dashboard.sidebar.isRail ? 'w-10 p-0' : 'w-[90%] pl-5']" class="list-none">
+            <ul v-if="link?.children?.length && open" :class="[$dashboard.sidebar.isRail ? 'w-10 p-0' : 'w-[90%] pl-5']" class="list-none">
                 <template v-for="(child, index) in link.children" :key="index">
                     <x-sidebar-item :link="child" />
                 </template>

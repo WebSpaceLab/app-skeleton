@@ -9,20 +9,22 @@ const props = defineProps({
         default: 'blue'
     }
 });
-
-let {  classTextColor, classBorderColor,  } = useClassColor();
 </script>
 
 <template>
     <span
-        class="inline-flex items-center py-1 px-2 mr-2 text-sm font-medium cursor-pointer  rounded"
+        class="w-auto h-5 inline-flex items-center py-0 px-1 space-x-1  font-medium cursor-pointer  rounded-xl"
         :class="[
-             classTextColor(color), classBorderColor(color)
+            color ? `badge-${color}` : 'badge-secondary-outline',
+        
         ]"
     >
-        {{ name }}
-        <div>
+        <p class="text-xs p-0 m-0">
+            {{ name }}
+        </p>
+
+        <span class="w-full">
             <slot name="action"></slot>
-        </div>
+        </span>
     </span>
 </template>

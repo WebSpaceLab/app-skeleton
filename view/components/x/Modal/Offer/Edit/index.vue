@@ -61,6 +61,9 @@ const close = () => {
 
 const update = async () => {
     await $offers.updatedOffer(offerPreview.value.id, form)
+    if($offers.errors) {
+        return
+    }
     emits('addedToLibrary', true)
     close()
 }
@@ -207,7 +210,7 @@ watch(() => form.description , () => {
          
         </div> 
 
-        <div v-if="offerPreview.categories.length" class="w-full  relative bg-background-light dark:bg-background-dark z-10 rounded-xl">
+        <div v-if="offerPreview?.categories?.length" class="w-full  relative bg-background-light dark:bg-background-dark z-10 rounded-xl">
             <div class=" w-full h-full relative px-8 lg:px-15 py-12 box-border">
                 <div class="w-full grid grid-cols-2 gap-6">
                     <div
